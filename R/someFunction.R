@@ -7,5 +7,6 @@
 #' @export
 printHello <- function(name) {
   print(paste0("Hello ", name))
+  return(NULL)
 }
 
