@@ -21,9 +21,7 @@
 #bed <- "R/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
 
-annotatePeaks <- function(bed) {
-  peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
-
+annotatePeaks <- function(peaks) {
   annoData <- toGRanges(EnsDb.Hsapiens.v86)
 
   anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData, output = 'overlapping', select = 'all')
