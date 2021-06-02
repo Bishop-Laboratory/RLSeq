@@ -2,8 +2,8 @@
 #'
 #' Annotates DRIP-Seq peaks with gene-level information
 #'
-#' @param peaks A .bed file containing DRIP-Seq peaks
-#' @return A .bed file containing annotated DRIP-Seq peaks
+#' @param peaks A GRanges object containing DRIP-Seq peaks
+#' @return A GRanges object containing annotated DRIP-Seq peaks
 #' @export
 
 #if (!requireNamespace("BiocManager", quietly = TRUE))
@@ -22,17 +22,19 @@
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
 
 annotatePeaks <- function(peaks) {
-  annoData <- toGRanges(EnsDb.Hsapiens.v86)
-
-  anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData, output = 'overlapping', select = 'all')
-
-  anno <- ChIPpeakAnno::addGeneIDs(anno, orgAnn = "org.Hs.eg.db", feature_id_type = "ensembl_gene_id", IDs2Add = c("symbol"))
-
-  anno_df <- as.data.frame(anno)
-  names(anno_df)[1] <- '#Seqnames'
-  anno_df['peak'] <- make.unique(anno_df[['peak']], sep = '_')
-
-  return(anno_df)
+  annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86)
+  anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData,
+                                            output = 'overlapping',
+                                            select = 'all')
+  anno <- ChIPpeakAnno::addGeneIDs(anno, orgAnn = "org.Hs.eg.db",
+                                   feature_id_type = "ensembl_gene_id",
+                                   IDs2Add = c("symbol"))
+  return(anno)
 }
 
 #res <- annotatePeaks(peaks)
+
+## to turn it into .bed file
+#anno_df <- as.data.frame(anno)
+#names(anno_df)[1] <- '#Seqnames'
+#anno_df['peak'] <- make.unique(anno_df[['peak']], sep = '_')
