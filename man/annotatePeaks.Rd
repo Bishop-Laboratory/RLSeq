@@ -4,13 +4,13 @@
 \alias{annotatePeaks}
 \title{Annotate Peaks}
 \usage{
-annotatePeaks(bed)
+annotatePeaks(peaks)
 }
 \arguments{
-\item{peaks}{A .bed file containing DRIP-Seq peaks}
+\item{peaks}{A GRanges object containing DRIP-Seq peaks}
 }
 \value{
-A .bed file containing annotated DRIP-Seq peaks
+A GRanges object containing annotated DRIP-Seq peaks
 }
 \description{
 Annotates DRIP-Seq peaks with gene-level information
