@@ -9,7 +9,7 @@
 #' @return NULL
 #' @examples
 #' 
-#' RSeqR::makeReport(RSeqR::SRX1025890, output_file = "report.html")
+#' RSeqR::makeReport(RSeqR::SRX1025890, outputFile = "report.html")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
