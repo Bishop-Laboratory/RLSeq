@@ -10,6 +10,8 @@ makeReport(data, output_file = "RSeqReport.html", ...)
 \item{data}{A named list containing \code{annotated_peaks}, \code{feature_overlaps},
 and \code{rlfs_results}}
 
+\item{...}{Arguments passed to \code{rmarkdown::render()}}
+
 \item{outputFile}{A path indicating the report output HTML file.}
 }
 \description{
