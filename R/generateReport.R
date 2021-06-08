@@ -5,6 +5,7 @@
 #' @param data A named list containing `annotated_peaks`, `feature_overlaps`,
 #' and `rlfs_results`
 #' @param outputFile A path indicating the report output HTML file. 
+#' @param ... Arguments passed to `rmarkdown::render()`
 #' @return NULL
 #' @examples
 #' 
@@ -19,6 +20,6 @@ makeReport <- function(data, output_file = "RSeqReport.html", ...) {
                     params = data, 
                     output_format = "html_document",
                     output_dir = normalizePath(dirname(output_file)),
-                    output_file = output_file)
+                    output_file = output_file, ...)
   return(NULL)
 }
