@@ -1,5 +1,5 @@
 Package: RSeqR
-Title: What the Package Does (One Line, Title Case)
+Title: R-loop Analysis with Built-in QC
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "First",
@@ -17,3 +17,16 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Depends: 
+    R (>= 2.10)
+Imports: 
+    kableExtra,
+    ChIPpeakAnno,
+    readr,
+    tibble,
+    dplyr,
+    ggplot2,
+    RColorBrewer,
+    pheatmap,
+    stringr,
+    grid
