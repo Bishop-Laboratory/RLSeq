@@ -46,13 +46,6 @@ strand <- configlist$strand_specific
 strandedness <- ifelse(strand, "stranded", "unstranded")
 moiety <- configlist$moeity
 ip_type <- configlist$ip_type
-rmap_samples <- file.path(helper_dir, 'data', 'RMapDB_samples_11_13_2020.csv')
-rmap_samples <- readr::read_csv(rmap_samples)
-rmap_samples$mode_group <- ifelse(rmap_samples$mode %in% c("RNH-CnR", "MapR"), "MapR",
-                                  ifelse(rmap_samples$mode %in% c("DRIP", "DRIPc", "sDRIP", 'qDRIP'), 'DRIP',
-                                         ifelse(rmap_samples$mode %in% c("RDIP"), "RDIP",
-                                                ifelse(rmap_samples$mode %in% c("ssDRIP"), "ssDRIP",
-                                                      ifelse(rmap_samples$mode %in% c("R-ChIP"), 'R-ChIP', "../../misc")))))
 ```
 
 <br>
