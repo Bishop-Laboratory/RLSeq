@@ -14,12 +14,12 @@
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-makeReport <- function(data, output_file = "RSeqReport.html", ...) {
+makeReport <- function(data, outputFile = "RSeqReport.html", ...) {
   template <- system.file("Rmd", "reportTemplate.Rmd", package = "RSeqR")
   rmarkdown::render(template, 
                     params = data, 
                     output_format = "html_document",
-                    output_dir = normalizePath(dirname(output_file)),
-                    output_file = output_file, ...)
+                    output_dir = normalizePath(dirname(outputFile)),
+                    output_file = outputFile, ...)
   return(NULL)
 }
