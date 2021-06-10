@@ -10,42 +10,27 @@ params:
   anno_data: "placeholder"
   rlfs_data: "placeholder"
   bam_stats: "placeholder"
-  peak_ol: "placeholder"
   read_qc_data: "placeholder"
   configlist: "placeholder"
-  helper_dir: "placeholder"
   total_peaks: "placeholder"
 ---
 
 
 ```{r setup, include=FALSE, echo=FALSE}
 list2env(params, envir = environment())
-show_anno <- ifelse(tibble::is_tibble(params$anno_data), TRUE, FALSE)
-show_corr <- ifelse(is.list(params$corr_data), TRUE, FALSE)
-show_rlfs <- ifelse(is.list(params$rlfs_data), TRUE, FALSE)
-show_readqc <- ifelse(is.list(params$read_qc_data), TRUE, FALSE)
+list2env(configlist, envir = environment())
+show_anno <- ifelse(tibble::is_tibble(anno_data), TRUE, FALSE)
+show_corr <- ifelse(is.list(corr_data), TRUE, FALSE)
+show_rlfs <- ifelse(is.list(rlfs_data), TRUE, FALSE)
+show_readqc <- ifelse(is.list(read_qc_data), TRUE, FALSE)
+show_mapqual <- ifelse(file_type %in% c('fastq', 'public', 'bam'), TRUE, FALSE)
 correct_mode <- params$configlist$mode %in% c("DRIP", "DRIPc", "sDRIP", 'qDRIP')
-show_summary <- show_anno & show_corr & correct_mode
-if (show_anno) {
-  needed_categories <- c("Exon", "LINE", 'SINE', 'TTS', 'Intron')
-  if (any(! needed_categories %in% anno_data$Annotation)) {
-    show_summary <- FALSE
-  }
-}
-if (! show_readqc) {
-  show_summary <- FALSE
-}
-
-sample_name <- configlist$sample_name
-control <- ifelse(configlist$control == "None", FALSE, TRUE)
-mode_now <- configlist$mode
+control <- ifelse(control == "None", FALSE, TRUE)
+mode_now <- mode
 current_time <- date()
-pe <- configlist$paired_end
-genome <- configlist$genome
-strand <- configlist$strand_specific
+pe <- paired_end
+strand <- strand_specific
 strandedness <- ifelse(strand, "stranded", "unstranded")
-moiety <- configlist$moeity
-ip_type <- configlist$ip_type
 ```
 
 <br>
@@ -79,101 +64,19 @@ Time finished: <strong>`r current_time`</strong>
 ### Peak calling
 
 ```{r totalPeaks}
-controlstr <- ifelse(control, "was", "was <strong style='color: red'>not</strong>")
-opt1 <- " the MACS2 peaks which overlapped with EPIC2 peaks were considered the 'final' peakset by RSeq."
-opt2 <- " the EPIC2 peaks were considered the 'final' peakset by RSeq."
-
-if (mode_now %in% c("DRIP", "DRIPc", "sDRIP", 'qDRIP', 'RDIP', 'ssDRIP', 'S1-DRIP')) {
-  if (control) {
-    opt <- opt1
-  } else {
-    opt <- opt2
-  }
-} else if (mode_now %in% c("R-ChIP", "RR-ChIP", "RNH-CnR", "MapR", 'DRIVE')) {
-  opt <- opt1
-}
-peak_protocol <- paste0("Because the mode was <strong>", 
-                        mode_now, "</strong> and there ", controlstr,
-                        " a control sample (e.g., genomic input), ", opt)
-
 # TODO: What should this number be? Can we arrive at a more robust estimate?
 total_peaks_color <- ifelse(total_peaks < 3000, 'red', ifelse(total_peaks < 6000, 'orange', 'green'))
 ```
 
-The peak callers `macs2` and `epic2` were used to call <strong>`r strandedness`</strong> peaks from the bam files. `r peak_protocol`
-
-Please see the <a href="https://github.com/millerh1/RSeq"  target="_blank">RSeq documentation</a> for a full explanation of the peak analysis approach.
-
-Number of peaks in final RSeq peakset: <strong style="color: `r total_peaks_color`">`r total_peaks`</strong>
-
-#### Peak MACS2 and EPIC2 overlap statistics
-
-```{r peakVenn}
-res <- suppressMessages(suppressWarnings(
-  ChIPpeakAnno::makeVennDiagram(peak_ol, ignore.strand = FALSE,
-                                margin = .05, fill = c('skyblue', 'firebrick'))))
-```
-
-
-```{r peakCompare}
-venn_counts <- res$vennCounts
-peak_stats <- data.frame(
-  "MACS2" = venn_counts[c(3:4),c(4)],
-  "EPIC2" = venn_counts[c(2, 4),c(5)],
-  row.names = c("Distinct Peak Count", "Overlapping Peak Count")
-)
-peak_stats['Percentage Peaks Overlapping',] <- c(round(100*(
-  peak_stats$MACS2[2]/sum(peak_stats$MACS2)), 1), 
-  round(100*(peak_stats$EPIC2[2]/sum(peak_stats$EPIC2)), 1))
-kableExtra::kable_styling(kableExtra::kable(peak_stats), 
-                          full_width = FALSE, position = "left", 
-                          bootstrap_options = "striped")
-```
-
+The peak caller `macs` was used for peak calling. Number of peaks called: <strong style="color: `r total_peaks_color`">`r total_peaks`</strong>
 
 ***
 
 ```{r readQC, child=system.file("Rmd", "readQC_template.Rmd", package = "RSeqR"), eval=show_readqc}
 ```
 
-### Mapping quality
-
-```{r mapping quality}
-reads_aligned <- bam_stats$reads_aligned / 1e6
-duplicate_reads <- bam_stats$duplicate_reads / 1e6
-
-if (show_readqc) {
-  total_reads <- bam_stats$total_reads / 1e6
-  total_reads_color <- "black"
-  pct_aligned <- round(100*(reads_aligned/total_reads), digits = 2)
-  pct_align_color <- ifelse(pct_aligned > 80, "green", ifelse(pct_aligned > 60, "orange", "red"))
-  pct_duplicated <- round(100*(duplicate_reads/total_reads), digits = 2)
-  pct_duplicated_color <- ifelse(pct_duplicated < 35, "green", ifelse(pct_aligned < 50, "orange", "red"))
-} else {
-  total_reads <- "N/A"
-  total_reads_color <- "grey"
-  pct_aligned <- "N/A"
-  pct_align_color <- "grey"
-  pct_duplicated <- "N/A"
-  pct_duplicated_color <- "grey"
-}
-
-genome <- configlist$genome
+```{r readQC, child=system.file("Rmd", "mapqual_template.Rmd", package = "RSeqR"), eval=show_mapqual}
 ```
-
-Reads were aligned to **`r genome`** with `bwa mem`. 
-
-Total reads (millions): <strong style="color: `r total_reads_color`">`r total_reads`</strong>
-
-Aligned reads (millions): **`r reads_aligned`**
-
-Percent of reads aligned: <strong style="color: `r pct_align_color`">`r pct_aligned`</strong>
-
-Duplicated reads (millions): **`r duplicate_reads`**
-
-Percent of reads duplicated: <strong style="color: `r pct_duplicated_color`">`r pct_duplicated`</strong>
-
-
 
 &nbsp;
 <hr />
