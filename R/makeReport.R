@@ -16,6 +16,10 @@
 #' @export
 makeReport <- function(data, outputFile = "RSeqReport.html", ...) {
   template <- system.file("Rmd", "reportTemplate.Rmd", package = "RSeqR")
+  data <- data[names(data) %in% c(
+    "corr_data", "anno_data", "rlfs_data", "bam_stats", 
+    "read_qc_data", "configlist", "total_peaks"
+  )]
   rmarkdown::render(template, 
                     params = data, 
                     output_format = "html_document",
