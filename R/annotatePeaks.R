@@ -1,22 +1,10 @@
 #' Annotate Peaks
 #'
-#' Annotates DRIP-Seq peaks with gene-level information
+#' Annotates DRIP-Seq peaks as a GRanges object with gene-level information
 #'
 #' @param peaks A GRanges object containing DRIP-Seq peaks
 #' @return A GRanges object containing annotated DRIP-Seq peaks
 #' @export
-
-#if (!requireNamespace("BiocManager", quietly = TRUE))
-#  install.packages("BiocManager")
-
-#BiocManager::install("EnsDb.Hsapiens.v86")
-#BiocManager::install("org.Hs.eg.db")
-#BiocManager::install("ChIPpeakAnno")
-
-#library(tidyverse)
-#library(ChIPpeakAnno)
-#library(EnsDb.Hsapiens.v86)
-#library(org.Hs.eg.db)
 
 #bed <- "R/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
@@ -33,8 +21,3 @@ annotatePeaks <- function(peaks) {
 }
 
 #res <- annotatePeaks(peaks)
-
-## to turn it into .bed file
-#anno_df <- as.data.frame(anno)
-#names(anno_df)[1] <- '#Seqnames'
-#anno_df['peak'] <- make.unique(anno_df[['peak']], sep = '_')
