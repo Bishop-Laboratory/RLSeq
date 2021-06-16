@@ -2,3 +2,4 @@
 
 export(annotatePeaks)
 export(printHello)
+export(toBed)
