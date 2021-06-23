@@ -1,4 +1,4 @@
-#' To Bed
+#' GRanges To Bed
 #'
 #' Converts a GRanges object to a .bed formatted DataFrame and writes to file if requested
 #'
@@ -8,7 +8,7 @@
 #' @return A DataFrame object containing the GRanges content formatted according to .bed standards
 #' @export
 
-toBed <- function(granges, write = FALSE, filename = NULL) {
+grangesToBed <- function(granges, write = FALSE, filename = NULL) {
   df <- as.data.frame(granges)
   names(df)[1] <- paste0("#", names(df)[1])
   if(write) {
