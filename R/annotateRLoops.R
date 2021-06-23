@@ -1,4 +1,4 @@
-#' Annotate Peaks
+#' Annotate R-Loops
 #'
 #' Annotates DRIP-Seq peaks as a GRanges object with gene-level information
 #'
@@ -6,11 +6,11 @@
 #' @return A GRanges object containing annotated DRIP-Seq peaks
 #' @export
 
-#bed <- "R/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
+#bed <- "tests/testthat/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
 
-annotatePeaks <- function(peaks) {
-  annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86)
+annotateRLoops <- function(peaks) {
+  annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86) # Use this database for gene IDs as well using select from annotationDbi
   anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData,
                                             output = 'overlapping',
                                             select = 'all')
@@ -20,4 +20,4 @@ annotatePeaks <- function(peaks) {
   return(anno)
 }
 
-#res <- annotatePeaks(peaks)
+#res <- annotateRLoops(peaks)
