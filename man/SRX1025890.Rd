@@ -3,7 +3,7 @@
 \docType{data}
 \name{SRX1025890}
 \alias{SRX1025890}
-\title{Results of running RSeq on SRX1025890}
+\title{List. Results of running RSeq on SRX1025890}
 \format{
 An object of class \code{list} of length 9.
 }
@@ -11,6 +11,6 @@ An object of class \code{list} of length 9.
 SRX1025890
 }
 \description{
-Results of running RSeq on SRX1025890
+List. Results of running RSeq on SRX1025890
 }
 \keyword{datasets}
