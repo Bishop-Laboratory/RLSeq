@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Bishop-Laboratory/RSeqR/workflows/R-CMD-check/badge.svg)](https://github.com/Bishop-Laboratory/RSeqR/actions)
+[![Codecov test coverage](https://codecov.io/gh/Bishop-Laboratory/RSeqR/branch/main/graph/badge.svg)](https://codecov.io/gh/Bishop-Laboratory/RSeqR?branch=main)
 <!-- badges: end -->
 
 ## Development notes
