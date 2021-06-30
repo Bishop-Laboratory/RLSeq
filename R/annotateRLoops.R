@@ -6,6 +6,8 @@
 #' @return A GRanges object containing annotated DRIP-Seq peaks
 #' @export
 
+# TO DO: 1. Example in doc at top of file.
+
 #bed <- "tests/testthat/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
 
@@ -14,7 +16,6 @@ annotateRLoops <- function(peaks) {
   anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData,
                                             output = 'overlapping',
                                             select = 'all')
-  anno <- anno[! is.na(anno$feature),] # Do we want this?
   mapping <- AnnotationDbi::select(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86,
                                    keys = AnnotationDbi::keys(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86),
                                    columns = "SYMBOL")
