@@ -10,14 +10,17 @@
 #peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
 
 annotateRLoops <- function(peaks) {
-  annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86) # Use this database for gene IDs as well using select from annotationDbi
+  annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86)
   anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData,
                                             output = 'overlapping',
                                             select = 'all')
-  anno <- ChIPpeakAnno::addGeneIDs(anno, orgAnn = "org.Hs.eg.db",
-                                   feature_id_type = "ensembl_gene_id",
-                                   IDs2Add = c("symbol"))
-  return(anno)
+  anno <- anno[! is.na(anno$feature),] # Do we want this?
+  mapping <- AnnotationDbi::select(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86,
+                                   keys = AnnotationDbi::keys(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86),
+                                   columns = "SYMBOL")
+  annodf <- dplyr::left_join(as.data.frame(anno), mapping, by = c('feature' = "GENEID"))
+  return(plyranges::as_granges(annodf))
 }
 
 #res <- annotateRLoops(peaks)
+#res
