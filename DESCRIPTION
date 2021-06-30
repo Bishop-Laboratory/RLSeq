@@ -14,6 +14,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+Depends: testthat, BiocManager, ChIPpeakAnno, EnsDb.Hsapiens.v86, plyranges, dplyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
