@@ -1,3 +1,5 @@
 .Rproj.user
 .Rhistory
 .Rdata
+misc/**/*.rda
+tests/**/*.html

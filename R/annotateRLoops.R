@@ -20,8 +20,5 @@ annotateRLoops <- function(peaks) {
                                    keys = AnnotationDbi::keys(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86),
                                    columns = "SYMBOL")
   annodf <- dplyr::left_join(as.data.frame(anno), mapping, by = c('feature' = "GENEID"))
-  return(plyranges::as_granges(annodf))
+  return(ChIPpeakAnno::toGRanges(annodf))
 }
-
-#res <- annotateRLoops(peaks)
-#res
