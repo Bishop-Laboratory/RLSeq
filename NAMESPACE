@@ -2,4 +2,7 @@
 
 export(annotateRLoops)
 export(grangesToBed)
+export(makeReport)
 export(printHello)
+importFrom(dplyr,"%>%")
+importFrom(rlang,.data)
