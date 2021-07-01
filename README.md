@@ -20,7 +20,8 @@ devtools::install_github("Bishop-Laboratory/RSeqR")
 Prior to publicizing the repo, you will need a personal access token. Follow [these instructions](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create one. And then do the following:
 
 ```R
-devtools::install_github("Bishop-Laboratory/RSeqR", auth_token="<your_access_token>")
+remotes::install_github("Bishop-Laboratory/RSeqR", dependencies = "Imports", force = TRUE,
+                         auth_token = "<your_access_token>")
 ```
 
 This should allow you to install the package from github. You can also build the package locally by using the build tools inside of RStudio:
