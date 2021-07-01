@@ -2,3 +2,4 @@
 .Rhistory
 .Rdata
 tests/**/*.html
+misc/**/*.rda
