@@ -55,6 +55,33 @@ checkRLFSAnno <- function(genome) {
 }
 
 
+#' Get RLFS Anno
+#' Helper function that retrieves RLFS
+#' @param genome the UCSC genome name to retrieve RLFS for
+#' @return A GRanges object with RLFS for that species.
+getRLFSAnno <- function(genome) {
+  
+  # Check if annotations available first
+  if (! checkRLFSAnno(genome)) {
+    stop("No RLFS annotations available for ", genome)
+  }
+  
+  # Return as a GRanges object
+  return(
+    regioneR::toGRanges(
+      as.data.frame(
+        readr::read_tsv(
+          paste0(
+            "https://rmapdb-data.s3.us-east-2.amazonaws.com/rlfs-beds/", 
+            genome, ".rlfs.bed"
+          ),
+          col_names = FALSE)
+      )
+    )
+  )
+}
+
+
 #' Check Gene Annotations
 #' Helper function which checks the chrom sizes info from UCSC
 #' @param genome the UCSC genome for which to download chrom sizes
@@ -219,4 +246,65 @@ buildAvailableGenomes <- function(test=FALSE, ...) {
   return(
     dplyr::left_join(available_genomes, eff_gen_sizes, by = "UCSC_orgID")
   )
+}
+
+
+#' Build Genome Masks
+#' Helper Function which builds GRanges of masked genomes for RegioneR
+#' @return A named list of GRanges object with the masked chrom sizes. 
+buildGenomeMasks <- function() {
+  
+  # Find genomes which have masked genomes available
+  available_genomes <- BSgenome::available.genomes()
+  masked_genomes <- available_genomes[grep(available_genomes, 
+                                           pattern = ".+\\.masked")]
+  
+  # Download any masked genomes which are not already available
+  to_install <- masked_genomes[! masked_genomes %in% installed.packages()]
+  if (length(to_install) > 0) {
+    BiocManager::install(to_install, ask = FALSE)
+  }
+  
+  # Get the masked genomes
+  genomes <- gsub(masked_genomes, replacement = "\\1",
+                  pattern = "^BSgenome\\.[a-zA-Z]+\\.UCSC\\.([a-zA-Z0-9]+)\\.masked$")
+  maskLst <- lapply(genomes, getMask2)
+  names(maskLst) <- genomes
+  
+  return(maskLst)
+  
+}
+
+#' Build Mask for Genome as GRanges
+#' Adapted from `regioneR::getMask()` in the 
+#' @return A GRanges object with the masked chrom sizes. 
+getMask2 <- function(genome) {
+  gn <- regioneR::characterToBSGenome(genome)
+  chrs <- as.character(GenomicRanges::seqnames(GRanges(GenomeInfoDb::seqinfo(gn))))
+  bsgenome <- gn
+  chr.masks <- sapply(chrs, function(chr) {
+    mm <- Biostrings::masks(bsgenome[[chr]])
+    if(is.null(mm)) {
+      return(NULL)
+    } else {
+      mm <- Biostrings::collapse(mm)[[1]]
+      return(mm)
+    }})
+  
+  chr.masks <- sapply(chrs, function(chr) {
+    if(is.null(chr.masks[[chr]])) {
+      return(NULL)
+    } else {
+      return(GenomicRanges::GRanges(seqnames=S4Vectors::Rle(rep(chr, length(chr.masks[[chr]]))), ranges=chr.masks[[chr]]))
+    }
+  })
+  #Combine the mask for each chromosome into a single mask
+  mask <- GenomicRanges::GRanges(seqinfo = seqinfo(bsgenome))
+  for(chr in chrs) {
+    if(!is.null(chr.masks[[chr]])) {
+      suppressWarnings(mask <- c(mask, chr.masks[[chr]]))
+    }
+  }
+  
+  return(mask)
 }
