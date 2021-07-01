@@ -4,7 +4,14 @@
 \alias{analyzeRLFS}
 \title{Analyze RLFS}
 \usage{
-analyzeRLFS(peaks, genome = "hg38", chrom_sizes = NULL, RLFS = NULL, ...)
+analyzeRLFS(
+  peaks,
+  genome = "hg38",
+  chrom_sizes = NULL,
+  mask = NULL,
+  RLFS = NULL,
+  ...
+)
 }
 \arguments{
 \item{peaks}{A GRanges object containing the R-loop ranges to check.}
@@ -14,10 +21,13 @@ analyzeRLFS(peaks, genome = "hg38", chrom_sizes = NULL, RLFS = NULL, ...)
 \item{chrom_sizes}{A data.frame containing two columns with chromosome names
 and chromosome sizes.}
 
+\item{mask}{A GRanges object containing the regions of the genome to mask. Can be generated from
+regioneR::getMask().}
+
 \item{RLFS}{A GRanges object containing the R-loop forming sequences to
 compare against.}
 
-\item{...}{Arguments passed to \code{RegioneR::permTest()}}
+\item{...}{Arguments passed to \code{regioneR::permTest()}}
 }
 \value{
 A named list containing the results of RegioneR,
