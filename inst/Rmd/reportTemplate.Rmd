@@ -1,0 +1,86 @@
+---
+title: "RSeq Report"
+output: 
+  html_document:
+    code_folding: hide
+    theme: flatly
+    highlight: textmate
+params:
+  corr_data: "placeholder"
+  anno_data: "placeholder"
+  rlfs_data: "placeholder"
+  bam_stats: "placeholder"
+  read_qc_data: "placeholder"
+  configlist: "placeholder"
+  total_peaks: "placeholder"
+---
+
+
+```{r setup, include=FALSE, echo=FALSE}
+list2env(params, envir = environment())
+list2env(configlist, envir = environment())
+show_anno <- ifelse(tibble::is_tibble(anno_data), TRUE, FALSE)
+show_corr <- ifelse(is.list(corr_data), TRUE, FALSE)
+show_rlfs <- ifelse(is.list(rlfs_data), TRUE, FALSE)
+show_readqc <- ifelse(is.list(read_qc_data), TRUE, FALSE)
+show_mapqual <- ifelse(file_type %in% c('fastq', 'public', 'bam'), TRUE, FALSE)
+correct_mode <- params$configlist$mode %in% c("DRIP", "DRIPc", "sDRIP", 'qDRIP')
+control <- ifelse(control == "None", FALSE, TRUE)
+mode_now <- mode
+current_time <- date()
+pe <- paired_end
+strand <- strand_specific
+strandedness <- ifelse(strand, "stranded", "unstranded")
+```
+
+<br>
+
+Sample name: <strong>`r sample_name`</strong>
+
+Sample type: <strong>`r paste0(mode_now, "-Seq")`</strong>
+
+Genome: <strong>`r genome`</strong>
+
+Time finished: <strong>`r current_time`</strong>
+
+
+## Quality Report
+
+<hr>
+
+
+```{r annoShow, child=system.file("Rmd", "annotation_template.Rmd", package = "RSeqR"), eval=show_anno}
+```
+
+
+```{r rlfsShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=show_rlfs}
+```
+
+
+```{r correlationShow, child=system.file("Rmd", "correlation_template.Rmd", package = "RSeqR"), eval=show_corr}
+```
+
+
+### Peak calling
+
+```{r totalPeaks}
+# TODO: What should this number be? Can we arrive at a more robust estimate?
+total_peaks_color <- ifelse(total_peaks < 3000, 'red', ifelse(total_peaks < 6000, 'orange', 'green'))
+```
+
+The peak caller `macs` was used for peak calling. Number of peaks called: <strong style="color: `r total_peaks_color`">`r total_peaks`</strong>
+
+***
+
+```{r readQC, child=system.file("Rmd", "readQC_template.Rmd", package = "RSeqR"), eval=show_readqc}
+```
+
+```{r readQC, child=system.file("Rmd", "mapqual_template.Rmd", package = "RSeqR"), eval=show_mapqual}
+```
+
+&nbsp;
+<hr />
+<p style="text-align: center;">RSeq Â© 2021, <a href="https://gccri.bishop-lab.uthscsa.edu/"  target="_blank">Bishop Lab</a>, UT Health San Antonio</p>
+<p style="text-align: center;">RSeq maintainer: <span style="color: #808080;"><em>millerh1@uthscsa.edu</em></span></p>
+
+&nbsp;
