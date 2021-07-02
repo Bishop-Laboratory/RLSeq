@@ -4,4 +4,4 @@
 ^LICENSE\.md$
 .*\.html$
 ^codecov\.yml$
-^misc/$
+^data-raw$

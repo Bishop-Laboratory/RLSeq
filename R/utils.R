@@ -31,10 +31,10 @@ urlExists <- function(url) {
 #' @param genome the UCSC genome for which to download chrom sizes
 #' @return A tibble containing chrom sizes
 getChromSizes <- function(genome) {
-  chrom_sizes <- readr::read_tsv(paste0(
+  chrom_sizes <- suppressMessages(readr::read_tsv(paste0(
     'http://hgdownload.soe.ucsc.edu/goldenPath/',
     genome, '/bigZips/', genome, '.chrom.sizes'
-  ), col_names = FALSE)
+  ), col_names = FALSE))
   return(chrom_sizes)
 }
 

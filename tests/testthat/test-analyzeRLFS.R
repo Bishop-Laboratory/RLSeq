@@ -8,11 +8,11 @@ test_that(desc = "analyzeRLFS Arg Fail", {
 })
 
 test_that(desc = "analyzeRLFS Pass", {
-  expect_s3_class(
+  expect_type(
     RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks,
-                       genome=NULL, 
+                       genome="hg38", 
                        chrom_sizes=NULL,
                        RLFS=NULL),
-    class = "permTestResults"
+    type = "list"
   )
 })
