@@ -3,3 +3,4 @@
 .Rdata
 tests/**/*.html
 misc/**/*.rda
+data-raw/**/*.rda

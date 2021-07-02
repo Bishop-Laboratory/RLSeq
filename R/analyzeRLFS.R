@@ -18,6 +18,8 @@
 #' 
 #' result <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
 #' 
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 analyzeRLFS <- function(peaks, 
                         genome="hg38", 
@@ -26,11 +28,24 @@ analyzeRLFS <- function(peaks,
                         RLFS=NULL, 
                         ...) {
   
-  # Check RLFS, chrom_sizes, and mask if not provided
+  # Check RLFS, chrom_sizes, and mask
+  message("[1] Evaluating Inputs.")
+  if (is.null(genome) & 
+      (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
+    stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
+  }
   if (is.null(RLFS)) {RLFS <- RSeqR:::getRLFS(genome)}
   if (is.null(chrom_sizes)) {chrom_sizes <- RSeqR:::getChromSizes(genome)}
-  if (is.null(mask)) {mask <- regioneR::getMask("hg38")}
-    
+  if (is.null(mask)) {
+    available_masks <- gsub(names(RSeqR::genomeMasks), pattern = "\\.masked", 
+                            replacement = "")
+    if(! genome %in% available_masks) {
+      stop(genome, " is not available in mask list. You may generate it with ")
+    } else {
+      mask <- RSeqR::genomeMasks[[paste0(genome, ".masked")]]
+    }
+  }
+  
   # Prevent stranded assignment
   GenomicRanges::strand(RLFS) <- "*"
   RLFS <- GenomicRanges::reduce(RLFS)
@@ -41,16 +56,28 @@ analyzeRLFS <- function(peaks,
               "GRanges" %in% class(RLFS))
   
   # Run RLFS perm test
-  pt <- regioneR::permTest(A=peaks, B=rlfs, 
-                           genome=as.data.frame(chrom_sizes), 
-                           mask=mask, 
-                           allow.overlaps = FALSE,
-                           randomize.function=regioneR::circularRandomizeRegions, 
-                           evaluate.function=regioneR::numOverlaps, 
-                           alternative = "greater",
-                           ...)
+  genomeNow <- GenomicRanges::GRanges(chrom_sizes %>% dplyr::mutate(start = 1) %>% 
+                                        dplyr::select(seqnames = X1, 
+                                                      start, end = X2))
+  GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
+  GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
   
-  return(pt)
+  # Run RegioneR
+  message("[2] Running permTest.")
+  pt <- regioneR::permTest(A=peaks, B=RLFS, 
+                           genome=genomeNow,
+                           mask=mask, 
+                           randomize.function=regioneR::circularRandomizeRegions, 
+                           evaluate.function=regioneR::numOverlaps,
+                           alternative = "greater")
+  
+  message("[3] Extracting pileup.")
+  z <- regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
+  
+  return(list(
+    "perTestResults" = pt,
+    "Z-scores" = z
+  ))
 }
 
 
