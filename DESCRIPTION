@@ -32,4 +32,8 @@ Imports:
     grid,
     rlang,
     plotly,
-    rmarkdown
+    rmarkdown,
+    GenomeInfoDb,
+    GenomicRanges,
+    httr,
+    regioneR
