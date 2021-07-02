@@ -34,8 +34,8 @@ analyzeRLFS <- function(peaks,
       (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
     stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
   }
-  if (is.null(RLFS)) {RLFS <- RSeqR:::getRLFS(genome)}
-  if (is.null(chrom_sizes)) {chrom_sizes <- RSeqR:::getChromSizes(genome)}
+  if (is.null(RLFS)) {RLFS <- getRLFSAnno(genome)}
+  if (is.null(chrom_sizes)) {chrom_sizes <- getChromSizes(genome)}
   if (is.null(mask)) {
     available_masks <- gsub(names(RSeqR::genomeMasks), pattern = "\\.masked", 
                             replacement = "")
@@ -57,8 +57,8 @@ analyzeRLFS <- function(peaks,
   
   # Run RLFS perm test
   genomeNow <- GenomicRanges::GRanges(chrom_sizes %>% dplyr::mutate(start = 1) %>% 
-                                        dplyr::select(seqnames = X1, 
-                                                      start, end = X2))
+                                        dplyr::select(seqnames = .data$X1, 
+                                                      .data$start, end = .data$X2))
   GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
   GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
   
