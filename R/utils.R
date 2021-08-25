@@ -18,10 +18,12 @@ urlExists <- function(url) {
 #' @param genome the UCSC genome for which to download chrom sizes
 #' @return A tibble containing chrom sizes
 getChromSizes <- function(genome) {
-  chrom_sizes <- suppressMessages(readr::read_tsv(paste0(
-    BASE_UCSC,
-    genome, '/bigZips/', genome, '.chrom.sizes'
-  ), col_names = FALSE))
+  n_ <- capture.output(
+    chrom_sizes <- readr::read_tsv(paste0(
+      BASE_UCSC,
+      genome, '/bigZips/', genome, '.chrom.sizes'
+    ), col_names = FALSE)
+  )
   return(chrom_sizes)
 }
 
@@ -32,12 +34,7 @@ getChromSizes <- function(genome) {
 #' @return A logical, TRUE if available, FALSE if not
 checkRLFSAnno <- function(genome) {
   return(
-    urlExists(
-      paste0(
-        RLFS_BED_URL, 
-        genome, ".rlfs.bed"
-      )
-    )
+    urlExists(paste0(RLFS_BED_URL, genome, ".rlfs.bed"))
   )
 }
 
@@ -53,19 +50,19 @@ getRLFSAnno <- function(genome) {
     stop("No RLFS annotations available for ", genome)
   }
   
-  # Return as a GRanges object
-  return(
-    regioneR::toGRanges(
-      as.data.frame(
-        suppressMessages(readr::read_tsv(
-          paste0(
-            RLFS_BED_URL, 
-            genome, ".rlfs.bed"
-          ),
-          col_names = FALSE))
-      )
+  # Read in RLFS
+  n_ <- capture.output(
+    tsvRLFS <- readr::read_tsv(
+      paste0(RLFS_BED_URL, genome, ".rlfs.bed"),
+      col_names = FALSE
     )
   )
+  
+  # Return as a GRanges object
+  tsvRLFS %>% 
+    as.data.frame() %>%
+    regioneR::toGRanges() %>%
+    return()
 }
 
 
