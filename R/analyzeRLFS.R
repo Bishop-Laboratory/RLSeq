@@ -29,13 +29,15 @@ analyzeRLFS <- function(peaks,
                         ...) {
   
   # Check RLFS, chrom_sizes, and mask
-  message("[1] Evaluating Inputs.")
+  message("+ [i] Evaluating Inputs.")
   if (is.null(genome) & 
       (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
     stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
   }
   if (is.null(RLFS)) {RLFS <- getRLFSAnno(genome)}
-  if (is.null(chrom_sizes)) {chrom_sizes <- getChromSizes(genome)}
+  if (is.null(chrom_sizes)) {
+    n_ <- capture.output(chrom_sizes <- getChromSizes(genome))
+  }
   if (is.null(mask)) {
     available_masks <- gsub(names(RSeqR::genomeMasks), pattern = "\\.masked", 
                             replacement = "")
@@ -63,7 +65,7 @@ analyzeRLFS <- function(peaks,
   GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
   
   # Run RegioneR
-  message("[2] Running permTest.")
+  message("+ [ii] Running permTest.")
   pt <- regioneR::permTest(A=peaks, B=RLFS, 
                            genome=genomeNow,
                            mask=mask, 
@@ -72,7 +74,7 @@ analyzeRLFS <- function(peaks,
                            alternative = "greater", 
                            ...)
   
-  message("[3] Extracting pileup.")
+  message("+ [iii] Extracting pileup.")
   z <- regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
   
   return(list(

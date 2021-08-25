@@ -17,7 +17,3 @@ test_that("checkRLFSAnno works", {
 test_that("checkGenes works", {
   expect_true(checkGenes("hg38"))
 })
-
-test_that("checkHomer works", {
-  expect_true(checkHomer("hg38"))
-})
