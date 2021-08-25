@@ -21,7 +21,7 @@ featureEnrich <- function(peaks, genome=c("hg38", "mm10")) {
     dplyr::select(seqnames, start, end)
   
   # Get the genome 
-  chromSizes <- RSeqR::getChromSizes(genome) %>%
+  chromSizes <- getChromSizes(genome) %>%
     dplyr::rename(chrom = X1, size = X2) 
   
   # Test on all annotations
