@@ -1,8 +1,11 @@
-#' List. Results of running RSeq on SRX1025890
+#' List. Results from running RSeq on SRX1025890
 "SRX1025890"
 
-#' GRanges. Peaks of running RSeq on SRX1025890
+#' GRanges. Peaks from running RSeq-CLI on SRX1025890 - in "hg38" format.
 "SRX1025890_peaks"
+
+#' GRanges. Peaks from running liftUtil(SRX1035890_peaks, "hg38", "hg19") in "hg19" format.
+"SRX1025890_peaks_hg19"
 
 #' data.frame. Contains information about the genes available in UCSC database.
 #' Result of running RSeqR:::buildAvailableGenomes()

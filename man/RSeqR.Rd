@@ -10,7 +10,8 @@ RSeqR(peaks, genome, coverage = NULL, outputFile = "RSeqR_Report.html", ...)
 \item{peaks}{A GRanges object containing the R-loop ranges to check.}
 
 \item{genome}{UCSC genome which peaks were generated from.
-Only "hg38" and "mm10" currently available.}
+Only "hg38" and "mm10" currently available.
+Use RSeqR::liftUtil() to convert to the correct format, if needed.}
 
 \item{coverage}{(optional) The path to the bigWig file corresponding to \code{peaks}.
 If supplied, correlation analysis will be performed.}
@@ -32,5 +33,6 @@ BW_FILE <- "SRX1025890.bw"
 download.file(URL, destfile=BW_FILE)
 RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
              genome="hg38", outputFile = "report.html")
+file.remove(BW_FILE)
 
 }
