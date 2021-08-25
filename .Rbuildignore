@@ -5,3 +5,4 @@
 .*\.html$
 ^codecov\.yml$
 ^data-raw$
+^.*\.bw$

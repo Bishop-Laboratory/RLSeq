@@ -20,6 +20,7 @@
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
+#' @importFrom utils capture.output
 #' @export
 analyzeRLFS <- function(peaks, 
                         genome="hg38", 

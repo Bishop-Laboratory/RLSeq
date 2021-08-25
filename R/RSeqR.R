@@ -13,7 +13,8 @@
 #' @return A Named List with the datasets passed to RSeqR::makeReport().
 #' @examples
 #' 
-#' URL <- "https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw"
+#' URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
+#'               "rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw")
 #' BW_FILE <- "SRX1025890.bw"
 #' download.file(URL, destfile=BW_FILE)
 #' RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
@@ -37,7 +38,7 @@ RSeqR <- function(peaks, genome, coverage=NULL, outputFile = "RSeqR_Report.html"
   message("[4] Correlation Analysis...")
   if (! is.null(coverage)) {
     if (genome == "hg38") {
-      corrRes <- corrAnalyze(coverage=coverage)
+      corrRes <- corrAnalyze(coverage=coverage, genome = genome)
     } else {
       warning("Only hg38 is currently available for correlation analysis. Skipping...")
       corrRes <- NA
@@ -48,10 +49,10 @@ RSeqR <- function(peaks, genome, coverage=NULL, outputFile = "RSeqR_Report.html"
   }
   
   message("[5] Gene Annotation...")
-  annoGenes <- geneAnnotation(peaks)
+  annoGenes <- geneAnnotation(peaks, genome = genome)
   
   message("[6] R-loop Region Analysis...")
-  rlRegions <- rlRegionTest(peaks)
+  rlRegions <- rlRegionTest(peaks, genome=genome)
   
   message("[7] Make Report...")
   resLst <- list(

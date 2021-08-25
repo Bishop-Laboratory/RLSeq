@@ -12,6 +12,8 @@
 #' 
 #' geneAnnotation(RSeqR::SRX1025890_peaks)
 #' 
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 geneAnnotation <- function(peaks, genome) {
   
@@ -41,17 +43,19 @@ geneAnnotation <- function(peaks, genome) {
   # Wrangle EnsDb to tibble
   annoData <- edb %>%
     as.data.frame() %>%
-    dplyr::select(chrom=seqnames, start, end, strand, gene_name) %>%
+    dplyr::select(chrom = .data$seqnames, .data$start,
+                  .data$end, .data$strand, .data$gene_name) %>%
     tibble::as_tibble() %>%
-    dplyr::distinct(gene_name, .keep_all = TRUE) %>%
-    dplyr::mutate(chrom=as.character(chrom))
+    dplyr::distinct(.data$gene_name, .keep_all = TRUE) %>%
+    dplyr::mutate(chrom=as.character(.data$chrom))
   
   # Wrangle peaks to tibble
   peaksIntersect <- peaks %>%
     as.data.frame() %>%
     tibble::as_tibble() %>%
-    dplyr::select(chrom=seqnames, start, end, width) %>%
-    dplyr::mutate(chrom=as.character(chrom))
+    dplyr::select(chrom=.data$seqnames, .data$start, 
+                  .data$end, .data$width) %>%
+    dplyr::mutate(chrom=as.character(.data$chrom))
   
   # Intersect
   anno <- valr::bed_intersect(peaksIntersect, annoData, suffix = c("__userPeaks", "__EnsGenes"))

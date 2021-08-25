@@ -13,35 +13,41 @@
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-rlRegionTest <- function(peaks, genom="hg38") {
+rlRegionTest <- function(peaks, genome="hg38") {
   
   # Wrangle the peaks
   toTest <- peaks %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "name") %>%
     tibble::as_tibble() %>%
-    dplyr::mutate(seqnames = as.character(seqnames)) %>%
-    dplyr::select(chrom=seqnames, start, end, name)
+    dplyr::mutate(seqnames = as.character(.data$seqnames)) %>%
+    dplyr::select(chrom = .data$seqnames, .data$start, .data$end, .data$name)
   
   # Get the RL Regions
   rlReg <- RSeqR::rlRegions %>%
     dplyr::mutate(
-      chrom = as.character(gsub(Location, pattern = "(.+):(.+)\\-(.+)", replacement = "\\1")),
-      start = as.numeric(gsub(Location, pattern = "(.+):(.+)\\-(.+)", replacement = "\\2")),
-      end = as.numeric(gsub(Location, pattern = "(.+):(.+)\\-(.+)", replacement = "\\3"))
+      chrom = as.character(gsub(.data$Location, 
+                                pattern = "(.+):(.+)\\-(.+)",
+                                replacement = "\\1")),
+      start = as.numeric(gsub(.data$Location,
+                              pattern = "(.+):(.+)\\-(.+)",
+                              replacement = "\\2")),
+      end = as.numeric(gsub(.data$Location,
+                            pattern = "(.+):(.+)\\-(.+)",
+                            replacement = "\\3"))
     ) %>%
     dplyr::select(
-      chrom, start, end, name=`RL Region`
+      .data$chrom, .data$start, .data$end, name=.data$`RL Region`
     ) 
   
   # Get shared seqnames
   sharedSeqs <- intersect(toTest$chrom, rlReg$chrom)
-  toTest <- dplyr::filter(toTest, chrom %in% sharedSeqs)
-  rlReg <- dplyr::filter(rlReg, chrom %in% sharedSeqs)
+  toTest <- dplyr::filter(toTest, .data$chrom %in% sharedSeqs)
+  rlReg <- dplyr::filter(rlReg, .data$chrom %in% sharedSeqs)
   
   # Get the genome
-  chromSizes <- RSeqR:::getChromSizes(genome) %>%
-    dplyr::rename(chrom = X1, size = X2) 
+  chromSizes <- getChromSizes(genome) %>%
+    dplyr::rename(chrom = .data$X1, size = .data$X2) 
   
   # Test on all annotations
   olap <- valr::bed_intersect(toTest, rlReg, suffix = c("__peaks", "__RLFS"))

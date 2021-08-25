@@ -28,7 +28,8 @@ Runs the full RSeqR pipeline and generates an analysis report in HTML format.
 }
 \examples{
 
-URL <- "https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw"
+URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
+              "rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw")
 BW_FILE <- "SRX1025890.bw"
 download.file(URL, destfile=BW_FILE)
 RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,

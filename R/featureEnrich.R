@@ -18,18 +18,18 @@ featureEnrich <- function(peaks, genome=c("hg38", "mm10")) {
   # Wrangle the peaks
   toTest <- peaks %>%
     tibble::as_tibble() %>%
-    dplyr::select(seqnames, start, end)
+    dplyr::select(.data$seqnames, .data$start, .data$end)
   
   # Get the genome 
   chromSizes <- getChromSizes(genome) %>%
-    dplyr::rename(chrom = X1, size = X2) 
+    dplyr::rename(chrom = .data$X1, size = .data$X2) 
   
   # Test on all annotations
-  annoRes <- purrr::map(
+  annoRes <- lapply(
     RSeqR::annotationLst[[genome]], 
     function(annoNow) {
       type <- annoNow$type[1]
-      message("Testing - ", type)
+      message("- - ", type)
       
       # Get shared seqnames -- important to avoid NAs
       shared_seqnames <- intersect(unique(annoNow$seqnames), 
@@ -37,30 +37,29 @@ featureEnrich <- function(peaks, genome=c("hg38", "mm10")) {
       
       # Get the annotations
       x <- annoNow %>%
-        dplyr::filter(seqnames %in% shared_seqnames) %>%
-        dplyr::rename(chrom = seqnames) 
+        dplyr::filter(.data$seqnames %in% shared_seqnames) %>%
+        dplyr::rename(chrom = .data$seqnames) 
       
       # Get the peaks to test
       y <- toTest %>%
-        dplyr::filter(seqnames %in% shared_seqnames) %>%
-        dplyr::rename(chrom = seqnames) %>%
-        dplyr::mutate(chrom = as.character(chrom))
+        dplyr::filter(.data$seqnames %in% shared_seqnames) %>%
+        dplyr::mutate(chrom = as.character(.data$seqnames))
       
       # Use the bed_projection test to get the overlap enrichment
       valr::bed_projection(x, y, chromSizes) %>%
         dplyr::mutate(type = !! type,
                       # So that we don't get -inf
-                      obs_exp_ratio = log2(obs_exp_ratio + .001),
+                      obs_exp_ratio = log2(.data$obs_exp_ratio + .001),
                       pmod = dplyr::case_when(
-                        p.value == 0 ~ .Machine$double.xmin,
-                        TRUE ~ p.value
+                        .data$p.value == 0 ~ .Machine$double.xmin,
+                        TRUE ~ .data$p.value
                       ),
                       padj = -log10(
                         p.adjust(
-                          pmod, method = "bonferroni"
+                          .data$pmod, method = "bonferroni"
                         )
-                      ) * sign(obs_exp_ratio)) %>%
-        dplyr::select(annotation=type, obs_exp_ratio, padj)
+                      ) * sign(.data$obs_exp_ratio)) %>%
+        dplyr::select(annotation=.data$type, .data$obs_exp_ratio, .data$padj)
     }
   ) %>%
     dplyr::bind_rows() 

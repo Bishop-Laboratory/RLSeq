@@ -4,7 +4,7 @@
 \alias{rlRegionTest}
 \title{R-Loop region test}
 \usage{
-rlRegionTest(peaks, genom = "hg38")
+rlRegionTest(peaks, genome = "hg38")
 }
 \arguments{
 \item{peaks}{A GRanges object containing R-loop peaks}
