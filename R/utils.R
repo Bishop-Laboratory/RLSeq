@@ -17,6 +17,7 @@ urlExists <- function(url) {
 #' Helper function which downloads chrom sizes from UCSC for a genome.
 #' @param genome the UCSC genome for which to download chrom sizes
 #' @return A tibble containing chrom sizes
+#' @importFrom utils capture.output
 getChromSizes <- function(genome) {
   n_ <- capture.output(
     chrom_sizes <- readr::read_tsv(paste0(
@@ -43,6 +44,7 @@ checkRLFSAnno <- function(genome) {
 #' Helper function that retrieves RLFS
 #' @param genome the UCSC genome name to retrieve RLFS for
 #' @return A GRanges object with RLFS for that species.
+#' @importFrom utils capture.output
 getRLFSAnno <- function(genome) {
   
   # Check if annotations available first
@@ -59,10 +61,7 @@ getRLFSAnno <- function(genome) {
   )
   
   # Return as a GRanges object
-  tsvRLFS %>% 
-    as.data.frame() %>%
-    regioneR::toGRanges() %>%
-    return()
+  return(regioneR::toGRanges(as.data.frame(tsvRLFS)))
 }
 
 
@@ -70,6 +69,7 @@ getRLFSAnno <- function(genome) {
 #' Helper function that retrieves chain file for liftUtil()
 #' @param genomeFrom the UCSC genome name to convert from.
 #' @param genomeTo the UCSC genome name to convert to.
+#' @importFrom utils download.file
 getChain <- function(genomeFrom, genomeTo) {
   
   # Get URL
@@ -119,11 +119,10 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
   chain <- getChain(genomeFrom, genomeTo)
   
   # Lift Over
-  lifted <- rtracklayer::liftOver(ranges, chain = chain) %>%
-    unlist() 
+  lifted <- unlist(rtracklayer::liftOver(ranges, chain = chain)) 
   
   # Force uniqueness
-  nms <- names(lifted) %>% unique()
+  nms <- unique(names(lifted))
   lifted <- lifted[nms,]
   
   return(lifted)
@@ -138,6 +137,7 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
 #' @param write A boolean determining if the converted DataFrame will be written to a .bed file
 #' @param filename A string containing the desired file name if writing to file
 #' @return A DataFrame object containing the GRanges content formatted according to .bed standards
+#' @importFrom utils write.table
 #' @export
 
 grangesToBed <- function(granges, write = FALSE, filename = NULL) {
