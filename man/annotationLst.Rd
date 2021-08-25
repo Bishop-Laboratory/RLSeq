@@ -3,7 +3,7 @@
 \docType{data}
 \name{annotationLst}
 \alias{annotationLst}
-\title{List of list of tibbles. Containins genomic annotations for use with RSeqR.
+\title{List of list of tibbles. Containing genomic annotations for use with RSeqR.
 See data-raw/anotationLst.R for details.}
 \format{
 An object of class \code{list} of length 2.
@@ -12,7 +12,7 @@ An object of class \code{list} of length 2.
 annotationLst
 }
 \description{
-List of list of tibbles. Containins genomic annotations for use with RSeqR.
+List of list of tibbles. Containing genomic annotations for use with RSeqR.
 See data-raw/anotationLst.R for details.
 }
 \keyword{datasets}

@@ -3,7 +3,7 @@
 \docType{data}
 \name{available_genomes}
 \alias{available_genomes}
-\title{data.frame. Contains informaiton about the genes available in UCSC database.
+\title{data.frame. Contains information about the genes available in UCSC database.
 Result of running RSeqR:::buildAvailableGenomes()}
 \format{
 An object of class \code{data.frame} with 199 rows and 27 columns.
@@ -12,7 +12,7 @@ An object of class \code{data.frame} with 199 rows and 27 columns.
 available_genomes
 }
 \description{
-data.frame. Contains informaiton about the genes available in UCSC database.
+data.frame. Contains information about the genes available in UCSC database.
 Result of running RSeqR:::buildAvailableGenomes()
 }
 \keyword{datasets}
