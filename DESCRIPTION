@@ -59,4 +59,8 @@ Imports:
     kernlab,
     randomForest,
     rpart,
-    MASS
+    MASS,
+    rtracklayer,
+    tidyr,
+    GenomicRanges,
+    GenomeInfoDb
