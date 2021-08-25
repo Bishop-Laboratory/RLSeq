@@ -1,8 +1,7 @@
-
-test_that(desc = "Test that annotatePeaks returns a GRanges object", {
-  expect_s3_class(
+test_that(desc = "Predict Condition returns a list", {
+  expect_is(
     RSeqR::predictCondition(RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")),
-    "tbl_df"
+    "list"
   )
 })
 

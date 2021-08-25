@@ -19,7 +19,7 @@ interpreting R-loop mapping results.
 }
 \examples{
 
-result <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
+rlfsRes <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
 RSeqR::predictCondition(rlfsRes)
 
 }

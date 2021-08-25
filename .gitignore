@@ -4,3 +4,4 @@
 tests/**/*.html
 misc/**/*.rda
 data-raw/**/*.rda
+tests/**/*.bw
