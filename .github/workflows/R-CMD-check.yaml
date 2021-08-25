@@ -32,11 +32,9 @@ jobs:
           lfs: true
       - name: Checkout LFS objects
         run: git lfs checkout
-      
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
-          
       - name: Query dependencies
         run: |
           install.packages('remotes')
