@@ -1,13 +1,28 @@
 Package: RSeqR
-Title: R-loop Analysis with Built-in QC
+Title: R-loop mapping analysis and QC
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
+Authors@R: c(
+    person(given = "Henry",
+           family = "Miller",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "millerh1@uthscsa.edu",
+           comment = c(ORCID = "0000-0003-3756-3918")),
+    person(given = "Daniel",
+           family = "Montemayor",
+           role = c("ctb")),
+    person(given = "Simon",
+           family = "Levy",
+           role = c("ctb")),
+    person(given = "Anna",
+           family = "Vines",
+           role = c("ctb")))
+Description: RSeqR is a toolkit for analyzing and evaluating R-loop mapping datasets.
+    It serves two primary purposes: (1) to facilitate the evaluation of dataset quality, and
+    (2) to enable to analysis of datasets in the context of genomic annotations and of
+    publicly-available datasets. The package is intended to provide a simple pipeline, 
+    called with the `RSeqR()` function, which performs all main analyses and outputs a 
+    user-friendly HTML report. Individual functions are also accessible and provide custom
+    analysis capabilities.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -15,13 +30,15 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
     covr,
+    EnsDb.Hsapiens.v86,
+    EnsDb.Mmusculus.v79,
+    R.utils,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Imports: 
     kableExtra,
-    ChIPpeakAnno,
     readr,
     tibble,
     dplyr,
@@ -33,11 +50,9 @@ Imports:
     rlang,
     plotly,
     rmarkdown,
-    GenomeInfoDb,
-    GenomicRanges,
     httr,
     regioneR,
     valr,
-    EnsDb.Hsapiens.v86,
     caret,
-    caretEnsemble
+    caretEnsemble,
+    GenomicFeatures

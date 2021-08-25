@@ -4,13 +4,18 @@
 \alias{geneAnnotation}
 \title{Annotate R-Loops with Genes}
 \usage{
-geneAnnotation(peaks)
+geneAnnotation(peaks, genome)
 }
 \arguments{
 \item{peaks}{A GRanges object containing R-loop peaks}
+
+\item{genome}{UCSC genome which peaks were generated from.
+Only "hg38" and "mm10" currently available.
+Use RSeqR::liftUtil() to convert to the correct format, if needed. Additionally,
+this can be an EnsDb or TxDb object.}
 }
 \value{
-A GRanges object containing annotated R-loop peaks
+A tibble object containing annotated R-loop peaks
 }
 \description{
 Annotates R-loop peaks as a GRanges object with gene-level information
