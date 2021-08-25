@@ -69,7 +69,8 @@ analyzeRLFS <- function(peaks,
                            mask=mask, 
                            randomize.function=regioneR::circularRandomizeRegions, 
                            evaluate.function=regioneR::numOverlaps,
-                           alternative = "greater")
+                           alternative = "greater", 
+                           ...)
   
   message("[3] Extracting pileup.")
   z <- regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
@@ -79,8 +80,3 @@ analyzeRLFS <- function(peaks,
     "Z-scores" = z
   ))
 }
-
-
-
-
-
