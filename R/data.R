@@ -11,3 +11,7 @@
 #' List of GRanges. Contains genomic masks for several commons species.
 #' See data-raw/masked_genomes.R for details.
 "genomeMasks"
+
+#' List of list of tibbles. Containins genomic annotations for use with RSeqR.
+#' See data-raw/anotationLst.R for details.
+"annotationLst"

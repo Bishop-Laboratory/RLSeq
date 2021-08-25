@@ -1,17 +1,15 @@
-#' Annotate R-Loops
+#' Annotate R-Loops with Genes
 #'
-#' Annotates DRIP-Seq peaks as a GRanges object with gene-level information
+#' Annotates R-loop peaks as a GRanges object with gene-level information
 #'
-#' @param peaks A GRanges object containing DRIP-Seq peaks
-#' @return A GRanges object containing annotated DRIP-Seq peaks
+#' @param peaks A GRanges object containing R-loop peaks
+#' @return A GRanges object containing annotated R-loop peaks
+#' @examples
+#' 
+#' geneAnnotation(RSeqR::SRX1025890_peaks)
+#' 
 #' @export
-
-# TO DO: 1. Example in doc at top of file.
-
-#bed <- "tests/testthat/ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed"
-#peaks <- ChIPpeakAnno::toGRanges(bed, format = "BED", header = FALSE)
-
-annotateRLoops <- function(peaks) {
+geneAnnotation <- function(peaks) {
   annoData <- ChIPpeakAnno::toGRanges(EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86)
   anno <- ChIPpeakAnno::annotatePeakInBatch(peaks, AnnotationData = annoData,
                                             output = 'overlapping',
