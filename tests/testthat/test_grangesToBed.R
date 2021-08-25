@@ -6,7 +6,7 @@ test_that(desc = "Test that toBed returns a list object and writes an output fil
   expect_false(file.exists(paste0(file, ".bed")))
   # Write .bed file and ascertain that toBed returns a list type object
   expect_type(
-    RSeqR::grangesToBed(ChIPpeakAnno::toGRanges("ERX2277510_E-MTAB-6318DRIP_mOHT_hg38.unstranded.bed",
+    RSeqR::grangesToBed(ChIPpeakAnno::toGRanges("SRX1025890_TC32_NT_DRIP_hg38.unstranded.broadPeak",
                                                  format = "BED", header = FALSE), write = TRUE, filename = file),
     "list"
   )
