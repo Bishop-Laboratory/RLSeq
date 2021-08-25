@@ -105,3 +105,38 @@ checkHomer <- function(genome) {
 }
 
 
+#' Get Homer Anno
+#' Helper function that retrieves Homer Annotations
+#' @param genome the UCSC genome name to retrieve annotations for
+#' @return A list object with annotations for that species.
+#' @export
+getHomerAnno <- function(genome) {
+  
+  # Check if annotations available first
+  if (! checkHomer(genome)) {
+    stop("No Homer annotations available for ", genome)
+  }
+  
+  # Get the file
+  download.file(paste0("http://homer.ucsd.edu/homer/data/genomes/",
+                       genome, ".v6.4.zip"), 
+                destfile = "homer.zip")
+  
+  # Return as a GRanges object
+  dd <- read_tsv("data/genomes/hg38/hg38.full.annotation", 
+                 col_names = c("name", "seqnames", "start", "end", "strand", "type", "unknown"))
+  dd2 <- dd %>%
+    select(-name, -unknown) %>%
+    filter(! grepl(type, pattern = "\\?", perl = TRUE)) %>%
+    group_by(type) %>% 
+    {setNames(group_split(.), group_keys(.)[[1]])}
+    
+  
+  
+  codeKey <- tibble(
+    "type" = c("I", "N", "P", "E"),
+    "val" = c("Intron", "Intergenic", "Promoter", "Exon")
+  )
+    
+  
+}
