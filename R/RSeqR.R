@@ -4,7 +4,8 @@
 #'
 #' @param peaks A GRanges object containing the R-loop ranges to check.
 #' @param genome UCSC genome which peaks were generated from. 
-#' Only "hg38" and "mm10" currently available.
+#' Only "hg38" and "mm10" currently available. 
+#' Use RSeqR::liftUtil() to convert to the correct format, if needed.
 #' @param coverage (optional) The path to the bigWig file corresponding to `peaks`. 
 #' If supplied, correlation analysis will be performed.
 #' @param outputFile A path indicating the report output HTML file. 
@@ -17,6 +18,7 @@
 #' download.file(URL, destfile=BW_FILE)
 #' RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
 #'              genome="hg38", outputFile = "report.html")
+#' file.remove(BW_FILE)
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -64,7 +66,4 @@ RSeqR <- function(peaks, genome, coverage=NULL, outputFile = "RSeqR_Report.html"
   
   return(resLst)
 }
-
-
-
 

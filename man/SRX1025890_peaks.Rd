@@ -3,7 +3,7 @@
 \docType{data}
 \name{SRX1025890_peaks}
 \alias{SRX1025890_peaks}
-\title{GRanges. Peaks of running RSeq on SRX1025890}
+\title{GRanges. Peaks from running RSeq-CLI on SRX1025890 - in "hg38" format.}
 \format{
 An object of class \code{GRanges} of length 2902.
 }
@@ -11,6 +11,6 @@ An object of class \code{GRanges} of length 2902.
 SRX1025890_peaks
 }
 \description{
-GRanges. Peaks of running RSeq on SRX1025890
+GRanges. Peaks from running RSeq-CLI on SRX1025890 - in "hg38" format.
 }
 \keyword{datasets}

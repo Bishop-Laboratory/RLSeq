@@ -62,7 +62,7 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_bioc(c("ChIPpeakAnno", "EnsDb.Hsapiens.v86"))
+          remotes::install_bioc("EnsDb.Hsapiens.v86")
           remotes::install_cran("rcmdcheck")
           remotes::install_cran("lintr")
           remotes::install_cran("covr")
