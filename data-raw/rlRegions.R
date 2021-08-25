@@ -7,10 +7,11 @@ file.copy(RLTAB_LOC, to = NEW_RLTAB)
 load(NEW_RLTAB)
 
 # Clean it up for minimal file size
-rltabShow %>%
+rlRegions <- rltabShow %>%
   dplyr::select(
     `RL Region`, Location, `# of Studies`, `# of Samples`, Modes,
-    `Mean Signal`, `Mean FDR`
-  ) %>%
-  object.size()/1E6
+    `Mean Signal`, `Mean FDR`, repeats, Genes=GenesFix, corrR=corr, corrPVal=corrpadj
+  )
 
+# Save
+usethis::use_data(rlRegions, compress = "xz")

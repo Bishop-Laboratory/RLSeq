@@ -31,3 +31,11 @@
 #' "Gold-Standard" R-loop sites defined by Chedin et al. https://doi.org/10.15252/embj.2020106394
 #' Columns are sample names and rows are hg38 genomic coordinates.
 "gsSignalRMapDB"
+
+#' A Tibble containing the R-loop regions identified through metanalysis of publicly-available
+#' R-loop mapping samples (as described in Miller et al. 2021). The tibble includes additional
+#' information, such as the RLoop Region ID, the number of studies, samples, and modes
+#' that RL Region is found in, the average signal and qVal of peaks overlapping with it, 
+#' any genes which overlap with it, the correlation with expression corrR and corrPval,
+#' and whether the RLoop exists in Repeat regions or RLFS regions.
+"rlRegions"
