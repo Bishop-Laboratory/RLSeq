@@ -36,4 +36,8 @@ Imports:
     GenomeInfoDb,
     GenomicRanges,
     httr,
-    regioneR
+    regioneR,
+    valr,
+    EnsDb.Hsapiens.v86,
+    caret,
+    caretEnsemble
