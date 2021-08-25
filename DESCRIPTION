@@ -55,4 +55,8 @@ Imports:
     valr,
     caret,
     caretEnsemble,
-    GenomicFeatures
+    GenomicFeatures,
+    kernlab,
+    randomForest,
+    rpart,
+    MASS
