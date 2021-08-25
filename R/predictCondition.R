@@ -13,6 +13,7 @@
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
+#' @importFrom stats fft acf
 #' @export
 predictCondition <- function(rlfsRes) {
   
@@ -54,10 +55,12 @@ predictCondition <- function(rlfsRes) {
   )
   
   # Standardize features
-  features <- caret:::predict.preProcess(RSeqR::prepFeatures, featuresRaw)
+  predict.prp <- utils::getFromNamespace("predict.preProcess", "caret")
+  features <- predict.prp(RSeqR::prepFeatures, featuresRaw)
   
   # Predict using stacked model
-  pred <- caretEnsemble:::predict.caretStack(RSeqR::fftModel, features)
+  predict.cs <- utils::getFromNamespace("predict.caretStack", "caretEnsemble")
+  pred <- predict.cs(RSeqR::fftModel, features)
   
   # Test each criteria for labeling "Control"
   criteriaOne <- pval < .05
