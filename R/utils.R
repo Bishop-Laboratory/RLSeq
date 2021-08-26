@@ -118,11 +118,16 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
   # Get the chain
   chain <- getChain(genomeFrom, genomeTo)
   
+  # Make sure names exist
+  if (is.null(names(ranges))) {
+    names(ranges) <- seq(GenomicRanges::start(ranges))
+  }
+  
   # Lift Over
   lifted <- unlist(rtracklayer::liftOver(ranges, chain = chain)) 
   
   # Force uniqueness
-  nms <- unique(names(lifted))
+  nms <- duplicated(names(lifted))
   lifted <- lifted[nms,]
   
   return(lifted)
@@ -148,3 +153,30 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
   }
   return(df)
 }
+
+
+#' Get GS Signal
+#' 
+#' Extract signal around GS R-loop sites
+#' @param coverage The path to a .bigWig file (can be a URL)
+#' @param genome The UCSC genome ID to use. (Currently, only "hg38" is supported)
+#' @return A named list containing the results of correlation analysis.
+#' @export
+getGSSignal <- function(coverage, genome) {
+  # Get the locations of the gs sites
+  positions <- RSeqR::gsSignalRMapDB$location
+  positions <- tibble::tibble(location = positions) %>%
+    dplyr::mutate(seqnames = gsub(.data$location, pattern = "(.+)_(.+)_(.+)",
+                                  replacement = "\\1"),
+                  start = gsub(.data$location, pattern = "(.+)_(.+)_(.+)",
+                               replacement = "\\2"),
+                  end = gsub(.data$location, pattern = "(.+)_(.+)_(.+)",
+                             replacement = "\\3")) %>%
+    dplyr::select(-.data$location) %>%
+    GenomicRanges::makeGRangesFromDataFrame()
+  
+  # Read in the bigWig file using these locations
+  bw <- rtracklayer::import(con = rtracklayer::BigWigFile(coverage), 
+                            selection = positions)
+}
+

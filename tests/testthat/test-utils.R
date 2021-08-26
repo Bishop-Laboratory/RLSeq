@@ -38,3 +38,9 @@ test_that(desc = "Test that toBed returns a list object and writes an output fil
   # Delete the output file
   file.remove(paste0(file, ".bed"))
 })
+
+test_that("getGSSignal works", {
+  coverage <- "https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/rseq-coverage-unstranded/SRX1025890_hg38.bw"
+  expect_s4_class(RSeqR:::getGSSignal(coverage = coverage, "hg38"), class="GRanges")
+})
+
