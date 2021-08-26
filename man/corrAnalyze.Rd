@@ -7,7 +7,7 @@
 corrAnalyze(coverage, genome = "hg38")
 }
 \arguments{
-\item{coverage}{The results list from running analyzeRLFS().}
+\item{coverage}{The path to a coverage (.bigWig/.bw) file (can be a URL).}
 
 \item{genome}{The UCSC genome ID to use. (Currently only "hg38" is supported)}
 }
@@ -20,9 +20,8 @@ between the query sample and the RMapDB database.
 }
 \examples{
 
-URL <- "https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw"
-BW_FILE <- "SRX1025890.bw"
-download.file(URL, destfile=BW_FILE)
-result <- RSeqR::corrAnalyze(BW_FILE, genome="hg38")
+BW_URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
+                 "rseq-coverage-unstranded/SRX1025890_hg38.bw")
+result <- RSeqR::corrAnalyze(BW_URL, genome="hg38")
 
 }
