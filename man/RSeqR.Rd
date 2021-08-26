@@ -4,7 +4,15 @@
 \alias{RSeqR}
 \title{Run RSeqR and generate report}
 \usage{
-RSeqR(peaks, genome, coverage = NULL, outputFile = "RSeqR_Report.html", ...)
+RSeqR(
+  peaks,
+  genome,
+  coverage = NULL,
+  sampleName = "User-supplied Sample",
+  outputFile = "RSeqR_Report.html",
+  dataOnly = FALSE,
+  ...
+)
 }
 \arguments{
 \item{peaks}{A GRanges object containing the R-loop ranges to check.}
@@ -16,7 +24,11 @@ Use RSeqR::liftUtil() to convert to the correct format, if needed.}
 \item{coverage}{(optional) The path to the bigWig file corresponding to \code{peaks}.
 If supplied, correlation analysis will be performed.}
 
+\item{sampleName}{The name to give to this sample in the report. Default: "User-supplied Sample".}
+
 \item{outputFile}{A path indicating the report output HTML file.}
+
+\item{dataOnly}{If TRUE, the HTML report will not be created.}
 
 \item{...}{Arguments passed to \code{rmarkdown::render()}}
 }
@@ -29,7 +41,7 @@ Runs the full RSeqR pipeline and generates an analysis report in HTML format.
 \examples{
 
 URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
-              "rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw")
+              "rseq-coverage-unstranded/SRX1025890_hg38.bw")
 BW_FILE <- "SRX1025890.bw"
 download.file(URL, destfile=BW_FILE)
 RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
