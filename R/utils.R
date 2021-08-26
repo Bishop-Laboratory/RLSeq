@@ -19,12 +19,10 @@ urlExists <- function(url) {
 #' @return A tibble containing chrom sizes
 #' @importFrom utils capture.output
 getChromSizes <- function(genome) {
-  n_ <- capture.output(
-    chrom_sizes <- readr::read_tsv(paste0(
-      BASE_UCSC,
-      genome, '/bigZips/', genome, '.chrom.sizes'
-    ), col_names = FALSE)
-  )
+  chrom_sizes <- readr::read_tsv(paste0(
+    BASE_UCSC,
+    genome, '/bigZips/', genome, '.chrom.sizes'
+  ), col_names = FALSE, show_col_types = FALSE, progress = FALSE)
   return(chrom_sizes)
 }
 
@@ -53,11 +51,9 @@ getRLFSAnno <- function(genome) {
   }
   
   # Read in RLFS
-  n_ <- capture.output(
-    tsvRLFS <- readr::read_tsv(
-      paste0(RLFS_BED_URL, genome, ".rlfs.bed"),
-      col_names = FALSE
-    )
+  tsvRLFS <- readr::read_tsv(
+    paste0(RLFS_BED_URL, genome, ".rlfs.bed"),
+    col_names = FALSE, show_col_types = FALSE, progress = FALSE
   )
   
   # Return as a GRanges object
@@ -143,8 +139,6 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
 #' @param filename A string containing the desired file name if writing to file
 #' @return A DataFrame object containing the GRanges content formatted according to .bed standards
 #' @importFrom utils write.table
-#' @export
-
 grangesToBed <- function(granges, write = FALSE, filename = NULL) {
   df <- as.data.frame(granges)
   names(df)[1] <- paste0("#", names(df)[1])
