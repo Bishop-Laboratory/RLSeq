@@ -9,12 +9,14 @@
 #' @param coverage (optional) The path to the bigWig file corresponding to `peaks`. 
 #' If supplied, correlation analysis will be performed.
 #' @param outputFile A path indicating the report output HTML file. 
+#' @param dataOnly If TRUE, the HTML report will not be created.
+#' @param sampleName The name to give to this sample in the report. Default: "User-supplied Sample".
 #' @param ... Arguments passed to `rmarkdown::render()`
 #' @return A Named List with the datasets passed to RSeqR::makeReport().
 #' @examples
 #' 
 #' URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
-#'               "rseq-coverage-unstranded/SRX1025890_TC32_NT_DRIP.hg38.bw")
+#'               "rseq-coverage-unstranded/SRX1025890_hg38.bw")
 #' BW_FILE <- "SRX1025890.bw"
 #' download.file(URL, destfile=BW_FILE)
 #' RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
@@ -24,7 +26,12 @@
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-RSeqR <- function(peaks, genome, coverage=NULL, outputFile = "RSeqR_Report.html", ...) {
+RSeqR <- function(peaks, genome, 
+                  coverage=NULL, 
+                  sampleName="User-supplied Sample",
+                  outputFile = "RSeqR_Report.html", 
+                  dataOnly=FALSE,
+                  ...) {
   
   message("[1] RLFS Perm Test...")
   rlfsRes <- analyzeRLFS(peaks=peaks, genome=genome)
@@ -54,16 +61,22 @@ RSeqR <- function(peaks, genome, coverage=NULL, outputFile = "RSeqR_Report.html"
   message("[6] R-loop Region Analysis...")
   rlRegions <- rlRegionTest(peaks, genome=genome)
   
-  message("[7] Make Report...")
+  message("[7] Collating results...")
   resLst <- list(
     "rlfsRes" = rlfsRes,
     "predictedCondition" = pred,
     "featureTest" = featTest,
     "corrRes" = corrRes,
     "annoGenes" = annoGenes,
-    "RLoopRegions" = rlRegions
+    "RLoopRegions" = rlRegions,
+    "sampleName" = sampleName,
+    "genome" = genome
   )
-  makeReport(resLst, outputFile = outputFile)
+  
+  if (! dataOnly) {
+    message("[8] Generating HTML Report...")
+    makeReport(resLst, outputFile = outputFile)
+  }
   
   return(resLst)
 }
