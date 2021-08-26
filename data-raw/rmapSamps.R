@@ -15,7 +15,7 @@ RLSEQ_TYPES <- c("DRIP", "bisDRIP", "DRIPc", "DRIVE",
                  "SMRF", "ssDRIP")
 NORMAL_LIKE <- c("D209N", "D210N", "delta-HC", "FLAG", "S96", "bisFoot")
 INPUT_LIKE <- c("IgG", "Input")
-RNH_LIKE <- c("RNH", "ACTD")
+RNH_LIKE <- c("RNH", "ACTD", "WKKD")
 AVAILABLE_GENOMES <- "https://gist.github.com/millerh1/c3cf57c7715c7456c88f25c1526bb6fb/raw/c67abe8162030572351b332f670af45a103dbd75/available_genomes.tsv"
 PUBLIC_RUN_INFO_GIST <- "https://gist.github.com/millerh1/1f4c32b9823567e446ccc504096243f5/raw/89375203bfd843b43ae6784124e5b227f5cd5e10/getPublicSampleInfo.R"
 
@@ -46,6 +46,12 @@ if (! file.exists(PRI)) {
 } else {
   load(PRI)
 }
+
+# Fix problematic samples that have the wrong genome annotation due to spikeins
+HG38_SPIKES <- c("SRX7583981", "SRX7583982", "SRX7583983", "SRX7583984")
+priFinal <- priFinal %>% 
+  mutate(genome = case_when(sra_experiment %in% !! HG38_SPIKES ~ "hg38",
+                            TRUE ~ genome))
 
 # Add SRX for control sampels
 rlcomb <- rlorig %>%
@@ -78,8 +84,3 @@ rmapSamps <- rlcomb %>%
 
 # Save 
 usethis::use_data(rmapSamps, overwrite = TRUE, compress = "xz")
-
-
-
-
-

@@ -5,6 +5,10 @@ library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 library(parallel)
 
 # Tables to query along with column name in each table that contains "type"
+# TODO: Acc U2 snRNP sites and Poly-A Signal (PAS) sites
+# TODO: Add G4Q sites 
+# TODO: Add SkewR-predicted regions (or G/C-skew regions)
+# See this ref https://www.ncbi.nlm.nih.gov/labs/pmc/articles/PMC6125637/
 tablesToUse <- data.frame(
   row.names = c("table", "typeCol"),
   "CpG_Islands"= c("cpgIslandExt", "typeNow"),
@@ -21,6 +25,9 @@ tablesToUse <- data.frame(
   as.data.frame() %>%
   rownames_to_column(var = "group") %>%
   as_tibble()
+
+# TODO: Remove Problematic annotations
+# problems <- c("Mt_rRNA", "Mt_tRNA")
 
 # Get the genes in a list
 genomes <- list("hg38" = TxDb.Hsapiens.UCSC.hg38.knownGene,
