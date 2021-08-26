@@ -29,6 +29,8 @@ analyzeRLFS <- function(peaks,
                         RLFS=NULL, 
                         ...) {
   
+  # TODO: Validate genome to avoid TRUE/FALSE Needed error from permTest
+  
   # Check RLFS, chrom_sizes, and mask
   message("+ [i] Evaluating Inputs.")
   if (is.null(genome) & 
