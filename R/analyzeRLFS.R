@@ -35,7 +35,9 @@ analyzeRLFS <- function(peaks,
       (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
     stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
   }
-  if (is.null(RLFS)) {RLFS <- getRLFSAnno(genome)}
+  if (is.null(RLFS)) {
+    n_ <- capture.output(RLFS <- getRLFSAnno(genome))
+  }
   if (is.null(chrom_sizes)) {
     n_ <- capture.output(chrom_sizes <- getChromSizes(genome))
   }
