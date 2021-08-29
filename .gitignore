@@ -5,3 +5,4 @@ tests/**/*.html
 misc/**/*.rda
 data-raw/**/*.rda
 *.bw
+data-raw/RMapDB_generate
