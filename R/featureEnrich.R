@@ -8,7 +8,7 @@
 #'  overlap vs expected, and the p.adjusted value.
 #' @examples
 #' 
-#' RSeqR::featureEnrich(RSeqR::SRX1025890_peaks, genome="hg38")
+#' RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, genome="hg38")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -26,7 +26,7 @@ featureEnrich <- function(peaks, genome=c("hg38", "mm10")) {
   
   # Test on all annotations
   annoRes <- lapply(
-    RSeqR::annotationLst[[genome]], 
+    RLSeq::annotationLst[[genome]], 
     function(annoNow) {
       type <- annoNow$type[1]
       message("- - ", type)

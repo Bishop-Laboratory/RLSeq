@@ -39,6 +39,6 @@ Analyzes the enrichment of peaks within R-loop forming sequences.
 }
 \examples{
 
-result <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
+result <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
 
 }
