@@ -1,6 +1,6 @@
 #' Generate report
 #'
-#' Generates RSeqR Quality Report
+#' Generates RLSeq Quality Report
 #'
 #' @param data A named list containing `annotated_peaks`, `feature_overlaps`,
 #' and `rlfs_results`
@@ -9,13 +9,13 @@
 #' @return NULL
 #' @examples
 #' 
-#' RSeqR::makeReport(RSeqR::SRX1025890, outputFile = "report.html")
+#' RLSeq::makeReport(RLSeq::SRX1025890, outputFile = "report.html")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-makeReport <- function(data, outputFile = "RSeqReport.html", ...) {
-  template <- system.file("Rmd", "reportTemplate.Rmd", package = "RSeqR")
+report <- function(data, outputFile = "report.html", ...) {
+  template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
   data <- data[names(data) %in% c(
     "corr_data", "anno_data", "rlfs_data", "bam_stats", 
     "read_qc_data", "configlist", "total_peaks"

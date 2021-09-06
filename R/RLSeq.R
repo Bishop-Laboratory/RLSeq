@@ -1,38 +1,43 @@
-#' Run RSeqR and generate report
+#' Run RLSeq and generate report
 #'
-#' Runs the full RSeqR pipeline and generates an analysis report in HTML format.
+#' Runs the full RLSeq pipeline and generates an analysis report in HTML format.
 #'
 #' @param peaks A GRanges object containing the R-loop ranges to check.
 #' @param genome UCSC genome which peaks were generated from. 
 #' Only "hg38" and "mm10" currently available. 
-#' Use RSeqR::liftUtil() to convert to the correct format, if needed.
+#' Use RLSeq::liftUtil() to convert to the correct format, if needed.
 #' @param coverage (optional) The path to the bigWig file corresponding to `peaks`. 
 #' If supplied, correlation analysis will be performed.
 #' @param outputFile A path indicating the report output HTML file. 
 #' @param dataOnly If TRUE, the HTML report will not be created.
 #' @param sampleName The name to give to this sample in the report. Default: "User-supplied Sample".
+#' @param mode The mode type this sample belongs to. See options at RLSeq::modes.
 #' @param ... Arguments passed to `rmarkdown::render()`
-#' @return A Named List with the datasets passed to RSeqR::makeReport().
+#' @return A Named List with the datasets passed to RLSeq::makeReport().
 #' @examples
 #' 
-#' URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
-#'               "rseq-coverage-unstranded/SRX1025890_hg38.bw")
-#' BW_FILE <- "SRX1025890.bw"
-#' download.file(URL, destfile=BW_FILE)
-#' RSeqR::RSeqR(RSeqR::SRX1025890_peaks, coverage=BW_FILE,
+#' URL <- paste0(RLSeq:::RLBASE_BW_URL, "SRX1025890_hg38.bw")
+#' RLSeq::RLSeq(RLSeq::SRX1025890_peaks, coverage=BW_FILE,
 #'              genome="hg38", outputFile = "report.html")
 #' file.remove(BW_FILE)
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-RSeqR <- function(peaks, genome, 
+RLSeq <- function(peaks, genome, 
                   coverage=NULL, 
                   sampleName="User-supplied Sample",
-                  outputFile = "RSeqR_Report.html", 
+                  mode="User-supplied Sample",
+                  outputFile = "report.html", 
                   dataOnly=FALSE,
                   ...) {
   
+  # Verify mode
+  if (mode != "User-supplied Sample") {
+    stopifnot(! mode %in% RLSeq::modes$mode)
+  }
+  
+  # Get data sets
   message("[1] RLFS Perm Test...")
   rlfsRes <- analyzeRLFS(peaks=peaks, genome=genome)
   
@@ -70,12 +75,13 @@ RSeqR <- function(peaks, genome,
     "annoGenes" = annoGenes,
     "RLoopRegions" = rlRegions,
     "sampleName" = sampleName,
+    "mode" = mode,
     "genome" = genome
   )
   
   if (! dataOnly) {
     message("[8] Generating HTML Report...")
-    makeReport(resLst, outputFile = outputFile)
+    report(resLst, outputFile = outputFile)
   }
   
   return(resLst)
