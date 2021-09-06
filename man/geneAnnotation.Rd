@@ -11,7 +11,7 @@ geneAnnotation(peaks, genome)
 
 \item{genome}{UCSC genome which peaks were generated from.
 Only "hg38" and "mm10" currently available.
-Use RSeqR::liftUtil() to convert to the correct format, if needed. Additionally,
+Use RLSeq::liftUtil() to convert to the correct format, if needed. Additionally,
 this can be an EnsDb or TxDb object.}
 }
 \value{
@@ -22,6 +22,6 @@ Annotates R-loop peaks as a GRanges object with gene-level information
 }
 \examples{
 
-geneAnnotation(RSeqR::SRX1025890_peaks)
+geneAnnotation(RLSeq::SRX1025890_peaks)
 
 }

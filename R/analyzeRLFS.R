@@ -16,7 +16,7 @@
 #' and the Z score results within 3000 BP of an RLFS. 
 #' @examples
 #' 
-#' result <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
+#' result <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -44,12 +44,12 @@ analyzeRLFS <- function(peaks,
     n_ <- capture.output(chrom_sizes <- getChromSizes(genome))
   }
   if (is.null(mask)) {
-    available_masks <- gsub(names(RSeqR::genomeMasks), pattern = "\\.masked", 
+    available_masks <- gsub(names(RLSeq::genomeMasks), pattern = "\\.masked", 
                             replacement = "")
     if(! genome %in% available_masks) {
       stop(genome, " is not available in mask list. You may generate it with ")
     } else {
-      mask <- RSeqR::genomeMasks[[paste0(genome, ".masked")]]
+      mask <- RLSeq::genomeMasks[[paste0(genome, ".masked")]]
     }
   }
   
