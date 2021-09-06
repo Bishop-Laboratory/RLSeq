@@ -4,11 +4,11 @@
 #'
 #' @param peaks A GRanges object containing R-loop peaks
 #' @param genome UCSC genome identifier to use. Can be only "hg38" currently. 
-#' If you have "hg19" peaks, please use RSeqR::liftUtil() to convert them.
+#' If you have "hg19" peaks, please use RLSeq::liftUtil() to convert them.
 #' @return A named list containing the results of testing.
 #' @examples
 #' 
-#' RSeqR::rlRegionTest(RSeqR::SRX1025890_peaks, genome="hg38")
+#' RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome="hg38")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -24,7 +24,7 @@ rlRegionTest <- function(peaks, genome="hg38") {
     dplyr::select(chrom = .data$seqnames, .data$start, .data$end, .data$name)
   
   # Get the RL Regions
-  rlReg <- RSeqR::rlRegions %>%
+  rlReg <- RLSeq::rlRegions %>%
     dplyr::mutate(
       chrom = as.character(gsub(.data$Location, 
                                 pattern = "(.+):(.+)\\-(.+)",

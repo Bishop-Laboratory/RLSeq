@@ -10,7 +10,7 @@ rlRegionTest(peaks, genome = "hg38")
 \item{peaks}{A GRanges object containing R-loop peaks}
 
 \item{genome}{UCSC genome identifier to use. Can be only "hg38" currently.
-If you have "hg19" peaks, please use RSeqR::liftUtil() to convert them.}
+If you have "hg19" peaks, please use RLSeq::liftUtil() to convert them.}
 }
 \value{
 A named list containing the results of testing.
@@ -20,6 +20,6 @@ Tests the overlap of peaks within R-loop regions
 }
 \examples{
 
-RSeqR::rlRegionTest(RSeqR::SRX1025890_peaks, genome="hg38")
+RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome="hg38")
 
 }

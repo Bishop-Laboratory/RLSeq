@@ -20,6 +20,6 @@ Tests the enrichment of genomic features in supplied R-loop peaks.
 }
 \examples{
 
-RSeqR::featureEnrich(RSeqR::SRX1025890_peaks, genome="hg38")
+RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, genome="hg38")
 
 }

@@ -106,7 +106,7 @@ getChain <- function(genomeFrom, genomeTo) {
 #' @return A lifted GRanges object
 #' @examples
 #' 
-#' hg38Lift(RSeqR::SRX1025890_peaks_hg19)
+#' hg38Lift(RLSeq::SRX1025890_peaks_hg19)
 #' 
 #' @export
 liftUtil <- function(ranges, genomeFrom, genomeTo) {
@@ -158,7 +158,7 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
 #' @export
 getGSSignal <- function(coverage, genome) {
   # Get the locations of the gs sites
-  positions <- RSeqR::gsSignalRMapDB$location
+  positions <- RLSeq::gsSignalRMapDB$location
   positions <- tibble::tibble(location = positions) %>%
     dplyr::mutate(seqnames = gsub(.data$location, pattern = "(.+)_(.+)_(.+)",
                                   replacement = "\\1"),
