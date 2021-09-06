@@ -10,7 +10,7 @@
 #'
 #' BW_URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
 #'                  "rseq-coverage-unstranded/SRX1025890_hg38.bw")
-#' result <- RSeqR::corrAnalyze(BW_URL, genome="hg38")
+#' result <- RLSeq::corrAnalyze(BW_URL, genome="hg38")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -28,7 +28,7 @@ corrAnalyze <- function(coverage, genome="hg38") {
     dplyr::mutate(chrom = as.character(.data$chrom))
   
   # Get positions
-  positions <- RSeqR::gsSignalRMapDB %>%
+  positions <- RLSeq::gsSignalRMapDB %>%
     dplyr::select(.data$location) %>%
     dplyr::mutate(chrom = gsub(.data$location, pattern = "(.+)_(.+)_(.+)",
                                replacement = "\\1"),

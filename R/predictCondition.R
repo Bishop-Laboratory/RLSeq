@@ -8,8 +8,8 @@
 #' @return A list containing the results of the fourier analysis and the model prediction.
 #' @examples
 #' 
-#' rlfsRes <- RSeqR::analyzeRLFS(RSeqR::SRX1025890_peaks, genome="hg38")
-#' RSeqR::predictCondition(rlfsRes)
+#' rlfsRes <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
+#' RLSeq::predictCondition(rlfsRes)
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -56,11 +56,11 @@ predictCondition <- function(rlfsRes) {
   
   # Standardize features
   predict.prp <- utils::getFromNamespace("predict.preProcess", "caret")
-  features <- predict.prp(RSeqR::prepFeatures, featuresRaw)
+  features <- predict.prp(RLSeq::prepFeatures, featuresRaw)
   
   # Predict using stacked model
   predict.cs <- utils::getFromNamespace("predict.caretStack", "caretEnsemble")
-  pred <- predict.cs(RSeqR::fftModel, features)
+  pred <- predict.cs(RLSeq::fftModel, features)
   
   # Test each criteria for labeling "Control"
   criteriaOne <- pval < .05

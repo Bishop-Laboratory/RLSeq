@@ -5,12 +5,12 @@
 #' @param peaks A GRanges object containing R-loop peaks
 #' @param genome UCSC genome which peaks were generated from. 
 #' Only "hg38" and "mm10" currently available. 
-#' Use RSeqR::liftUtil() to convert to the correct format, if needed. Additionally,
+#' Use RLSeq::liftUtil() to convert to the correct format, if needed. Additionally,
 #' this can be an EnsDb or TxDb object.
 #' @return A tibble object containing annotated R-loop peaks
 #' @examples
 #' 
-#' geneAnnotation(RSeqR::SRX1025890_peaks)
+#' geneAnnotation(RLSeq::SRX1025890_peaks)
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
