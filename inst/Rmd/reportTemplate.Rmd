@@ -7,6 +7,7 @@ output:
     highlight: textmate
 params:
   sampleName: "placeholder"
+  mode: "placeholder"
   rlfsRes: "placeholder"
   predictedCondition: "placeholder"
   featureTest: "placeholder"
@@ -18,42 +19,27 @@ params:
 
 
 ```{r setup, include=FALSE, echo=FALSE}
-# Add params as environmental variables
 list2env(params, envir = environment())
-
-# Const
-RMAP_SAMPS <- ""
-
-# Initialize switches for controlling template knitting
-show_rlfs <- is.list(rlfsRes)
-show_pred <- is.list(predictedCondition)
-show_features <- is.list(featureTest)
-show_corr <- is.double(corrRes)
-show_rlreg <- is.list(RLoopRegions)
-show_genes <- tibble::is_tibble(annoGenes)
-
-# Get the rmap samples
-
-# Get current time
-current_time <- date()
+library(magrittr)
+library(rlang)
 ```
 
 <br>
 
-Sample name: <strong>`r sample_name`</strong>
+Sample name: <strong>`r sampleName`</strong>
 
-Sample type: <strong>`r paste0(mode_now, "-Seq")`</strong>
+Sample type: <strong>`r paste0(mode, "-Seq")`</strong>
 
 Genome: <strong>`r genome`</strong>
 
-Time finished: <strong>`r current_time`</strong>
+Time finished: <strong>`r date()`</strong>
 
 
 ## Quality Report
 
 <hr>
 
-```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=is.double(corrRes)}
+```{r annoShow, child=system.file("Rmd", "correlation_template.Rmd", package = "RSeqR"), eval=is.double(corrRes)}
 ```
 
 ```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=is.list(rlfsRes)}

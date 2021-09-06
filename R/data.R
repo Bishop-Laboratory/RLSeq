@@ -45,3 +45,7 @@
 
 #' A tibble containing information about the samples in RMapDB.
 "rmapSamps"
+
+#' A tibble containing the R-loop-mapping modes and information about them. 
+"modes"
+

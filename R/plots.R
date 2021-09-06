@@ -2,9 +2,10 @@
 rmapHeatmap <- function(corrRes, rmapSamples, prediction=NA, cleanAnno=FALSE, selected=NA) {
   
   # Wrangle the annotation data
-  annoCorr <- rmapSamples %>%
+  annoCorr <- RSeqR::rmapSamps %>%
     dplyr::mutate(group = "RMapDB") %>%
-    dplyr::select(.data$id, .data$mode, .data$is_rnh_like, .data$prediction, .data$group) %>%
+    dplyr::select(.data$id, .data$mode, .data$is_rnh_like,
+                  .data$prediction, .data$group) %>%
     dplyr::bind_rows(
       tibble::tibble(
         id="user_supplied",
