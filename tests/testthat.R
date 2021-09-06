@@ -1,4 +1,4 @@
 library(testthat)
-library(RSeqR)
+library(RLSeq)
 
-test_check("RSeqR")
+test_check("RLSeq")
