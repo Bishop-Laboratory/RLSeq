@@ -66,7 +66,7 @@ predictCondition <- function(rlfsRes) {
   criteriaOne <- pval < .05
   criteriaTwo <- Zcenter > 0
   criteriaThree <- Zcenter > Zleft & Zcenter > Zright
-  criteriaFour <- pred == "Case"
+  criteriaFour <- toupper(pred) == "CASE"
   
   # return results
   list(
