@@ -4,12 +4,25 @@
 \alias{featureEnrich}
 \title{Tests Genomic Feature Enrichment}
 \usage{
-featureEnrich(peaks, genome = c("hg38", "mm10"))
+featureEnrich(
+  peaks,
+  genome = c("hg38", "mm10"),
+  annotations = NULL,
+  quiet = FALSE,
+  cores = 1
+)
 }
 \arguments{
 \item{peaks}{A GRanges object containing R-loop peaks}
 
 \item{genome}{UCSC genome identifier to use. Can be "hg38" or "mm10" currently.}
+
+\item{annotations}{Custom annotation list to use instead of built-in. It must follow}
+
+\item{quiet}{If TRUE, messages will be suppressed. Default: False}
+
+\item{cores}{Cores for use in parallel operations. Default: 1
+the same format as RLSeq::annotationLst.}
 }
 \value{
 A tibble containing each annotation, the Log2 fold change of observed
