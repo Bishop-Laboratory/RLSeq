@@ -1,18 +1,46 @@
 #' Tests Genomic Feature Enrichment
 #'
-#' Tests the enrichment of genomic features in supplied R-loop peaks.
+#' @description Tests the enrichment of genomic features in supplied R-loop peaks.
 #'
 #' @param peaks A GRanges object containing R-loop peaks
-#' @param genome UCSC genome identifier to use. Can be "hg38" or "mm10" currently. 
-#' @param annotations Custom annotation list to use instead of built-in. It must follow
+#' @param genome UCSC genome identifier indicating genome of supplied peaks. 
+#' @param annotations Annotation list. See details.
 #' @param quiet If TRUE, messages will be suppressed. Default: False
 #' @param cores Cores for use in parallel operations. Default: 1
 #' the same format as RLSeq::annotationLst.
-#' @return A tibble containing each annotation, the Log2 fold change of observed
-#'  overlap vs expected, and the p.adjusted value.
-#' @examples
+#' @details 
+#'   \strong{annotations}: 
+#'     A list which can be generated from the RLHub package or via local sources.
+#'     
+#'     \emph{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of annotations
+#'       for the hg38 genome. 
+#'      
+#'     \emph{custom}: The only requirement is that \code{annotations} is a named 
+#'       list of \code{tbl}s in which each \code{tbl} follows the structure:
+#'       
+#'       \tabular{lllll}{
+#'         chrom \tab start \tab end \tab strand \tab name\cr
+#'         chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
+#'         chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
+#'         ...
+#'       }
+#'       
+#'       Such a list can be generated directly from RLBase S3 bucket files:
+#'       
+#'       \preformatted{
+#'         small_anno <- list(
+#'           "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
+#'           "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
+#'           )
+#'       }
 #' 
-#' RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, genome="hg38")
+#' @return A tibble containing the results of the enrichment test.
+#' @examples
+#' small_anno <- list(
+#'           "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
+#'           "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
+#'           )
+#' RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations=small_anno, genome="hg38")
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -23,11 +51,21 @@ featureEnrich <- function(peaks,
                           quiet = FALSE,
                           cores = 1) {
   
+  # Cutoff for stats tests
+  MIN_ROWS <- 200
+  
   # Choose apply function
   applyFun <- ifelse(quiet, lapply, pbapply::pblapply)
   if (cores > 1) {
     applyFun <- parallel::mclapply
     options(mc.cores = cores)
+  }
+  
+  # Get annotations
+  if (is.null(annotations)) {
+    annotations <- RLSeq::annotations[[genome]]
+  } else {
+    annotations <- annotations[[genome]]
   }
   
   # Get the genome 
@@ -39,38 +77,25 @@ featureEnrich <- function(peaks,
     tibble::as_tibble() %>%
     dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
   
-  # Get shuffle
-  toTestShuff <- valr::bed_shuffle(toTest, chromSizes)
-  
-  # Get the annotation list
-  if (! is.null(annotations)) {
-    annotationGen <- annotations[[genome]]
-  } else {
-    annotationGen <- RLSeq::annotationLst[[genome]]
+  # Get shuffle 
+  # there's an issue in the shuffle for valr that necessitates this pattern...
+  # Returns "maximum iterations exceeded in bed_shuffle" error
+  # However, increasing number of attempts does nothing to fix this.
+  # Only changing the seed seems to provide any workaround.
+  seeds <- 1:1000
+  while (TRUE) {
+    seed <- seeds[1]
+    toTestShuff <- try(valr::bed_shuffle(x = toTest,
+                                         genome=chromSizes,
+                                         seed = seed), silent = TRUE)
+    if (class(toTestShuff)[1] != "try-error") break
+    seeds <- seeds[-1]
   }
-  
-  # Flatten annotations into tbl list
-  subpat <- "(.+)__(.+)__(.+)"
-  if (! quiet) {
-    message(" - Preparing annotations...")
-  }
-  annots <- lapply(annotationGen, FUN = function(x) {
-    if ("tbl" %in% class(x)) {
-      x
-    } else {
-      dplyr::bind_rows(x)
-    }
-  }) %>% 
-    dplyr::bind_rows() %>%
-    dplyr::mutate(
-      comb = gsub(.data$name, pattern = subpat, 
-                  replacement = "\\1__\\2", perl=TRUE)
-    ) %>% dplyr::group_by(.data$comb) %>%
-    {setNames(dplyr::group_split(.), dplyr::group_keys(.)[[1]])}
-  annots <- annots[sapply(annots, nrow) > 200]
+ 
+  # Only keep annotations above cutoff
+  annots <- annotations[sapply(annotations, nrow) > MIN_ROWS]
   
   # Test on all annotations
-  # For each element in the database, calculate the projection statistics
   if (! quiet) {
     message(" - Calculating enrichment...")
   }
@@ -101,7 +126,7 @@ featureEnrich <- function(peaks,
       chromSizesNow <- chromSizes %>%
         dplyr::filter(.data$chrom %in% shared_seqnames)
       
-      # Use the bed_projection test to get the overlap enrichment
+      # Use the peak_stats test to get the enrichment
       pat <- "(.+)__(.+)"
       pkstats <- peak_stats(x, xshuff, y, chromSizesNow)
       dplyr::bind_cols(
@@ -121,7 +146,6 @@ featureEnrich <- function(peaks,
   if (! quiet) {
     message(" - Done")
   }
-  
   return(annoRes)
 }
 
@@ -136,10 +160,13 @@ featureEnrich <- function(peaks,
 #' Columns should be "chrom" (chromosome names) and "size" (number of base pairs).
 peak_stats <- function(x, xshuff, y, chromSizeTbl) {
   
+  # Cutoff for stats tests
+  MIN_ROWS <- 200
+  
   # Obtain distance test results (rel and abs). Based upon:
   # https://rnabioco.github.io/valr/articles/interval-stats.html
   reldist_rl <- valr::bed_reldist(x, y, detail = TRUE)
-  if (! length(reldist_rl$chrom) | nrow(x) < 200 | nrow(y) < 200) {
+  if (! length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
     warning("Not enough observations for interval tests...")
     # Return results
     tibble::tibble(
@@ -149,11 +176,7 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl) {
       stat_fisher_rl = NA,
       pval_fisher_rl = NA,
       stat_fisher_shuf = NA,
-      pval_fisher_shuf = NA,
-      stat_projection_rl = NA,
-      pval_projection_rl = NA,
-      stat_projection_shuf = NA,
-      pval_projection_shuf = NA
+      pval_fisher_shuf = NA
     )
     
   } else {
@@ -166,9 +189,6 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl) {
     # Obtain fisher test results
     fshres_rl <- valr::bed_fisher(x, y, chromSizeTbl) 
     fshres_shuf <- valr::bed_fisher(xshuff, y, chromSizeTbl) 
-    # Obtain projection test results
-    projres_rl <- valr::bed_projection(x, y, chromSizeTbl)
-    projres_shuf <- valr::bed_projection(xshuff, y, chromSizeTbl)
     
     # Return results
     tibble::tibble(

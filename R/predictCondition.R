@@ -5,6 +5,7 @@
 #' interpreting R-loop mapping results.
 #'
 #' @param rlfsRes The results list from running analyzeRLFS().
+#' @param ... Internal use only.
 #' @return A list containing the results of the fourier analysis and the model prediction.
 #' @examples
 #' 
@@ -15,7 +16,25 @@
 #' @importFrom rlang .data
 #' @importFrom stats fft acf
 #' @export
-predictCondition <- function(rlfsRes) {
+predictCondition <- function(rlfsRes, ...) {
+  
+  # Dots are used to supply custom models for testing purposes only.
+  dots <- list(...)
+  if (length(dots) == 2) {
+    prepFeatures <- dots$prepFeatures
+    fftModel <- dots$fftModel
+  } else if (length(dots) != 0) {
+    stop(
+      "Inappropriate arguments supplied: ",
+      paste0(
+      names(dots)[which(! names(dots) %in% c("prepFeatures", "fftModel"))],
+      collapse = ", "
+      )
+    )
+  } else {
+    prepFeatures <- RLSeq::prepFeatures
+    fftModel <- RLSeq::fftModel
+  }
   
   # Get pval
   pval <- rlfsRes$perTestResults$`regioneR::numOverlaps`$pval
@@ -56,11 +75,11 @@ predictCondition <- function(rlfsRes) {
   
   # Standardize features
   predict.prp <- utils::getFromNamespace("predict.preProcess", "caret")
-  features <- predict.prp(RLSeq::prepFeatures, featuresRaw)
+  features <- predict.prp(prepFeatures, featuresRaw)
   
   # Predict using stacked model
   predict.cs <- utils::getFromNamespace("predict.caretStack", "caretEnsemble")
-  pred <- predict.cs(RLSeq::fftModel, features)
+  pred <- predict.cs(fftModel, features)
   
   # Test each criteria for labeling "Control"
   criteriaOne <- pval < .05
