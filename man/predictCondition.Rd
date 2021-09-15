@@ -4,10 +4,12 @@
 \alias{predictCondition}
 \title{Predict Condition}
 \usage{
-predictCondition(rlfsRes)
+predictCondition(rlfsRes, ...)
 }
 \arguments{
 \item{rlfsRes}{The results list from running analyzeRLFS().}
+
+\item{...}{Internal use only.}
 }
 \value{
 A list containing the results of the fourier analysis and the model prediction.
