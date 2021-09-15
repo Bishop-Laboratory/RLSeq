@@ -12,10 +12,6 @@
 #' See data-raw/masked_genomes.R for details.
 "genomeMasks"
 
-#' List of list of tibbles. Containing genomic annotations for use with RLSeq.
-#' See data-raw/anotationLst.R for details.
-"annotationLst"
-
 #' A Caret model used for preprocessing datasets in predictCondition().
 "prepFeatures"
 
