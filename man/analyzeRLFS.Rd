@@ -10,6 +10,7 @@ analyzeRLFS(
   chrom_sizes = NULL,
   mask = NULL,
   RLFS = NULL,
+  quiet = FALSE,
   ...
 )
 }
@@ -26,6 +27,8 @@ regioneR::getMask().}
 
 \item{RLFS}{A GRanges object containing the R-loop forming sequences to
 compare against.}
+
+\item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
 }
