@@ -1,4 +1,42 @@
+#' Plot Perm Test results
+#' 
+#' @description Simple function for plotting permTest
+#' results using ggplot2.
+#' 
+#' @param rlfsRes The list object generated from running \code{analyzeRLFS}.
+#' @param ... Additional parameters passed to \code{ggplot}.
+#' @return A ggplot object.
+#' @export
+plotRLFSRes <- function(rlfsRes, 
+                        ...) {
+  
+  # Validate rlfsRes
+  stopifnot(is.list(rlfsRes))
+  
+  # Obtain the plot data
+  pltdat <- tibble::tibble(
+    "zscore" = rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifted.z.scores,
+    "shift" = rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifts
+  )
+  pval <- rlfsRes$perTestResults$`regioneR::numOverlaps`$pval
+  
+  ggplot2::ggplot(data = pltdat,
+                  ggplot2::aes_string(y = "zscore",
+                                      x = "shift")) +
+    ggplot2::geom_vline(color = "firebrick",
+                        xintercept = 0, 
+                        linetype = "dashed") +
+    ggplot2::geom_line(size = 1) +
+    ggplot2::ggtitle('ZScore around RLFS') +
+    ggplot2::labs(caption = paste0("p < ", round(pval, digits = 5))) +
+    ggplot2::ylab("Peak Enrichment (Z-Score)") +
+    ggplot2::scale_y_continuous(expand = c(0,0)) +
+    ggplot2::xlab("Distance to RLFS (bp)") +
+    ggprism::theme_prism(base_size = 15) 
+}
 
+
+#' RLBase Heatmap
 rmapHeatmap <- function(corrRes, rmapSamples, prediction=NA, cleanAnno=FALSE, selected=NA) {
   
   # Wrangle the annotation data
