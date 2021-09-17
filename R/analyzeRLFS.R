@@ -10,6 +10,7 @@
 #' regioneR::getMask().
 #' @param RLFS A GRanges object containing the R-loop forming sequences to 
 #' compare against. 
+#' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
 #' @return A named list containing the results of RegioneR, 
 #' peaks annotated with the RLFS they overlap with, 
@@ -27,12 +28,15 @@ analyzeRLFS <- function(peaks,
                         chrom_sizes=NULL,
                         mask=NULL,
                         RLFS=NULL, 
+                        quiet=FALSE,
                         ...) {
   
   # TODO: Validate genome to avoid TRUE/FALSE Needed error from permTest
   
   # Check RLFS, chrom_sizes, and mask
-  message("+ [i] Evaluating Inputs.")
+  if (! quiet) {
+    message("+ [i] Evaluating Inputs.")
+  }
   if (is.null(genome) & 
       (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
     stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
@@ -70,17 +74,26 @@ analyzeRLFS <- function(peaks,
   GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
   
   # Run RegioneR
-  message("+ [ii] Running permTest.")
-  pt <- regioneR::permTest(A=peaks, B=RLFS, 
-                           genome=genomeNow,
-                           mask=mask, 
-                           randomize.function=regioneR::circularRandomizeRegions, 
-                           evaluate.function=regioneR::numOverlaps,
-                           alternative = "greater", 
-                           ...)
+  if (! quiet) {
+    message("+ [ii] Running permTest.")
+  }
+  pt <- suppressWarnings(
+    regioneR::permTest(A=peaks, B=RLFS, 
+                       genome=genomeNow,
+                       mask=mask, 
+                       randomize.function=regioneR::circularRandomizeRegions, 
+                       evaluate.function=regioneR::numOverlaps,
+                       alternative = "greater", 
+                       ...)
+  )
   
-  message("+ [iii] Extracting pileup.")
-  z <- regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
+  # Return Z scores
+  if (! quiet) {
+    message("+ [iii] Extracting pileup.")
+  }
+  z <- suppressWarnings(
+    regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
+  )
   
   return(list(
     "perTestResults" = pt,
