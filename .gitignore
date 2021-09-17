@@ -6,3 +6,6 @@ misc/**/*.rda
 data-raw/**/*.rda
 *.bw
 data-raw/RMapDB_generate
+inst/doc
+/doc/
+/Meta/

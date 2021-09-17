@@ -47,7 +47,7 @@
 #' @export
 featureEnrich <- function(peaks,
                           genome=c("hg38", "mm10"), 
-                          annotations=NULL,
+                          annotations,
                           quiet = FALSE,
                           cores = 1) {
   
@@ -63,10 +63,8 @@ featureEnrich <- function(peaks,
   
   # Get annotations
   if (is.null(annotations)) {
-    annotations <- RLSeq::annotations[[genome]]
-  } else {
-    annotations <- annotations[[genome]]
-  }
+    stop("Annotations must be supplied!")
+  } 
   
   # Get the genome 
   chromSizes <- getChromSizes(genome) %>%

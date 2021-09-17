@@ -7,7 +7,7 @@
 featureEnrich(
   peaks,
   genome = c("hg38", "mm10"),
-  annotations = NULL,
+  annotations,
   quiet = FALSE,
   cores = 1
 )
