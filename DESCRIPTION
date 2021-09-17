@@ -1,6 +1,6 @@
 Package: RLSeq
 Title: R-loop mapping analysis and QC
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: c(
     person(given = "Henry",
            family = "Miller",
@@ -29,9 +29,11 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
+    BiocStyle,
     covr,
     EnsDb.Hsapiens.v86,
     EnsDb.Mmusculus.v79,
+    knitr,
     R.utils,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
@@ -64,3 +66,4 @@ Imports:
     tidyr,
     GenomicRanges,
     GenomeInfoDb
+VignetteBuilder: knitr
