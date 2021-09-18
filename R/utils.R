@@ -18,6 +18,7 @@ urlExists <- function(url) {
 #' @param genome the UCSC genome for which to download chrom sizes
 #' @return A tibble containing chrom sizes
 #' @importFrom utils capture.output
+#' @export
 getChromSizes <- function(genome) {
   chrom_sizes <- readr::read_tsv(paste0(
     BASE_UCSC,

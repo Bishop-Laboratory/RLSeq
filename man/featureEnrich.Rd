@@ -8,6 +8,7 @@ featureEnrich(
   peaks,
   genome = c("hg38", "mm10"),
   annotations,
+  downsample = 10000,
   quiet = FALSE,
   cores = 1
 )
@@ -18,6 +19,10 @@ featureEnrich(
 \item{genome}{UCSC genome identifier indicating genome of supplied peaks.}
 
 \item{annotations}{Annotation list. See details.}
+
+\item{downsample}{If a numeric, data will be down sampled to the requested number of peaks.
+This improves the speed of genomic shuffling and helps prevent p-value inflation.
+If FALSE, then downsampling will not be performed. Default: 10000.}
 
 \item{quiet}{If TRUE, messages will be suppressed. Default: False}
 

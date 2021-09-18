@@ -13,6 +13,8 @@ output:
   BiocStyle::html_document:
     toc_float: true
   BiocStyle::pdf_document: default
+params:
+  newdat: 1  # I chose for a reason
 vignette: >
   %\VignetteIndexEntry{Analyzing R-loop Data with RLSeq}
   %\VignetteEngine{knitr::rmarkdown}
@@ -45,7 +47,7 @@ pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
 
 # Annotations can be found in RLHub
-annot <- file.path(rlbase, "RLHub", "annotations_hg38.rda")
+annot <- file.path(rlbase, "RLHub", "annotations_primary_hg38.rda")
 tmp <- tempfile()
 download.file(annot, destfile = tmp)
 load(tmp)
@@ -99,11 +101,10 @@ mamba install -c bioconda rlpipes
 
 A typical config file `CSV` file should be written:
 
-| experiment | control    |
-|------------|------------|
-| SRX113814  |            |
-| SRX1025890 | SRX1025893 |
-| SRX1025899 |            |
+| experiment |
+|------------|
+| SRX1025890 |
+| SRX1025892 |
 
 And then the pipeline can be run.
 
@@ -125,9 +126,9 @@ library(dplyr)
 
 ### Data sets
 
-For this example, we will be using data from a 2018 *Nature* paper on R-loops in Ewing sarcoma [@Gorthi2018a].
+For this example, we will be using data from a 2018 *Nature* paper on R-loops in Ewing sarcoma [@Gorthi2018a]. Two samples are used, one which has been IP'd for R-loops (S9.6), and one which is the same, but with the addition of an RNaseH1 treatment (S9.6 + RNaseH1). RNaseH1 degrades RNA:DNA hybrids (a core component of R-loops), so it serves as a useful negative control.
 
-| Experiment | Condition      |
+| experiment | condition      |
 |------------|----------------|
 | SRX1025890 | S9.6           |
 | SRX1025892 | S9.6 + RNaseH1 |
@@ -146,6 +147,8 @@ rnh <- regioneR::toGRanges(file.path(rlbase, "peaks", "SRX1025892_hg38.broadPeak
 
 Sample quality is assessed by analyzing the association of peaks with R-loop-forming sequences (RLFS). RLFS are genomic sequences that favor the formation of R-loops [@Jenjaroenpun2015]. While R-loops can form outside RLFS, there is a noticeable relationship between R-loops and RLFS, which provides an unbiased test of whether a set of peaks actually represents successful R-loop mapping. This method is described in full within the [RLSuite publication](www.pub_link.com).
 
+#### Permutation tests
+
 RLSeq first implements a permutation test to evaluate the enrichment of peaks within RLFS and build a Z-score distribution around the TSS.
 
 ```{r rlfs-test, cache=TRUE}
@@ -158,13 +161,13 @@ The results object `resRLFS` contains both permutation test results and the Z sc
 
 These results can be easily visualized with the `permPlot` function.
 
-```{r plot-perm, fig.cap="Plot of permutation test results."}
+```{r plot-perm, fig.cap="Plot of permutation test results (S9.6)."}
 plotRLFSRes(s96_rlfs) + ggplot2::labs(subtitle = "TC32 S9.6")
 ```
 
 As a comparison, we also test the negative control (RNaseH1-treated) samples.
 
-```{r}
+```{r plot-perm-rnh, fig.cap="Plot of permutation test results (S9.6 + RNaseH1)."}
 rnh_rlfs <- analyzeRLFS(
   peaks = rnh, genome = "hg38", quiet = TRUE
 )
@@ -172,6 +175,10 @@ plotRLFSRes(rnh_rlfs) + ggplot2::labs(subtitle = "TC32 S9.6 + RNaseH1")
 ```
 
 From this example, we can see a fundamental challenge facing RLFS-based quality assessment: while the RNaseH1-treated sample is clearly a negative control, and the distribution looks terrible, the p-value is still significant at `p < 0.0099`. This indicates the flaw with permutation testing alone, and it was the motivation for the development of a classifier that could discriminate positive from negative samples. The classifier can be accessed through RLSeq.
+
+#### Classifier predictions
+
+The classifier is an ensemble model based on an online-learning scheme as detailed in the RLSuite publication. The latest version can be accessed via RLHub.
 
 ```{r predict-condition}
 # Download model data (will be replaced by RLHub)
@@ -200,5 +207,106 @@ tibble::tibble(
 ### Feature enrichment analysis
 
 Now that we have verified the quality of our S9.6 sample (SRX1025890), we proceed to perform a feature enrichment test. This allows us to determine what genomic features were enriched within the mapped R-loops from this data set. The test involves querying the annotation database in RLHub and performing fisher's exact test as well as the relative distance test [@Favorov2012].
+
+```{r}
+
+# Annotations can be found in RLHub
+annot <- file.path(rlbase, "RLHub", "annotations_primary_hg38.rda")
+tmp <- tempfile()
+download.file(annot, destfile = tmp)
+load(tmp)
+
+# Perform test
+annoResS96 <- featureEnrich(
+  peaks = s96, 
+  genome = "hg38",
+  annotations = annotations_primary,
+  quiet = TRUE
+)
+
+# View Top Results
+annoResS96 %>%
+  relocate(contains("fisher"), .after = type) %>%
+  arrange(desc(stat_fisher_rl)) %>%
+  slice_head(n = 10) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+```
+
+From the top results (ranked by fisher's exact test odds ratio), we observe a high degree of enrichment within genic features, such as Exons and Introns, as well as regulatory features such as enhancer promoters (enhP). These results are entirely consistent with previous reports of R-loop location mapping [@Castillo-Guzman2021].
+
+<details>
+
+<summary>RNaseH1 Comparison</summary>
+
+As a comparison, we also perform the same test with the RNaseH1-treated sample.
+
+```{r}
+# Perform test
+annoResRNH <- featureEnrich(
+  peaks = rnh, 
+  genome = "hg38",
+  annotations = annotations_primary,
+  quiet = TRUE
+)
+
+# View Top Results
+annoResRNH %>%
+  relocate(contains("fisher"), .after = type) %>%
+  arrange(desc(stat_fisher_rl)) %>%
+  DT::datatable()
+```
+
+We found that the top hits were different from those uncovered in the experimental condition. Particularly, there was stark enrichment for repetitive elements and a diminished enrichment for genomic features.
+
+To visualize these results, we construct a tidy pipe to pull the top 6 enriched annotations within experiment and control samples to visualize as a heat map.
+
+```{r}
+inner_join(
+  annoResRNH, 
+  annoResS96,
+  by = c("db", "type"),
+  suffix = c("__RNH", "__S96")
+) %>%
+  select(db, type,  contains("stat_fisher_rl")) %>%
+  tidyr::pivot_longer(cols = contains("__")) %>%
+  mutate(
+    group = gsub(name, pattern = ".+__(.+)$", replacement = "\\1"),
+    value = log2(value + 1)
+  ) %>%
+  group_by(group) %>%
+  filter(type %in% (slice_max(., order_by = value, n = 6) %>% pull(type))) %>%
+  ungroup() %>%
+  select(value, group, type) %>%
+  tidyr::pivot_wider(id_cols = type, names_from = group, values_from = value) %>%
+  tibble::column_to_rownames(var = "type") %>%
+  as.matrix() %>%
+  ComplexHeatmap::pheatmap(
+    color = colorRampPalette(RColorBrewer::brewer.pal("Reds", n = 9))(100), 
+    main = "Top enriched features",
+    name = "Fisher Log2 Ratio", 
+    angle_col = "45"
+  )
+```
+
+From this result, we plainly observe the stark contrast in enrichment between samples which map R-loops (S9.6) and those which do not (S9.6 + RNaseH1).
+
+<br>
+
+</details>
+
+<br>
+
+#### Visualization of enrichment results
+
+RLSeq provides a helper function, `plotEnrichment`, to facilitate the visualization of enrichment results.
+
+```{r}
+plotEnrichment()
+```
+
+### Correlation analysis
+
+Correlation analysis finds inter-sample correlation coefficients by using bin-level R-loop counts around gold-standard R-loop sites (sites profiled using ultra-long-read R-loop mapping -- "SMRF-Seq") [@Chédin2021].
 
 # References
