@@ -5,6 +5,9 @@
 #' @param peaks A GRanges object containing R-loop peaks
 #' @param genome UCSC genome identifier indicating genome of supplied peaks. 
 #' @param annotations Annotation list. See details.
+#' @param downsample If a numeric, data will be down sampled to the requested number of peaks. 
+#' This improves the speed of genomic shuffling and helps prevent p-value inflation. 
+#' If FALSE, then downsampling will not be performed. Default: 10000.
 #' @param quiet If TRUE, messages will be suppressed. Default: False
 #' @param cores Cores for use in parallel operations. Default: 1
 #' the same format as RLSeq::annotationLst.
@@ -48,6 +51,7 @@
 featureEnrich <- function(peaks,
                           genome=c("hg38", "mm10"), 
                           annotations,
+                          downsample=10000,
                           quiet = FALSE,
                           cores = 1) {
   
@@ -74,6 +78,11 @@ featureEnrich <- function(peaks,
   toTest <- peaks %>%
     tibble::as_tibble() %>%
     dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
+  
+  # Downsample
+  if (is.numeric(downsample) && nrow(toTest) > downsample) {
+    toTest <- dplyr::sample_n(toTest, size = downsample)
+  }
   
   # Get shuffle 
   # there's an issue in the shuffle for valr that necessitates this pattern...
@@ -126,7 +135,8 @@ featureEnrich <- function(peaks,
       
       # Use the peak_stats test to get the enrichment
       pat <- "(.+)__(.+)"
-      pkstats <- peak_stats(x, xshuff, y, chromSizesNow)
+      y <- valr::bed_merge(y)
+      pkstats <- peak_stats(x, xshuff, y, chromSizesNow, quiet=quiet)
       dplyr::bind_cols(
         tibble::tibble(
           db = gsub(typeNow, pattern = pat, replacement = "\\1"),
@@ -153,19 +163,30 @@ featureEnrich <- function(peaks,
 #' A helper function for building the peak statistics tibble
 #' 
 #' @param x The R-loop peaks to test.
+#' @param xshuff x, but shuffled around the genome to build a control peakset.
 #' @param y The annotations against which to test x.
 #' @param chromSizeTbl A tibble containing the sizes of each chromosome in x and y.
+#' 
 #' Columns should be "chrom" (chromosome names) and "size" (number of base pairs).
-peak_stats <- function(x, xshuff, y, chromSizeTbl) {
+peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet=FALSE) {
   
   # Cutoff for stats tests
   MIN_ROWS <- 200
+  
+  # Control feedback
+  ifelse(quiet, suppressWarnings, )
+  if (quiet) {
+    suppressWarnings
+  }
   
   # Obtain distance test results (rel and abs). Based upon:
   # https://rnabioco.github.io/valr/articles/interval-stats.html
   reldist_rl <- valr::bed_reldist(x, y, detail = TRUE)
   if (! length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
-    warning("Not enough observations for interval tests...")
+    if (! quiet) {
+      warning("Not enough observations for interval tests...")
+    }
+    
     # Return results
     tibble::tibble(
       avg_reldist_rl = NA,
@@ -179,8 +200,19 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl) {
     
   } else {
     reldist_shuf <- valr::bed_reldist(xshuff, y, detail = TRUE)
-    pval_reldist <- ks.test(reldist_rl$.reldist, 
-                            reldist_shuf$.reldist) %>%
+    if (quiet) {
+      ks <- suppressWarnings(
+        ks.test(reldist_rl$.reldist, 
+                reldist_shuf$.reldist, 
+                exact = FALSE)
+      )
+    } else {
+      ks <- ks.test(reldist_rl$.reldist, 
+                    reldist_shuf$.reldist, 
+                    exact = FALSE)
+    }
+    
+    pval_reldist <- ks %>%
       broom::tidy() %>% 
       dplyr::pull("p.value")
     
@@ -196,9 +228,9 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl) {
       stat_fisher_rl = fshres_rl$estimate,
       stat_fisher_shuf = fshres_shuf$estimate,
       pval_fisher_rl = ifelse(fshres_rl$p.value == 0, 
-                              .Machine$double.xmin, pval_reldist),
+                              .Machine$double.xmin, fshres_rl$p.value),
       pval_fisher_shuf = ifelse(fshres_shuf$p.value == 0, 
-                                .Machine$double.xmin, pval_reldist)
+                                .Machine$double.xmin, fshres_shuf$p.value)
     )
   }
 } 
