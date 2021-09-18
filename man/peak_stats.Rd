@@ -4,14 +4,17 @@
 \alias{peak_stats}
 \title{Build peak statistics tibble}
 \usage{
-peak_stats(x, xshuff, y, chromSizeTbl)
+peak_stats(x, xshuff, y, chromSizeTbl, quiet = FALSE)
 }
 \arguments{
 \item{x}{The R-loop peaks to test.}
 
+\item{xshuff}{x, but shuffled around the genome to build a control peakset.}
+
 \item{y}{The annotations against which to test x.}
 
 \item{chromSizeTbl}{A tibble containing the sizes of each chromosome in x and y.
+
 Columns should be "chrom" (chromosome names) and "size" (number of base pairs).}
 }
 \description{
