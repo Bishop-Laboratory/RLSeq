@@ -66,5 +66,6 @@ Imports:
     tidyr,
     GenomicRanges,
     GenomeInfoDb,
-    ComplexHeatmap
+    ComplexHeatmap,
+    ggpattern
 VignetteBuilder: knitr

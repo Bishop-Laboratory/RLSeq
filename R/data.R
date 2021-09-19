@@ -11,3 +11,7 @@
 #' List of GRanges. Contains genomic masks for several commons species.
 #' See data-raw/masked_genomes.R for details.
 "genomeMasks"
+
+#' Auxilliary data for use with RLSeq
+#' Generated via aux.R script in data-raw/
+"aux"
