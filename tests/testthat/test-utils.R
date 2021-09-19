@@ -7,7 +7,7 @@ test_that("urlExists works", {
 })
 
 test_that("getChromSizes works", {
-  expect_s3_class(RLSeq:::getChromSizes("hg38"), class="tbl")
+  expect_s3_class(RLSeq:::getChromSizes("hg38"), class = "tbl")
 })
 
 test_that("checkRLFSAnno works", {
@@ -19,8 +19,10 @@ test_that("getChain works", {
 })
 
 test_that("liftUtil works", {
-  expect_s4_class(RLSeq:::liftUtil(RLSeq::SRX1025890_peaks_hg19, "hg19", "hg38"),
-                  "GRanges")
+  expect_s4_class(
+    RLSeq:::liftUtil(RLSeq::SRX1025890_peaks_hg19, "hg19", "hg38"),
+    "GRanges"
+  )
 })
 
 test_that(desc = "Test that toBed returns a list object and writes an output file", {
@@ -41,6 +43,5 @@ test_that(desc = "Test that toBed returns a list object and writes an output fil
 
 test_that("getGSSignal works", {
   coverage <- paste0(RLSeq:::RLBASE_BW_URL, "SRX1025890_hg38.bw")
-  expect_s4_class(RLSeq:::getGSSignal(coverage = coverage, "hg38"), class="GRanges")
+  expect_s4_class(RLSeq:::getGSSignal(coverage = coverage, "hg38"), class = "GRanges")
 })
-

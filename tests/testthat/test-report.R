@@ -5,4 +5,3 @@ test_that(desc = "Test report", {
   )
   file.remove("report.html")
 })
-
