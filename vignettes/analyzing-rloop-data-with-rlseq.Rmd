@@ -49,7 +49,7 @@ cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
 # Annotations can be found in RLHub
 annot <- file.path(rlbase, "RLHub", "annotations_primary_hg38.rda")
 tmp <- tempfile()
-download.file(annot, destfile = tmp)
+download.file(annot, destfile = tmp, quiet = TRUE)
 load(tmp)
 
 # The RLSeq command performs all analysis to generate an HTML report
@@ -213,7 +213,7 @@ Now that we have verified the quality of our S9.6 sample (SRX1025890), we procee
 # Annotations can be found in RLHub
 annot <- file.path(rlbase, "RLHub", "annotations_primary_hg38.rda")
 tmp <- tempfile()
-download.file(annot, destfile = tmp)
+download.file(annot, destfile = tmp, quiet = TRUE)
 load(tmp)
 
 # Perform test
@@ -229,15 +229,18 @@ annoResS96 %>%
   relocate(contains("fisher"), .after = type) %>%
   arrange(desc(stat_fisher_rl)) %>%
   slice_head(n = 10) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling()
+  DT::datatable()
 ```
 
 From the top results (ranked by fisher's exact test odds ratio), we observe a high degree of enrichment within genic features, such as Exons and Introns, as well as regulatory features such as enhancer promoters (enhP). These results are entirely consistent with previous reports of R-loop location mapping [@Castillo-Guzman2021].
 
 <details>
 
-<summary>RNaseH1 Comparison</summary>
+<summary>
+
+RNaseH1 Comparison
+
+</summary>
 
 As a comparison, we also perform the same test with the RNaseH1-treated sample.
 
@@ -266,30 +269,33 @@ inner_join(
   annoResRNH, 
   annoResS96,
   by = c("db", "type"),
-  suffix = c("__RNH", "__S96")
+  suffix = c("__S9.6 +RNaseH1", "__S9.6 -RNaseH1")
 ) %>%
   select(db, type,  contains("stat_fisher_rl")) %>%
   tidyr::pivot_longer(cols = contains("__")) %>%
   mutate(
     group = gsub(name, pattern = ".+__(.+)$", replacement = "\\1"),
-    value = log2(value + 1)
+    value = log2(value)
   ) %>%
+  filter(! is.na(value),
+         is.finite(value)) %>%
   group_by(group) %>%
-  filter(type %in% (slice_max(., order_by = value, n = 6) %>% pull(type))) %>%
+  filter(type %in% (slice_max(., order_by = value, n = 8) %>% pull(type))) %>%
   ungroup() %>%
   select(value, group, type) %>%
-  tidyr::pivot_wider(id_cols = type, names_from = group, values_from = value) %>%
+  tidyr::pivot_wider(id_cols = type, names_from = group, 
+                     values_from = value, values_fill = 0) %>%
   tibble::column_to_rownames(var = "type") %>%
   as.matrix() %>%
   ComplexHeatmap::pheatmap(
-    color = colorRampPalette(RColorBrewer::brewer.pal("Reds", n = 9))(100), 
+    color = colorRampPalette(RColorBrewer::brewer.pal("PuBuGn", n = 9))(100), 
     main = "Top enriched features",
     name = "Fisher Log2 Ratio", 
     angle_col = "45"
   )
 ```
 
-From this result, we plainly observe the stark contrast in enrichment between samples which map R-loops (S9.6) and those which do not (S9.6 + RNaseH1).
+From this result, we plainly observe the stark contrast in enrichment between samples which map R-loops (S9.6 -RNaseH1) and those which do not (S9.6 + RNaseH1).
 
 <br>
 
@@ -302,7 +308,16 @@ From this result, we plainly observe the stark contrast in enrichment between sa
 RLSeq provides a helper function, `plotEnrichment`, to facilitate the visualization of enrichment results.
 
 ```{r}
-plotEnrichment()
+# Load the RLBase enrichment results to compare with
+rlbase_enrich <- file.path(rlbase, "RLHub", "feature_enrichment_per_sample.rda")
+tmp <- tempfile()
+download.file(rlbase_enrich, destfile = tmp, quiet = TRUE)
+load(tmp)
+
+plotEnrichment(
+  sampleRes=annoResS96,
+  rlbaseRes=feature_enrichment_per_sample
+)
 ```
 
 ### Correlation analysis

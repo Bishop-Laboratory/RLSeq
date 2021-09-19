@@ -3,31 +3,34 @@
 #' Annotates R-loop peaks as a GRanges object with gene-level information
 #'
 #' @param peaks A GRanges object containing R-loop peaks
-#' @param genome UCSC genome which peaks were generated from. 
-#' Only "hg38" and "mm10" currently available. 
+#' @param genome UCSC genome which peaks were generated from.
+#' Only "hg38" and "mm10" currently available.
 #' Use RLSeq::liftUtil() to convert to the correct format, if needed. Additionally,
 #' this can be an EnsDb or TxDb object.
 #' @return A tibble object containing annotated R-loop peaks
 #' @examples
-#' 
+#'
 #' geneAnnotation(RLSeq::SRX1025890_peaks)
-#' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 geneAnnotation <- function(peaks, genome) {
-  
+
   # Available genomes
   if (genome == "hg38") {
-    if( ! requireNamespace("EnsDb.Hsapiens.v86", quietly = TRUE)) {
-      stop("EnsDb.Hsapiens.v86 is required.",
-           " Please install it with BiocManager::install('EnsDb.Hsapiens.v86')")
+    if (!requireNamespace("EnsDb.Hsapiens.v86", quietly = TRUE)) {
+      stop(
+        "EnsDb.Hsapiens.v86 is required.",
+        " Please install it with BiocManager::install('EnsDb.Hsapiens.v86')"
+      )
     }
     edb <- EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86
   } else if (genome == "mm10") {
-    if( ! requireNamespace("EnsDb.Mmusculus.v79", quietly = TRUE)) {
-      stop("EnsDb.Mmusculus.v79 is required.",
-           " Please install it with BiocManager::install('EnsDb.Mmusculus.v79')")
+    if (!requireNamespace("EnsDb.Mmusculus.v79", quietly = TRUE)) {
+      stop(
+        "EnsDb.Mmusculus.v79 is required.",
+        " Please install it with BiocManager::install('EnsDb.Mmusculus.v79')"
+      )
     }
     edb <- EnsDb.Mmusculus.v79::EnsDb.Mmusculus.v79
   } else if (class(genome) %in% c("EnsDb", "TxDb")) {
@@ -35,30 +38,34 @@ geneAnnotation <- function(peaks, genome) {
   } else {
     stop("genome must be 'hg38' or 'mm10' or an object of class 'EnsDb' or 'TxDb'")
   }
-  
+
   # Get the ensembl genes and conver to UCSC style
-  edb <-  GenomicFeatures::genes(edb)
+  edb <- GenomicFeatures::genes(edb)
   GenomeInfoDb::seqlevelsStyle(edb) <- "UCSC"
-  
+
   # Wrangle EnsDb to tibble
   annoData <- edb %>%
     as.data.frame() %>%
-    dplyr::select(chrom = .data$seqnames, .data$start,
-                  .data$end, .data$strand, .data$gene_name) %>%
+    dplyr::select(
+      chrom = .data$seqnames, .data$start,
+      .data$end, .data$strand, .data$gene_name
+    ) %>%
     tibble::as_tibble() %>%
     dplyr::distinct(.data$gene_name, .keep_all = TRUE) %>%
-    dplyr::mutate(chrom=as.character(.data$chrom))
-  
+    dplyr::mutate(chrom = as.character(.data$chrom))
+
   # Wrangle peaks to tibble
   peaksIntersect <- peaks %>%
     as.data.frame() %>%
     tibble::as_tibble() %>%
-    dplyr::select(chrom=.data$seqnames, .data$start, 
-                  .data$end, .data$width) %>%
-    dplyr::mutate(chrom=as.character(.data$chrom))
-  
+    dplyr::select(
+      chrom = .data$seqnames, .data$start,
+      .data$end, .data$width
+    ) %>%
+    dplyr::mutate(chrom = as.character(.data$chrom))
+
   # Intersect
   anno <- valr::bed_intersect(peaksIntersect, annoData, suffix = c("__userPeaks", "__EnsGenes"))
-  
+
   return(anno)
 }
