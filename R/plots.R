@@ -44,10 +44,13 @@ plotRLFSRes <- function(object,
 #' Plot Correlation Results
 #'
 #' @param object An RLRanges with \code{analyzeRLFS()} already run.
+#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @param ... For internal use.
 #' @return A Heatmap object.
 #' @export
-corrHeatmap <- function(object, ...) {
+corrHeatmap <- function(object,
+                        returnData=FALSE,
+                        ...) {
 
   # TODO: NEED RLHub for this
   rlsamples <- file.path(rlbase, "RLHub", "rlsamples.rda")
@@ -120,22 +123,34 @@ corrHeatmap <- function(object, ...) {
     "user_selected" = "firebrick",
     "RLBase" = "grey"
   )
-  collst <- list(
+  cat_cols <- list(
     "mode" = mode_cols,
     # "condType" = c(cond_cols, "grey"),
     "verdict" = verd_cols,
     "group" = group_cols
   )
+  cat_cols$mode <- cat_cols$mode[which(names(cat_cols$mode) %in% annoCorr$mode)]
+  continuous_pal <- circlize::colorRamp2(breaks = myBreaks[-1], colors = myColor)
   
-  collst$mode <- collst$mode[which(names(collst$mode) %in% annoCorr$mode)]
+  # Return data if requested
+  if (returnData) {
+    return(
+      list(
+        "corrRes" = corrRes,
+        "continuous_pal" = continuous_pal,
+        "cat_cols" = cat_cols,
+        "annoCorr" = annoCorr
+      )
+    )
+  }
   
   # Build heatmap
   chm <- ComplexHeatmap::Heatmap(
-    corrRes, col = circlize::colorRamp2(breaks = myBreaks[-1], colors = myColor), 
+    corrRes, col = continuous_pal, 
     show_column_names = FALSE,
     show_row_names = FALSE,
     top_annotation = ComplexHeatmap::HeatmapAnnotation(
-      df = annoCorr, col = collst
+      df = annoCorr, col = cat_cols
     ),
     name = "Corr (R)"
   )
@@ -152,6 +167,7 @@ corrHeatmap <- function(object, ...) {
 #' @param onlyCase If TRUE, only "case" predicted samples included. Default: TRUE. 
 #' @param onlyPOS If TRUE, only "POS" labeled samples included. Default: FALSE. 
 #' @param splitby Metadata by which to split plots. Can be "none", "verdict", or "condType".
+#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @return A named list of ggplot objects.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
@@ -160,7 +176,8 @@ plotEnrichment <- function(object,
                            modes = NULL,
                            onlyCase = TRUE,
                            onlyPOS = FALSE,
-                           splitby = c("none", "verdict", "condType")) {
+                           splitby = c("none", "verdict", "condType"),
+                           returnData = FALSE) {
   
   # TODO: Should there be an option to control this for the user?
   yval <- "stat_fisher_rl"
@@ -243,6 +260,12 @@ plotEnrichment <- function(object,
   datalst <- input_data %>%
     dplyr::group_by(.data$db) %>%
     {setNames(dplyr::group_split(.), dplyr::group_keys(.)[[1]])}
+  
+  # Return data if requested
+  if (returnData) {
+    return(datalst)
+  }
+  
   plts <- lapply(
     datalst,
     function(x) {
@@ -316,7 +339,7 @@ plotEnrichment <- function(object,
             shape=23, 
             stroke = 1.5
           ) +
-          scale_fill_manual(
+          ggplot2::scale_fill_manual(
             values = colvec, drop=TRUE
           )
       }
@@ -349,13 +372,13 @@ plotEnrichment <- function(object,
             hjust = 1
           )
         ) +
-        theme(
-          legend.title = element_text(size=18),
-          legend.text = element_text(size=14),
+        ggplot2::theme(
+          legend.title = ggplot2::element_text(size=18),
+          legend.text = ggplot2::element_text(size=14),
           plot.caption = ggplot2::element_text(size=12)
         ) +
-        guides(
-          fill = guide_legend(
+        ggplot2::guides(
+          fill = ggplot2::guide_legend(
             override.aes = list(size=0, stroke=0)
           )
         ) + 
@@ -376,11 +399,12 @@ plotEnrichment <- function(object,
 #' Plot RL-Region overlap with RLRanges
 #'
 #' @param object An RLRanges object with \code{rlRegionTest()} already run.
+#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @return A venn diagram ggplot object.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-plotRLRegionOverlap <- function(object) {
+plotRLRegionOverlap <- function(object, returnData=FALSE) {
   
   # Get RLRegions 
   # TODO: NEEDS to be in RLHub 
@@ -417,16 +441,33 @@ plotRLRegionOverlap <- function(object) {
   # Build the tbl and plot
   sites <- seq(pkonly + rlonly + shared)
   
-  # Make the plot
-  futile.logger::flog.threshold(futile.logger::ERROR,
-                                name = "VennDiagramLogger")
-  gt <- list(
+  # Get the plot data
+  pltdata <- list(
     sites[c(rep(FALSE, pkonly), rep(TRUE, rlonly), rep(TRUE, shared))],
     sites[c(rep(TRUE, pkonly), rep(FALSE, rlonly), rep(TRUE, shared))]
   ) %>%
-    setNames(nm = c("RL-Regions", object@metadata$sampleName)) %>%
+    setNames(nm = c("RL-Regions", object@metadata$sampleName))
+  if (returnData) {
+    return(pltdata)
+  }
+  
+  # Make the plot
+  futile.logger::flog.threshold(futile.logger::ERROR,
+                                name = "VennDiagramLogger")
+  gt <- pltdata %>%
     VennDiagram::venn.diagram(filename = NULL,
-                              margin = .1) %>%
+                              fill = c("#9ad9ab", "#9aa0d9"),
+                              main = "RL-Region Overlap",
+                              sub = paste0(
+                                "Fisher's Test: pval = ", 
+                                signif(olres$Test_results$p.value),
+                                "; odds ratio = ", 
+                                signif(olres$Test_results$estimate)
+                              ),
+                              main.cex = 2,
+                              cat.pos = c(200, 160),
+                              cat.dist = c(0.05, 0.05),
+                              margin = .05, sub.pos = c(0.5,0.15)) %>%
     grid::grid.draw() %>%
     ggplotify::grid2grob() %>% 
     ggplotify::as.ggplot()
@@ -435,9 +476,4 @@ plotRLRegionOverlap <- function(object) {
   return(gt)
   
 }
-
-
-
-
-
 

@@ -1,27 +1,30 @@
 ---
-title: "RSeq Report"
+title: "RLSeq Report"
 output: 
   html_document:
     code_folding: hide
     theme: flatly
     highlight: textmate
 params:
-  sampleName: "placeholder"
-  mode: "placeholder"
-  rlfsRes: "placeholder"
-  predictedCondition: "placeholder"
-  featureTest: "placeholder"
-  corrRes: "placeholder"
-  annoGenes: "placeholder"
-  RLoopRegions: "placeholder"
-  genome: "placeholder"
+  object: "placeholder"
 ---
 
 
 ```{r setup, include=FALSE, echo=FALSE}
 list2env(params, envir = environment())
+
+# Libraries
 library(magrittr)
 library(rlang)
+
+# Wrangle results and trigger conditional templates
+rlres <- object@metadata$results
+rlreslst <- lapply(slotNames(rlres), function(sn) {
+  tryCatch(rlresult(object, sn), error = function(e) {NULL})
+})
+names(rlreslst) <- slotNames(rlres)
+isnull <- sapply(rlreslst, is.null)
+
 ```
 
 <br>
@@ -39,13 +42,13 @@ Time finished: <strong>`r date()`</strong>
 
 <hr>
 
-```{r annoShow, child=system.file("Rmd", "correlation_template.Rmd", package = "RSeqR"), eval=is.double(corrRes)}
+```{r annoShow, child=system.file("Rmd", "correlation_template.Rmd", package = "RLSeq"), eval=isnull["correlationMat"]}
 ```
 
-```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=is.list(rlfsRes)}
+```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RLSeq"), eval=isnull["rlfsRes"]}
 ```
 
-```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=is.list(predictedCondition)}
+```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=isnull["rlfsRes"]}
 ```
 
 ```{r annoShow, child=system.file("Rmd", "RLFS_template.Rmd", package = "RSeqR"), eval=is.list(featureTest)}

@@ -45,7 +45,7 @@ setValidity(
     coverage <- object@metadata$coverage
     if (object@metadata$coverage != "" &&
         (! file.exists(coverage) && ! urlExists(coverage))) {
-      stop("No coverage found. Content of 'coverage' slot: ", 
+      stop("Coverage could not be found. Content of 'coverage' slot: ", 
            coverage, ". Set coverage with coverage(object) <-")
     }
   }
