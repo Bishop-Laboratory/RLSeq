@@ -17,15 +17,14 @@ Not needed unless masked genome unavailable (see RLSeq::genomeMasks).}
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
 }
 \value{
-A named list containing the results of RegioneR,
-peaks annotated with the RLFS they overlap with,
-and the Z score results within 3000 BP of an RLFS.
+An RLRanges object with RLFS analysis results included.
 }
 \description{
 Analyzes the enrichment of peaks within R-loop forming sequences.
 }
 \examples{
 
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
 rlr <- analyzeRLFS(rlr)

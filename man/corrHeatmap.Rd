@@ -4,10 +4,12 @@
 \alias{corrHeatmap}
 \title{Plot Correlation Results}
 \usage{
-corrHeatmap(object, ...)
+corrHeatmap(object, returnData = FALSE, ...)
 }
 \arguments{
 \item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
+
+\item{returnData}{If TRUE, plot data is returned instead of plotting. Default: FALSE}
 
 \item{...}{For internal use.}
 }

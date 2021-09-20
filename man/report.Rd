@@ -2,22 +2,33 @@
 % Please edit documentation in R/report.R
 \name{report}
 \alias{report}
-\title{Generate report}
+\title{Generate an RLSeq Report}
 \usage{
-report(data, outputFile = "report.html", ...)
+report(object, output = "rlreport.html", quiet = FALSE, ...)
 }
 \arguments{
-\item{data}{A named list containing \code{annotated_peaks}, \code{feature_overlaps},
-and \code{rlfs_results}}
+\item{object}{An RLRanges object.}
 
-\item{outputFile}{A path indicating the report output HTML file.}
+\item{output}{A path indicating the report output HTML file. Default: "rlreport.html"}
+
+\item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{rmarkdown::render()}}
 }
+\value{
+TRUE
+}
 \description{
-Generates RLSeq Quality Report
+Generate an RLSeq Report
 }
 \examples{
 
-RLSeq::makeReport(RLSeq::SRX1025890, outputFile = "report.html")
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+rlr <- RLRanges(pks, coverage=cvg,  genome="hg38", mode="DRIP")
+rlr <- RLSeq(rlr)
+
+report(rlr)
+
 }
