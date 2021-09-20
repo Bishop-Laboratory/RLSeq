@@ -5,18 +5,15 @@
 \title{Tests Genomic Feature Enrichment}
 \usage{
 featureEnrich(
-  peaks,
-  genome = c("hg38", "mm10"),
-  annotations,
+  object,
+  annotations = NULL,
   downsample = 10000,
   quiet = FALSE,
   cores = 1
 )
 }
 \arguments{
-\item{peaks}{A GRanges object containing R-loop peaks}
-
-\item{genome}{UCSC genome identifier indicating genome of supplied peaks.}
+\item{object}{An RLRanges object.}
 
 \item{annotations}{Annotation list. See details.}
 
@@ -65,5 +62,7 @@ small_anno <- list(
   "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
   "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
 )
-RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations = small_anno, genome = "hg38")
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+rls <- RLRanges(pks, genome="hg38", mode="DRIP")
+featureEnrich(rls, annotations = small_anno)
 }
