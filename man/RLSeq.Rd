@@ -44,8 +44,9 @@ Runs the full RLSeq pipeline and generates an analysis report in HTML format.
 \examples{
 
 URL <- paste0(RLSeq:::RLBASE_BW_URL, "SRX1025890_hg38.bw")
-RLSeq::RLSeq(RLSeq::SRX1025890_peaks, coverage=BW_FILE,
-             genome="hg38", outputFile = "report.html")
+RLSeq::RLSeq(RLSeq::SRX1025890_peaks,
+  coverage = BW_FILE,
+  genome = "hg38", outputFile = "report.html"
+)
 file.remove(BW_FILE)
-
 }

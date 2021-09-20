@@ -22,5 +22,4 @@ Convenience function for converting ranges from between assemblies
 \examples{
 
 hg38Lift(RLSeq::SRX1025890_peaks_hg19)
-
 }

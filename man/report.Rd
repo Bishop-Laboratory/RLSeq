@@ -20,5 +20,4 @@ Generates RLSeq Quality Report
 \examples{
 
 RLSeq::makeReport(RLSeq::SRX1025890, outputFile = "report.html")
-
 }

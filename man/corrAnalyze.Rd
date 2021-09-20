@@ -20,8 +20,9 @@ between the query sample and the RMapDB database.
 }
 \examples{
 
-BW_URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
-                 "rseq-coverage-unstranded/SRX1025890_hg38.bw")
-result <- RLSeq::corrAnalyze(BW_URL, genome="hg38")
-
+BW_URL <- paste0(
+  "https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
+  "rseq-coverage-unstranded/SRX1025890_hg38.bw"
+)
+result <- RLSeq::corrAnalyze(BW_URL, genome = "hg38")
 }

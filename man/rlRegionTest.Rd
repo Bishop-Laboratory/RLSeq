@@ -20,6 +20,5 @@ Tests the overlap of peaks within R-loop regions
 }
 \examples{
 
-RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome="hg38")
-
+RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome = "hg38")
 }

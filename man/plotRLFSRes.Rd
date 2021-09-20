@@ -4,10 +4,10 @@
 \alias{plotRLFSRes}
 \title{Plot Perm Test results}
 \usage{
-plotRLFSRes(rlfsRes, ...)
+plotRLFSRes(object, ...)
 }
 \arguments{
-\item{rlfsRes}{The list object generated from running \code{analyzeRLFS}.}
+\item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
 
 \item{...}{Additional parameters passed to \code{ggplot}.}
 }
