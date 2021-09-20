@@ -23,5 +23,4 @@ Annotates R-loop peaks as a GRanges object with gene-level information
 \examples{
 
 geneAnnotation(RLSeq::SRX1025890_peaks)
-
 }

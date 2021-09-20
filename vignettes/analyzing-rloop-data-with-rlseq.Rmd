@@ -52,12 +52,18 @@ tmp <- tempfile()
 download.file(annot, destfile = tmp, quiet = TRUE)
 load(tmp)
 
-# The RLSeq command performs all analysis to generate an HTML report
-rls <- RLSeq(
+# Initialize data in the RLRanges object. 
+rlr <- RLRanges(
   peaks = pks,
   coverage = cvg,
-  annotations = annotations,
-  genome = "hg38"
+  genome = "hg38",
+  mode = "DRIP"
+)
+
+# The RLSeq command performs all analysis to generate an HTML report
+rls <- RLSeq(
+  object=rlr,
+  annotations = annotations
 )
 ```
 
@@ -78,7 +84,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("RLSeq")
 ```
 
-Both packages can be installed from github as well.
+Both packages can also be installed from github.
 
 ``` {.r}
 library(remotes)
@@ -92,11 +98,11 @@ RLSeq is compatible with R-loop data generated from a variety of pipelines and t
 
 #### RLPipes for upstream data processing
 
-RLPipes can be downloaded from [conda].
+RLPipes can be installed using [mamba](https://anaconda.org/conda-forge/mamba) or [conda](https://docs.conda.io/en/latest/miniconda.html) (slower).
 
 ``` {.shell}
 # conda install -c conda-forge mamba
-mamba install -c bioconda rlpipes
+mamba create -n rlpipes -c bioconda rlpipes
 ```
 
 A typical config file `CSV` file should be written:
@@ -119,7 +125,7 @@ The resulting directory will contain `peaks/`, `coverage/`, `bam/`, and other pr
 
 The following details each step of the analysis pipeline which is run as part of the `RLSeq()` command. We will showcase the usage of each and describe important parameters.
 
-```{r library}
+```{r library, echo=FALSE}
 library(RLSeq)
 library(dplyr)
 ```
@@ -139,8 +145,34 @@ The data was processed using RLPipes and uploaded to RLBase. We begin by reading
 
 ```{r}
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
-s96 <- regioneR::toGRanges(file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak"))
-rnh <- regioneR::toGRanges(file.path(rlbase, "peaks", "SRX1025892_hg38.broadPeak"))
+
+# Get peaks and coverage
+s96Pks <- regioneR::toGRanges(file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak"))
+s96Cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+rnhPks <- regioneR::toGRanges(file.path(rlbase, "peaks", "SRX1025892_hg38.broadPeak"))
+rnhCvg <- file.path(rlbase, "coverage", "SRX1025892_hg38.bw")
+
+## Build RLRanges ##
+
+# S9.6 -RNaseH1
+rlr <- RLRanges(
+  peaks = s96Pks, 
+  coverage = s96Cvg,
+  genome = "hg38",
+  mode = "DRIP",
+  condType = "POS",
+  sampleName = "TC32 DRIP-Seq"
+)
+
+# S9.6 +RNaseH1
+rlrRNH <- RLRanges(
+  peaks = rnhPks, 
+  coverage = rnhCvg,
+  genome = "hg38",
+  mode = "DRIP",
+  condType = "NEG",
+  sampleName = "TC32 DRIP-Seq (+RNaseH1)"
+)
 ```
 
 ### Sample quality
@@ -152,26 +184,21 @@ Sample quality is assessed by analyzing the association of peaks with R-loop-for
 RLSeq first implements a permutation test to evaluate the enrichment of peaks within RLFS and build a Z-score distribution around the TSS.
 
 ```{r rlfs-test, cache=TRUE}
-s96_rlfs <- analyzeRLFS(
-  peaks = s96, genome = "hg38", quiet = TRUE
-)
+# Analyze RLFS for positive sample
+rlr <- analyzeRLFS(rlr, quiet = TRUE)
 ```
 
-The results object `resRLFS` contains both permutation test results and the Z score distribution.
-
-These results can be easily visualized with the `permPlot` function.
+The resulting objects now contain the permutation test results. These results can be easily visualized with the `permPlot` function.
 
 ```{r plot-perm, fig.cap="Plot of permutation test results (S9.6)."}
-plotRLFSRes(s96_rlfs) + ggplot2::labs(subtitle = "TC32 S9.6")
+plotRLFSRes(rlr)
 ```
 
 As a comparison, we also test the negative control (RNaseH1-treated) samples.
 
 ```{r plot-perm-rnh, fig.cap="Plot of permutation test results (S9.6 + RNaseH1)."}
-rnh_rlfs <- analyzeRLFS(
-  peaks = rnh, genome = "hg38", quiet = TRUE
-)
-plotRLFSRes(rnh_rlfs) + ggplot2::labs(subtitle = "TC32 S9.6 + RNaseH1")
+rlrRNH <- analyzeRLFS(rlrRNH, quiet = TRUE)
+plotRLFSRes(rlrRNH)
 ```
 
 From this example, we can see a fundamental challenge facing RLFS-based quality assessment: while the RNaseH1-treated sample is clearly a negative control, and the distribution looks terrible, the p-value is still significant at `p < 0.0099`. This indicates the flaw with permutation testing alone, and it was the motivation for the development of a classifier that could discriminate positive from negative samples. The classifier can be accessed through RLSeq.
@@ -181,19 +208,10 @@ From this example, we can see a fundamental challenge facing RLFS-based quality 
 The classifier is an ensemble model based on an online-learning scheme as detailed in the RLSuite publication. The latest version can be accessed via RLHub.
 
 ```{r predict-condition}
-# Download model data (will be replaced by RLHub)
-tmp <- tempdir()
-a_ <- sapply(
-  c("prepFeatures.rda", "fftModel.rda"), function(x) {
-    download.file(file.path(rlbase, "RLHub", x), quiet = TRUE,
-                  destfile = file.path(tmp, x))
-    load(file.path(tmp, x), envir = globalenv())
-  }
-)
 
 # Predict 
-s96_pred <- predictCondition(s96_rlfs, fftModel=fftModel, prepFeatures=prepFeatures)
-rnh_pred <- predictCondition(rnh_rlfs, fftModel=fftModel, prepFeatures=prepFeatures)
+rlr <- predictCondition(rlr)
+rlrRNH <- predictCondition(rlrRNH)
 
 # Results
 tibble::tibble(

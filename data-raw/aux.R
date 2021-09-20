@@ -28,6 +28,23 @@ tmp <- tempfile()
 download.file(rlbps, destfile = tmp, quiet = TRUE)
 load(tmp)
 
+# Get the available genomes
+avgs <- file.path(rlbase, "misc", "available_genomes.rda")
+tmp <- tempfile()
+download.file(avgs, destfile = tmp, quiet = TRUE)
+load(tmp)
+genomes <- available_genomes %>%
+  as_tibble() %>%
+  rename(rlfs_available = homer_anno_available) %>%
+  filter(rlfs_available, genes_available) %>%
+  pull(UCSC_orgID)
+
+# Get the available modes (no bisulfite currently supported)
+available_modes <- rlsamples %>%
+  select(mode, family, ip_type, strand_specific, moeity, bisulfite_seq) %>%
+  distinct()
+
+
 # Get the databases and add order/group information
 pat <- "(.+)__(.+)"
 annotypes <- tibble(
@@ -112,6 +129,8 @@ aux <- list(
   ip_cols = ip_cols,
   mode_cols = mode_cols,
   condtype_cols = condtype_cols,
-  verdict_cols = verdict_cols
+  verdict_cols = verdict_cols,
+  available_modes = available_modes,
+  available_genomes = genomes
 )
-usethis::use_data(aux, compress = "xz")
+usethis::use_data(aux, compress = "xz", overwrite = TRUE)

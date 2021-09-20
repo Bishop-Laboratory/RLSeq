@@ -1,6 +1,7 @@
 #' Check if URL exists
 #' @param url URL to check
 #' @return logical. TRUE if status code 200, FALSE if not
+#' @export
 urlExists <- function(url) {
   identical(
     httr::status_code(
@@ -37,6 +38,7 @@ getChromSizes <- function(genome) {
 #' Helper function that checks whether a genome has RLFS available
 #' @param genome the UCSC genome name to check
 #' @return A logical, TRUE if available, FALSE if not
+#' @export
 checkRLFSAnno <- function(genome) {
   return(
     urlExists(
@@ -58,6 +60,7 @@ checkRLFSAnno <- function(genome) {
 #' @param genome the UCSC genome name to retrieve RLFS for
 #' @return A GRanges object with RLFS for that species.
 #' @importFrom utils capture.output
+#' @export
 getRLFSAnno <- function(genome) {
 
   # Check if annotations available first
@@ -89,6 +92,7 @@ getRLFSAnno <- function(genome) {
 #' @param genomeFrom the UCSC genome name to convert from.
 #' @param genomeTo the UCSC genome name to convert to.
 #' @importFrom utils download.file
+#' @export
 getChain <- function(genomeFrom, genomeTo) {
 
   # Get URL
@@ -169,6 +173,7 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
 #' @param filename A string containing the desired file name if writing to file
 #' @return A DataFrame object containing the GRanges content formatted according to .bed standards
 #' @importFrom utils write.table
+#' @export
 grangesToBed <- function(granges, write = FALSE, filename = NULL) {
   df <- as.data.frame(granges)
   names(df)[1] <- paste0("#", names(df)[1])

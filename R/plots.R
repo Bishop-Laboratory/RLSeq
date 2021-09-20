@@ -3,16 +3,16 @@
 #' @description Simple function for plotting permTest
 #' results using ggplot2.
 #'
-#' @param rlfsRes The list object generated from running \code{analyzeRLFS}.
+#' @param object An RLRanges with \code{analyzeRLFS()} already run.
 #' @param ... Additional parameters passed to \code{ggplot}.
 #' @return A ggplot object.
 #' @export
-plotRLFSRes <- function(rlfsRes,
+plotRLFSRes <- function(object,
                         ...) {
-
-  # Validate rlfsRes
-  stopifnot(is.list(rlfsRes))
-
+  
+  # Obtain RLFS-Res
+  rlfsRes <- rlresult(object, resultName = "rlfsRes")
+  
   # Obtain the plot data
   pltdat <- tibble::tibble(
     "zscore" = rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifted.z.scores,
@@ -20,6 +20,7 @@ plotRLFSRes <- function(rlfsRes,
   )
   pval <- rlfsRes$perTestResults$`regioneR::numOverlaps`$pval
 
+  # Make plot
   ggplot2::ggplot(
     data = pltdat,
     ggplot2::aes_string(
@@ -33,12 +34,13 @@ plotRLFSRes <- function(rlfsRes,
       linetype = "dashed"
     ) +
     ggplot2::geom_line(size = 1) +
-    ggplot2::ggtitle("ZScore around RLFS") +
+    ggplot2::ggtitle("Z-score around RLFS") +
     ggplot2::labs(caption = paste0("p < ", round(pval, digits = 5))) +
     ggplot2::ylab("Peak Enrichment (Z-Score)") +
     ggplot2::scale_y_continuous(expand = c(0, 0)) +
     ggplot2::xlab("Distance to RLFS (bp)") +
-    ggprism::theme_prism(base_size = 15)
+    ggprism::theme_prism(base_size = 14) +
+    ggplot2::labs(subtitle = object@metadata$sampleName)
 }
 
 
