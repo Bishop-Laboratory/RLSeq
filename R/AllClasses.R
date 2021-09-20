@@ -31,8 +31,16 @@ setValidity(
 
     # condType
     if (! object@metadata$condType %in% c("POS", "NEG", "NULL") &&
-        length(object@metadata$condType) > 1) {
+        object@metadata$condType != "") {
       stop("'condType' must be one of 'POS', 'NEG', or 'NULL -- or be unspecified.")
+    }
+    
+    # coverage
+    coverage <- object@metadata$coverage
+    if (object@metadata$coverage != "" &&
+        (file.exists(coverage) || urlExists(coverage))) {
+      stop("No coverage found. Content of 'coverage' slot: ", 
+           coverage, ". Set coverage with coverage(object) <-")
     }
   }
 )
@@ -49,7 +57,7 @@ setMethod(
         length(slot(res, x)) > 1
       })
     ]
-    fld <- ifelse(length(fld), fld, "None")
+    if (! length(fld)) fld <- "None"
     
     sgr <- utils::getFromNamespace("show_GenomicRanges", "GenomicRanges")
     sgr(object)
@@ -57,15 +65,17 @@ setMethod(
       paste0("\n", object@metadata$sampleName, ":"),
       "\n  Mode:", object@metadata$mode, 
       "\n  Genome:", GenomeInfoDb::genome(object)[1],
-      "\n  condType:", object@metadata$condType,
+      "\n  condType:", object@metadata$condType
+    )
+    cat("\n\nRLSeq Results Available:",
+        "\n ", paste0(fld, collapse = ", "), "\n")
+    cat(
       ifelse(
         "predictRes" %in% fld,
-        paste0("\n  verdict: ", res@predictRes$verdict),
+        paste0("\nverdict: ", res@predictRes$Verdict, "\n\n"),
         "\n"
       )
     )
-    cat("\nRLSeq Results Available:",
-        "\n ", paste0(fld, collapse = ", "), "\n\n")
   }
 )
 
