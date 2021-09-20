@@ -4,18 +4,24 @@
 #' (Normal) or "Control" (RNaseH1-like). This is a useful quality metric when
 #' interpreting R-loop mapping results.
 #'
-#' @param rlfsRes The results list from running analyzeRLFS().
+#' @param object An RLRanges with \code{analyzeRLFS()} already run.
 #' @param ... Internal use only.
 #' @return A list containing the results of the fourier analysis and the model prediction.
 #' @examples
 #'
-#' rlfsRes <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome = "hg38")
-#' RLSeq::predictCondition(rlfsRes)
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+#' rlr <- analyzeRLFS(rlr)
+#' rlr <- predictCondition(rlr)
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @importFrom stats fft acf
 #' @export
-predictCondition <- function(rlfsRes, ...) {
+predictCondition <- function(object, ...) {
+  
+  # Obtain RLFS-Res
+  rlfsRes <- rlresult(object, resultName = "rlfsRes")
 
   # Dots are used to supply custom models for testing purposes only.
   dots <- list(...)
@@ -31,8 +37,16 @@ predictCondition <- function(rlfsRes, ...) {
       )
     )
   } else {
-    prepFeatures <- RLSeq::prepFeatures
-    fftModel <- RLSeq::fftModel
+    # TODO: These NEEDS to be updated when RLHub is online
+    # Download model data (will be replaced by RLHub)
+    tmp <- tempdir()
+    a_ <- sapply(
+      c("prepFeatures.rda", "fftModel.rda"), function(x) {
+        download.file(file.path(RLBASE_URL, "RLHub", x), quiet = TRUE,
+                      destfile = file.path(tmp, x))
+        load(file.path(tmp, x), envir = globalenv())
+      }
+    )
   }
 
   # Get pval
@@ -87,7 +101,7 @@ predictCondition <- function(rlfsRes, ...) {
   criteriaFour <- toupper(pred) == "CASE"
 
   # return results
-  list(
+  reslst <- list(
     Features = featuresRaw %>%
       tidyr::pivot_longer(dplyr::everything(),
         names_to = "feature",
@@ -111,6 +125,10 @@ predictCondition <- function(rlfsRes, ...) {
       criteriaThree & criteriaFour,
     "Case", "Control"
     )
-  ) %>%
-    return()
+  ) 
+  
+  # Add to RLRanges and result
+  slot(object@metadata$results, "predictRes") <- reslst
+  
+  return(object)
 }
