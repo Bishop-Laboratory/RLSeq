@@ -9,7 +9,8 @@ plotEnrichment(
   modes = NULL,
   onlyCase = TRUE,
   onlyPOS = FALSE,
-  yval = "stat_fisher_rl"
+  splitby = c("none", "verdict", "condType"),
+  returnData = FALSE
 )
 }
 \arguments{
@@ -21,8 +22,9 @@ plotEnrichment(
 
 \item{onlyPOS}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
 
-\item{yval}{Column to use for obtaining Y-axis values. Default: "stat_fisher_rl".
-If NULL, no comparison with RLBase will be made.}
+\item{splitby}{Metadata by which to split plots. Can be "none", "verdict", or "condType".}
+
+\item{returnData}{If TRUE, plot data is returned instead of plotting. Default: FALSE}
 }
 \value{
 A named list of ggplot objects.

@@ -2,51 +2,27 @@
 % Please edit documentation in R/RLSeq.R
 \name{RLSeq}
 \alias{RLSeq}
-\title{Run RLSeq and generate report}
+\title{Run RLSeq}
 \usage{
-RLSeq(
-  peaks,
-  genome,
-  coverage = NULL,
-  sampleName = "User-supplied Sample",
-  mode = "User-supplied Sample",
-  outputFile = "report.html",
-  dataOnly = FALSE,
-  ...
-)
+RLSeq(object, quiet = FALSE)
 }
 \arguments{
-\item{peaks}{A GRanges object containing the R-loop ranges to check.}
+\item{object}{An RLRanges object.}
 
-\item{genome}{UCSC genome which peaks were generated from.
-Only "hg38" and "mm10" currently available.
-Use RLSeq::liftUtil() to convert to the correct format, if needed.}
-
-\item{coverage}{(optional) The path to the bigWig file corresponding to \code{peaks}.
-If supplied, correlation analysis will be performed.}
-
-\item{sampleName}{The name to give to this sample in the report. Default: "User-supplied Sample".}
-
-\item{mode}{The mode type this sample belongs to. See options at RLSeq::modes.}
-
-\item{outputFile}{A path indicating the report output HTML file.}
-
-\item{dataOnly}{If TRUE, the HTML report will not be created.}
-
-\item{...}{Arguments passed to \code{rmarkdown::render()}}
+\item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 }
 \value{
-A Named List with the datasets passed to RLSeq::makeReport().
+An RLRanges object with all results available.
 }
 \description{
-Runs the full RLSeq pipeline and generates an analysis report in HTML format.
+A convenience function which runs the full RLSeq pipeline.
 }
 \examples{
 
-URL <- paste0(RLSeq:::RLBASE_BW_URL, "SRX1025890_hg38.bw")
-RLSeq::RLSeq(RLSeq::SRX1025890_peaks,
-  coverage = BW_FILE,
-  genome = "hg38", outputFile = "report.html"
-)
-file.remove(BW_FILE)
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+rlr <- RLRanges(pks, coverage=cvg,  genome="hg38", mode="DRIP")
+rlr <- RLSeq(rlr)
+
 }
