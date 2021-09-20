@@ -4,12 +4,10 @@
 \alias{getGSSignal}
 \title{Get GS Signal}
 \usage{
-getGSSignal(coverage, genome, gssignal)
+getGSSignal(coverage, gssignal)
 }
 \arguments{
 \item{coverage}{The path to a .bigWig file (can be a URL)}
-
-\item{genome}{The UCSC genome ID to use. (Currently, only "hg38" is supported)}
 
 \item{gssignal}{The GS signal obtained from RLHub.}
 }

@@ -21,24 +21,23 @@
 #' @importFrom utils capture.output
 #' @export
 analyzeRLFS <- function(object,
+                        mask = NULL,
                         quiet = FALSE,
                         ...) {
-
-  # Get UCSC genome
-  genome <- GenomeInfoDb::genome(object)[1]  
 
   # Check RLFS, chrom_sizes, and mask
   if (!quiet) {
     message("+ [i] Evaluating Inputs.")
   }
-  RLFS <- getRLFSAnno(genome)
-  chrom_sizes <- getChromSizes(genome)
+  genome <- GenomeInfoDb::genome(object)[1]
+  RLFS <- getRLFSAnno(object)
+  chrom_sizes <- getChromSizes(object)
   if (is.null(mask)) {
     available_masks <- gsub(names(RLSeq::genomeMasks),
       pattern = "\\.masked",
       replacement = ""
     )
-    if (!genome %in% available_masks) {
+    if (! genome %in% available_masks) {
       stop(genome, " is not available in mask list. You may generate it with ")
     } else {
       mask <- RLSeq::genomeMasks[[paste0(genome, ".masked")]]
@@ -56,11 +55,7 @@ analyzeRLFS <- function(object,
 
   # Run RLFS perm test
   genomeNow <- GenomicRanges::GRanges(
-    dplyr::mutate(chrom_sizes, start = 1) %>%
-      dplyr::select(
-        seqnames = .data$X1,
-        .data$start, end = .data$X2
-      )
+    dplyr::mutate(chrom_sizes, start = 1, end = .data$size)
   )
   GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
   GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)

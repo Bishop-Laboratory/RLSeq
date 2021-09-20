@@ -73,14 +73,14 @@ corrHeatmap <- function(object, ...) {
     dplyr::mutate(group = "RLBase") %>%
     dplyr::select(
       .data$rlsample, .data$mode, 
-      .data$condType,
+      # .data$condType,
       .data$verdict, .data$group
     ) %>%
     dplyr::bind_rows(
       tibble::tibble(
         rlsample = object@metadata$sampleName,
         mode = object@metadata$mode,
-        condType = object@metadata$condType,
+        # condType = object@metadata$condType,
         verdict = prediction$Verdict,
         group = "user_selected"
       )
@@ -122,7 +122,7 @@ corrHeatmap <- function(object, ...) {
   )
   collst <- list(
     "mode" = mode_cols,
-    "condType" = c(cond_cols, "grey"),
+    # "condType" = c(cond_cols, "grey"),
     "verdict" = verd_cols,
     "group" = group_cols
   )
@@ -148,20 +148,22 @@ corrHeatmap <- function(object, ...) {
 #' Plot Enrichment Test Results
 #'
 #' @param object The tibble obejct obtained from running \code{featureEnrich}.
-#' @param rlbaseRes A tibble containing results from RLBase samples.
-#' @param rlsamples A tibble containing the metadata of RLBase samples.
-#' @param yval Column to use for obtaining Y-axis values. Default: "stat_fisher_rl".
-#' If NULL, no comparison with RLBase will be made.
+#' @param modes Which modes to include in plot? If empty, all modes included.
+#' @param onlyCase If TRUE, only "case" predicted samples included. Default: TRUE. 
+#' @param onlyPOS If TRUE, only "POS" labeled samples included. Default: FALSE. 
+#' @param splitby Metadata by which to split plots. Can be "none", "verdict", or "condType".
 #' @return A named list of ggplot objects.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 plotEnrichment <- function(object,
-                           rlbaseRes = NULL,
-                           rlsamples = NULL,
-                           splitby = c("none", "verdict", "condtype"),
-                           facetby = c("none", "mode"),
-                           yval = "stat_fisher_rl") {
+                           modes = NULL,
+                           onlyCase = TRUE,
+                           onlyPOS = FALSE,
+                           splitby = c("none", "verdict", "condType")) {
+  
+  # TODO: Should there be an option to control this for the user?
+  yval <- "stat_fisher_rl"
   
   # TODO: NEEDS to be replaced with RLHub
   rlbase_enrich <- file.path(rlbase, "RLHub", "feature_enrichment_per_sample.rda")
@@ -179,19 +181,45 @@ plotEnrichment <- function(object,
   # Get enrichment results from object
   sampleRes <- rlresult(object, resultName = "featureEnrichment")
   
+  # Add metadata
+  usamp <- object@metadata$sampleName
+  sampleRes$experiment <- usamp
+  sampleRes$condType <- object@metadata$condType
+  sampleRes$mode <- object@metadata$mode
+  predres <- rlresult(object, resultName = "predictRes")
+  sampleRes$verdict <- predres$Verdict
+  
   # Get min, max for plotting
-  limit <- ifelse(yval == "stat_fisher_rl", 10, Inf)
+  limit <- ifelse(yval == "stat_fisher_rl", 15, Inf)
+  
+  # Filter RLBase
+  if (! is.null(modes)) {
+    rlsamples <- dplyr::filter(rlsamples, .data$mode %in% {{ modes }})
+  }
+  if (onlyCase) {
+    rlsamples <- dplyr::filter(rlsamples, .data$verdict == "Case")
+  }
+  if (onlyPOS) {
+    rlsamples <- dplyr::filter(rlsamples, .data$condType == "POS")
+  }
 
-  # Wranlg the input data
+  # Wrangle the RLBase data
+  rlbaseResFull <- dplyr::bind_rows(
+    rlbaseRes
+  ) %>%
+    dplyr::inner_join(
+      rlsamples,
+      by = c("experiment" = "rlsample")
+    )
+  
+  # Combine user sample and RLBase
   input_data <- sampleRes %>%
-    dplyr::mutate(experiment = "User-supplied") %>%
     dplyr::bind_rows(
-      dplyr::filter(
-        rlbaseRes, .data$type %in% sampleRes$type
-      )
+      rlbaseResFull
     ) %>%
     dplyr::select(
       .data$db, .data$type, .data$experiment,
+      .data$verdict, .data$condType, .data$mode,
       dplyr::contains("stat_fisher_rl")
     ) %>%
     dplyr::mutate(
@@ -201,22 +229,16 @@ plotEnrichment <- function(object,
       !is.na(.data$stat_fisher_rl),
       is.finite(.data$stat_fisher_rl)
     ) %>%
-    dplyr::left_join(
-      rlsamples,
-      by = c("experiment" = "rlsample")
-    )
-  if (splitby[1] == "none") {
-    input_data <- dplyr::filter(
-      input_data,
-      .data$verdict == "Case" | .data$experiment == "User-supplied"
-    )
-  }
-
+    dplyr::filter(.data$experiment %in% c(rlsamples$rlsample, usamp))
+  
   # Wrap strings
   input_data$type <- gsub(input_data$type, pattern = "_", replacement = " ")
   input_data$type[nchar(input_data$type) > 30] <-
     stringr::str_wrap(input_data$type[nchar(input_data$type) > 30], 30)
 
+  # Make selected explicit
+  input_data$selected <- ifelse(input_data$experiment == usamp, usamp, "")
+  
   # Build plots
   datalst <- input_data %>%
     dplyr::group_by(.data$db) %>%
@@ -227,45 +249,80 @@ plotEnrichment <- function(object,
       db_now <- x$db[1]
       col <- aux$db_cols$col[aux$db_cols$db == db_now]
       
-      if (!"User-supplied" %in% x$experiment) {
+      if (! usamp %in% x$experiment) {
         return(NULL)
       }
       
-      ggplot2::ggplot(
+      # Define limits
+      lmts <- c(
+        max(min(x[,yval]), -limit) - 1,
+        min(max(x[,yval]), limit) + 1
+      )
+      
+      
+      # Make base plot
+      pltbase <- ggplot2::ggplot(
         x,
         ggplot2::aes_string(
           x = "type",
           y = yval,
-          label = "experiment"
+          label = "experiment",
+          fill = if (splitby[1] != "none") splitby[1],
+          color = if (splitby[1] != "none") splitby[1]
         )
       ) +
-        ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
-        ggplot2::geom_boxplot(
-          alpha = .25,
-          col = col,
-          fill = col,
-          outlier.shape = NA,
-          outlier.size = 0
-        ) +
-        ggplot2::geom_jitter(
-          color = col,
-          fill = "#dbdbdb",
-          alpha = 0.3,
-          size = 0.3,
-          width = .3
-        ) +
-        ggplot2::geom_point(
-          data = x[x$experiment == "User-supplied", ],
-          mapping = ggplot2::aes_string(
-            col = "experiment"
-          ),
-          size = 2.5
-        ) +
-        ggplot2::scale_color_manual(
-          values = c("User-supplied" = "black")
-        ) +
-        ggpubr::rremove("legend") +
-        ggplot2::xlab(NULL) +
+        ggplot2::geom_hline(yintercept = 0, linetype = "dashed") 
+        
+      
+      if (splitby == "none") {
+        plt <- pltbase +
+          ggplot2::geom_boxplot(
+            color = "black",
+            fill = col,
+            position = ggplot2::position_dodge(.9),
+            alpha = .5
+          ) +
+          ggplot2::geom_jitter(
+            alpha=ifelse(x$experiment == usamp, 1, 0), 
+            size = 3, 
+            fill = col,
+            width = 0,
+            color = "black",
+            shape=23, 
+            stroke = 1.5
+          )
+      } else {
+        # Get split cols
+        cols <- aux[[paste0(tolower(splitby), "_cols")]]
+        colvec <- cols %>% dplyr::pull(.data$col)
+        names(colvec) <- cols %>% dplyr::pull({{ splitby }})
+        
+        # Add box and jitter
+        plt <- pltbase + 
+          ggplot2::geom_boxplot(
+            color = "black",
+            position = ggplot2::position_dodge(.9),
+            alpha = 1
+          ) +
+          ggplot2::geom_jitter(
+            alpha=ifelse(x$experiment == usamp, 1, 0), 
+            size = 3, 
+            color = "black",
+            position = ggplot2::position_jitterdodge(
+              dodge.width = .9,
+              jitter.width = 0, 
+              jitter.height = 0
+            ),
+            shape=23, 
+            stroke = 1.5
+          ) +
+          scale_fill_manual(
+            values = colvec, drop=TRUE
+          )
+      }
+      
+      # Final additions to plot and themeing
+      plt +
         ggplot2::ylab(
           stringr::str_to_title(
             gsub(yval,
@@ -274,24 +331,36 @@ plotEnrichment <- function(object,
             )
           )
         ) +
+        ggplot2::xlab(NULL) +
         ggplot2::labs(
-          title = gsub(db_now,
-                       pattern = "_",
-                       replacement = " "
-          )
+          title = gsub(
+            db_now,
+            pattern = "_",
+            replacement = " "
+          ),
+          subtitle = usamp,
+          caption = "\u25C7 - User sample"
         ) +
-        ggprism::theme_prism(base_size = 13) +
+        ggprism::theme_prism(base_size = 14) +
         ggplot2::theme(
           axis.text.x = ggplot2::element_text(
             angle = 45,
             vjust = 1,
             hjust = 1
-          ),
-          legend.title = ggplot2::element_blank(),
-          legend.text = ggplot2::element_text(size = 10),
-          legend.position = "bottom"
+          )
         ) +
-        ggplot2::scale_y_continuous(limits = c(-limit, limit))
+        theme(
+          legend.title = element_text(size=18),
+          legend.text = element_text(size=14),
+          plot.caption = ggplot2::element_text(size=12)
+        ) +
+        guides(
+          fill = guide_legend(
+            override.aes = list(size=0, stroke=0)
+          )
+        ) + 
+        ggplot2::scale_y_continuous(limits = lmts)
+      
     }
   )
 
@@ -301,4 +370,74 @@ plotEnrichment <- function(object,
   # Return
   return(plts)
 }
+
+
+
+#' Plot RL-Region overlap with RLRanges
+#'
+#' @param object An RLRanges object with \code{rlRegionTest()} already run.
+#' @return A venn diagram ggplot object.
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
+#' @export
+plotRLRegionOverlap <- function(object) {
+  
+  # Get RLRegions 
+  # TODO: NEEDS to be in RLHub 
+  rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
+  tmp <- tempfile()
+  download.file(rlregions_table, destfile = tmp, quiet = TRUE)
+  load(tmp)
+  
+  # Retrieve results
+  olres <- rlresult(object, "rlRegionRes")
+  
+  # Get abstracted sites
+  pkolnms <- olres$Overlap$name__peaks
+  rlolnms <- olres$Overlap$name__rlregion
+  
+  # Get overlapping ranges
+  pkolgr <- object[names(object) %in% pkolnms,]
+  
+  # Get the ranges for the rlregions
+  rlReg <- tableToRegions(rlregions_table)
+  rlolgr <- rlReg %>%
+    dplyr::filter(.data$name %in% {{ rlolnms }}) %>%
+    GenomicRanges::makeGRangesFromDataFrame()
+  
+  # Get the number of shared overlapping sites
+  shared <- c(pkolgr, rlolgr) %>%
+    GenomicRanges::reduce() %>%
+    length()
+  
+  # Get number unique
+  pkonly <- length(object[! names(object) %in% pkolnms,])
+  rlonly <- rlReg %>% dplyr::filter(! .data$name %in% {{ rlolnms }}) %>% nrow()
+  
+  # Build the tbl and plot
+  sites <- seq(pkonly + rlonly + shared)
+  
+  # Make the plot
+  futile.logger::flog.threshold(futile.logger::ERROR,
+                                name = "VennDiagramLogger")
+  gt <- list(
+    sites[c(rep(FALSE, pkonly), rep(TRUE, rlonly), rep(TRUE, shared))],
+    sites[c(rep(TRUE, pkonly), rep(FALSE, rlonly), rep(TRUE, shared))]
+  ) %>%
+    setNames(nm = c("RL-Regions", object@metadata$sampleName)) %>%
+    VennDiagram::venn.diagram(filename = NULL,
+                              margin = .1) %>%
+    grid::grid.draw() %>%
+    ggplotify::grid2grob() %>% 
+    ggplotify::as.ggplot()
+  
+  # Return
+  return(gt)
+  
+}
+
+
+
+
+
 

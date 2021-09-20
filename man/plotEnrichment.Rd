@@ -5,20 +5,21 @@
 \title{Plot Enrichment Test Results}
 \usage{
 plotEnrichment(
-  sampleRes,
-  rlbaseRes = NULL,
-  rlsamples = NULL,
-  splitby = c("none", "verdict", "condtype"),
-  facetby = c("none", "mode"),
+  object,
+  modes = NULL,
+  onlyCase = TRUE,
+  onlyPOS = FALSE,
   yval = "stat_fisher_rl"
 )
 }
 \arguments{
-\item{sampleRes}{The tibble obejct obtained from running \code{featureEnrich}.}
+\item{object}{The tibble obejct obtained from running \code{featureEnrich}.}
 
-\item{rlbaseRes}{A tibble containing results from RLBase samples.}
+\item{modes}{Which modes to include in plot? If empty, all modes included.}
 
-\item{rlsamples}{A tibble containing the metadata of RLBase samples.}
+\item{onlyCase}{If TRUE, only "case" predicted samples included. Default: TRUE.}
+
+\item{onlyPOS}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
 
 \item{yval}{Column to use for obtaining Y-axis values. Default: "stat_fisher_rl".
 If NULL, no comparison with RLBase will be made.}
@@ -27,5 +28,5 @@ If NULL, no comparison with RLBase will be made.}
 A named list of ggplot objects.
 }
 \description{
-Plotting function for featureEnrich() results.
+Plot Enrichment Test Results
 }

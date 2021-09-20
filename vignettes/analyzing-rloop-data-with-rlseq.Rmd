@@ -26,7 +26,9 @@ bibliography: references.bib
 knitr::opts_chunk$set(tidy = FALSE,
                       cache = FALSE,
                       dev = "png",
-                      message = FALSE, error = FALSE, warning = TRUE)
+                      message = FALSE, 
+                      error = FALSE,
+                      warning = TRUE)
 BiocStyle::markdown()
 ```
 
@@ -161,7 +163,8 @@ rlr <- RLRanges(
   genome = "hg38",
   mode = "DRIP",
   condType = "POS",
-  sampleName = "TC32 DRIP-Seq"
+  sampleName = "TC32 DRIP-Seq",
+  quiet = TRUE
 )
 
 # S9.6 +RNaseH1
@@ -171,7 +174,8 @@ rlrRNH <- RLRanges(
   genome = "hg38",
   mode = "DRIP",
   condType = "NEG",
-  sampleName = "TC32 DRIP-Seq (+RNaseH1)"
+  sampleName = "TC32 DRIP-Seq (+RNaseH1)",
+  quiet = TRUE
 )
 ```
 
@@ -183,7 +187,7 @@ Sample quality is assessed by analyzing the association of peaks with R-loop-for
 
 RLSeq first implements a permutation test to evaluate the enrichment of peaks within RLFS and build a Z-score distribution around the TSS.
 
-```{r rlfs-test, cache=TRUE}
+```{r rlfs-test}
 # Analyze RLFS for positive sample
 rlr <- analyzeRLFS(rlr, quiet = TRUE)
 ```
@@ -357,6 +361,97 @@ The results of this analysis may be visualized using `corrHeatmap`.
 
 ```{r, fig.height=5, fig.width=6.8}
 corrHeatmap(rlr)
+```
+
+### Gene Annotation
+
+RLSeq provides a convenience function for performing gene annotation of RLRanges. Briefly, annotations are automatically downloaded using `AnnotationHub()` and then intersected with RLRanges to mapping of ranges to entrez gene IDs.
+
+```{r}
+rlr <- geneAnnotation(rlr, quiet=TRUE)
+```
+
+<details>
+
+<summary>
+
+Over-representation analysis
+
+</summary>
+
+These results can then be used for over-representation analysis if desired. One caveat to this analysis is that the number of genes is a function of the number of peaks, and this can lead (at higher numbers) to noticeable bias in enrichment analysis.
+
+```{r}
+len <- rlresult(rlr, "geneAnnoRes") %>%
+  pull(gene_id) %>%
+  unique() %>%
+  length()
+cat(len, " genes found in RLRanges")
+```
+
+To address this, we filter RLRanges object to obtain the top 2000 ranges by p-adjusted value. Because our ranges are "broadPeak" (see specification [here](https://genome.ucsc.edu/FAQ/FAQformat.html#format13)), we know that the 9th column contains these values.
+
+```{r}
+# Pull the peak names for the top 2000 peaks
+topPks <- rlr %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "peakName") %>%
+  slice_max(V9, n = 2000) %>%
+  pull(peakName)
+
+# Filter the results to obtain the corresponding genes
+rlgenes <- rlresult(rlr, "geneAnnoRes") %>%
+  filter(peak_name %in% {{ topPks }}) %>%
+  pull(gene_id) %>%
+  unique()
+
+# Get lenght of these genes
+cat(length(rlgenes), " genes found in top 2000 RLRanges")
+```
+
+Before we can perform pathway enrichment, we need to convert our gene IDs to gene symbols.
+
+```{r}
+symbols <- AnnotationDbi::mapIds(
+  org.Hs.eg.db::org.Hs.eg.db, 
+  keys = rlgenes, 
+  keytype = "ENTREZID", 
+  column = "SYMBOL"
+)
+```
+
+With our final list of genes prepared, we proceed to perform over-representation analysis using the [enrichr](https://maayanlab.cloud/Enrichr/) web service.
+
+```{r}
+response <- httr::POST(
+  url = 'https://maayanlab.cloud/Enrichr/addList', 
+  body = list(
+    'list' = paste0(symbols, collapse = "\n"),
+    'description' = paste0("RL-overlap Genes from ", rlr@metadata$sampleName)
+    )
+  )
+response <- jsonlite::fromJSON(httr::content(response, as = "text"))  
+permalink <- paste0("https://maayanlab.cloud/Enrichr/enrich?dataset=", 
+                    response$shortId[1])
+```
+
+The permalink to these results can be found <a href="`r permalink`" target="_blank">here</a>.
+
+</details>
+
+### R-Loop Region Test
+
+R-loop regions are consensus sites for R-loop formation discovered from profiling of \> 200 high-confidence R-loop mapping samples in RLBase. The degree of overlap between any given sample and RL-regions is a useful quality metric which has the added benefit of providing additional context on the type of R-loops which have been profiled.
+
+```{r}
+rlr <- rlRegionTest(rlr)
+```
+
+The test results can be easily visualized in the following manner.
+
+```{r}
+plt <- plotRLRegionOverlap(rlr)
+plt
 ```
 
 # References
