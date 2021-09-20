@@ -38,20 +38,20 @@ Tests the enrichment of genomic features in supplied R-loop peaks.
 \details{
 \strong{annotations}:
 A list which can be generated from the RLHub package or via local sources.\preformatted{\\emph\{RLHub\}: \code{RLHub['annots_hg38']} will return the full suite of annotations
-  for the hg38 genome. 
- 
-\\emph\{custom\}: The only requirement is that \code{annotations} is a named 
+  for the hg38 genome.
+
+\\emph\{custom\}: The only requirement is that \code{annotations} is a named
   list of \code{tbl}s in which each \code{tbl} follows the structure:
-  
+
   \\tabular\{lllll\}\{
     chrom \\tab start \\tab end \\tab strand \\tab name\\cr
     chr1 \\tab 10015 \\tab 10498 \\tab + \\tab skewr__C_SKEW__1\\cr
     chr1 \\tab 10614 \\tab 11380 \\tab + \\tab skewr__G_SKEW__1\\cr
     ...
   \}
-  
+
   Such a list can be generated directly from RLBase S3 bucket files:
-  
+
   \preformatted{
         small_anno <- list(
           "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
@@ -62,9 +62,8 @@ A list which can be generated from the RLHub package or via local sources.\prefo
 }
 \examples{
 small_anno <- list(
-          "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-          "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
-          )
-RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations=small_anno, genome="hg38")
-
+  "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
+  "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
+)
+RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations = small_anno, genome = "hg38")
 }

@@ -4,10 +4,10 @@
 \alias{predictCondition}
 \title{Predict Condition}
 \usage{
-predictCondition(rlfsRes, ...)
+predictCondition(object, ...)
 }
 \arguments{
-\item{rlfsRes}{The results list from running analyzeRLFS().}
+\item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
 
 \item{...}{Internal use only.}
 }
@@ -21,7 +21,9 @@ interpreting R-loop mapping results.
 }
 \examples{
 
-rlfsRes <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
-RLSeq::predictCondition(rlfsRes)
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+rlr <- analyzeRLFS(rlr)
+rlr <- predictCondition(rlr)
 
 }

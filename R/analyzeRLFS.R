@@ -2,50 +2,37 @@
 #'
 #' Analyzes the enrichment of peaks within R-loop forming sequences.
 #'
-#' @param peaks A GRanges object containing the R-loop ranges to check.
-#' @param genome UCSC genome which peaks were generated from. Ignored if "chrom_sizes" or "RLFS" is specified.
-#' @param chrom_sizes A data.frame containing two columns with chromosome names
-#' and chromosome sizes.
-#' @param mask A GRanges object containing the regions of the genome to mask. Can be generated from
-#' regioneR::getMask().
-#' @param RLFS A GRanges object containing the R-loop forming sequences to
-#' compare against.
+#' @param object An RLRanges object generated with \code{RLRanges()}. Required.
+#' @param mask GRanges object containing masked genomic ranges.
+#'  Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
 #' @return A named list containing the results of RegioneR,
 #' peaks annotated with the RLFS they overlap with,
 #' and the Z score results within 3000 BP of an RLFS.
 #' @examples
-#'
-#' result <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome = "hg38")
+#' 
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+#' rlr <- analyzeRLFS(rlr)
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @importFrom utils capture.output
 #' @export
-analyzeRLFS <- function(peaks,
-                        genome = "hg38",
-                        chrom_sizes = NULL,
-                        mask = NULL,
-                        RLFS = NULL,
+analyzeRLFS <- function(object,
                         quiet = FALSE,
                         ...) {
 
-  # TODO: Validate genome to avoid TRUE/FALSE Needed error from permTest
+  # Get UCSC genome
+  genome <- GenomeInfoDb::genome(object)[1]  
 
   # Check RLFS, chrom_sizes, and mask
   if (!quiet) {
     message("+ [i] Evaluating Inputs.")
   }
-  if (is.null(genome) &
-    (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
-    stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
-  }
-  if (is.null(RLFS)) {
-    n_ <- capture.output(RLFS <- getRLFSAnno(genome))
-  }
-  if (is.null(chrom_sizes)) {
-    n_ <- capture.output(chrom_sizes <- getChromSizes(genome))
-  }
+  RLFS <- getRLFSAnno(genome)
+  chrom_sizes <- getChromSizes(genome)
   if (is.null(mask)) {
     available_masks <- gsub(names(RLSeq::genomeMasks),
       pattern = "\\.masked",
@@ -68,11 +55,13 @@ analyzeRLFS <- function(peaks,
     "GRanges" %in% class(RLFS))
 
   # Run RLFS perm test
-  genomeNow <- GenomicRanges::GRanges(chrom_sizes %>% dplyr::mutate(start = 1) %>%
-    dplyr::select(
-      seqnames = .data$X1,
-      .data$start, end = .data$X2
-    ))
+  genomeNow <- GenomicRanges::GRanges(
+    dplyr::mutate(chrom_sizes, start = 1) %>%
+      dplyr::select(
+        seqnames = .data$X1,
+        .data$start, end = .data$X2
+      )
+  )
   GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
   GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
 
@@ -82,7 +71,7 @@ analyzeRLFS <- function(peaks,
   }
   pt <- suppressWarnings(
     regioneR::permTest(
-      A = peaks, B = RLFS,
+      A = object, B = RLFS,
       genome = genomeNow,
       mask = mask,
       randomize.function = regioneR::circularRandomizeRegions,
@@ -97,11 +86,14 @@ analyzeRLFS <- function(peaks,
     message("+ [iii] Extracting pileup.")
   }
   z <- suppressWarnings(
-    regioneR::localZScore(A = peaks, B = RLFS, pt, window = 5000, step = 50)
+    regioneR::localZScore(A = object, B = RLFS, pt, window = 5000, step = 50)
   )
-
-  return(list(
+  
+  # Add results to object
+  slot(object@metadata$results, "rlfsRes") <- list(
     "perTestResults" = pt,
     "Z-scores" = z
-  ))
+  )
+
+  return(object)
 }

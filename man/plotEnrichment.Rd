@@ -4,12 +4,21 @@
 \alias{plotEnrichment}
 \title{Plot Enrichment Test Results}
 \usage{
-plotEnrichment(sampleRes, rlbaseRes = NULL, yval = "stat_fisher_rl")
+plotEnrichment(
+  sampleRes,
+  rlbaseRes = NULL,
+  rlsamples = NULL,
+  splitby = c("none", "verdict", "condtype"),
+  facetby = c("none", "mode"),
+  yval = "stat_fisher_rl"
+)
 }
 \arguments{
 \item{sampleRes}{The tibble obejct obtained from running \code{featureEnrich}.}
 
 \item{rlbaseRes}{A tibble containing results from RLBase samples.}
+
+\item{rlsamples}{A tibble containing the metadata of RLBase samples.}
 
 \item{yval}{Column to use for obtaining Y-axis values. Default: "stat_fisher_rl".
 If NULL, no comparison with RLBase will be made.}

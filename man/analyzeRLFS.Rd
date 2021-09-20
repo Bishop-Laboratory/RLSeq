@@ -4,33 +4,17 @@
 \alias{analyzeRLFS}
 \title{Analyze RLFS}
 \usage{
-analyzeRLFS(
-  peaks,
-  genome = "hg38",
-  chrom_sizes = NULL,
-  mask = NULL,
-  RLFS = NULL,
-  quiet = FALSE,
-  ...
-)
+analyzeRLFS(object, quiet = FALSE, ...)
 }
 \arguments{
-\item{peaks}{A GRanges object containing the R-loop ranges to check.}
-
-\item{genome}{UCSC genome which peaks were generated from. Ignored if "chrom_sizes" or "RLFS" is specified.}
-
-\item{chrom_sizes}{A data.frame containing two columns with chromosome names
-and chromosome sizes.}
-
-\item{mask}{A GRanges object containing the regions of the genome to mask. Can be generated from
-regioneR::getMask().}
-
-\item{RLFS}{A GRanges object containing the R-loop forming sequences to
-compare against.}
+\item{object}{An RLRanges object generated with \code{RLRanges()}. Required.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
+
+\item{mask}{GRanges object containing masked genomic ranges.
+Not needed unless masked genome unavailable (see RLSeq::genomeMasks).}
 }
 \value{
 A named list containing the results of RegioneR,
@@ -42,6 +26,8 @@ Analyzes the enrichment of peaks within R-loop forming sequences.
 }
 \examples{
 
-result <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+rlr <- analyzeRLFS(rlr)
 
 }
