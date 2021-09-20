@@ -7,11 +7,10 @@
 #'  Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
-#' @return A named list containing the results of RegioneR,
-#' peaks annotated with the RLFS they overlap with,
-#' and the Z score results within 3000 BP of an RLFS.
+#' @return An RLRanges object with RLFS analysis results included.
 #' @examples
 #' 
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
 #' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 #' rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
 #' rlr <- analyzeRLFS(rlr)
@@ -27,7 +26,7 @@ analyzeRLFS <- function(object,
 
   # Check RLFS, chrom_sizes, and mask
   if (!quiet) {
-    message("+ [i] Evaluating Inputs.")
+    message(" - Evaluating Inputs...")
   }
   genome <- GenomeInfoDb::genome(object)[1]
   RLFS <- getRLFSAnno(object)
@@ -62,7 +61,7 @@ analyzeRLFS <- function(object,
 
   # Run RegioneR
   if (!quiet) {
-    message("+ [ii] Running permTest.")
+    message(" - Running permTest...")
   }
   pt <- suppressWarnings(
     regioneR::permTest(
@@ -78,7 +77,7 @@ analyzeRLFS <- function(object,
 
   # Return Z scores
   if (!quiet) {
-    message("+ [iii] Extracting pileup.")
+    message(" - Extracting pileup...")
   }
   z <- suppressWarnings(
     regioneR::localZScore(A = object, B = RLFS, pt, window = 5000, step = 50)
@@ -89,6 +88,10 @@ analyzeRLFS <- function(object,
     "perTestResults" = pt,
     "Z-scores" = z
   )
+  
+  if (!quiet) {
+    message(" - Done.")
+  }
 
   return(object)
 }
