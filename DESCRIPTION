@@ -67,5 +67,8 @@ Imports:
     GenomicRanges,
     GenomeInfoDb,
     ComplexHeatmap,
-    ggpattern
+    ggpattern,
+    AnnotationHub,
+    VennDiagram,
+    futile.logger
 VignetteBuilder: knitr

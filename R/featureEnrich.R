@@ -88,8 +88,7 @@ featureEnrich <- function(object,
   }
 
   # Get the genome
-  chromSizes <- getChromSizes(genome) %>%
-    dplyr::rename(chrom = .data$X1, size = .data$X2)
+  chromSizes <- getChromSizes(object) 
 
   # Wrangle the peaks
   toTest <- object %>%

@@ -2,46 +2,35 @@
 #'
 #' Tests the overlap of peaks within R-loop regions
 #'
-#' @param peaks A GRanges object containing R-loop peaks
-#' @param genome UCSC genome identifier to use. Can be only "hg38" currently.
-#' If you have "hg19" peaks, please use RLSeq::liftUtil() to convert them.
-#' @return A named list containing the results of testing.
+#' @param object An RLRanges object with genome "hg38".
+#' @return An RLRanges object with test results included.
 #' @examples
-#'
-#' RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome = "hg38")
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' rlr <- RLRanges(pks, genome="hg38", mode="DRIP", quiet=TRUE)
+#' 
+#' rlr <- rlRegionTest(rlr)
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-rlRegionTest <- function(peaks, genome = "hg38") {
+rlRegionTest <- function(object) {
 
   # Wrangle the peaks
-  toTest <- peaks %>%
-    as.data.frame() %>%
-    tibble::rownames_to_column(var = "name") %>%
+  pkName <- names(object)
+  toTest <- object %>%
     tibble::as_tibble() %>%
-    dplyr::mutate(seqnames = as.character(.data$seqnames)) %>%
+    dplyr::mutate(seqnames = as.character(.data$seqnames),
+                  name = {{ pkName }}) %>%
     dplyr::select(chrom = .data$seqnames, .data$start, .data$end, .data$name)
+  
+  # Get RLRegions 
+  # TODO: NEEDS to be in RLHub 
+  rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
+  tmp <- tempfile()
+  download.file(rlregions_table, destfile = tmp, quiet = TRUE)
+  load(tmp)
 
   # Get the RL Regions
-  rlReg <- RLSeq::rlRegions %>%
-    dplyr::mutate(
-      chrom = as.character(gsub(.data$Location,
-        pattern = "(.+):(.+)\\-(.+)",
-        replacement = "\\1"
-      )),
-      start = as.numeric(gsub(.data$Location,
-        pattern = "(.+):(.+)\\-(.+)",
-        replacement = "\\2"
-      )),
-      end = as.numeric(gsub(.data$Location,
-        pattern = "(.+):(.+)\\-(.+)",
-        replacement = "\\3"
-      ))
-    ) %>%
-    dplyr::select(
-      .data$chrom, .data$start, .data$end,
-      name = .data$`RL Region`
-    )
+  rlReg <- tableToRegions(rlregions_table)
 
   # Get shared seqnames
   sharedSeqs <- intersect(toTest$chrom, rlReg$chrom)
@@ -49,18 +38,18 @@ rlRegionTest <- function(peaks, genome = "hg38") {
   rlReg <- dplyr::filter(rlReg, .data$chrom %in% sharedSeqs)
 
   # Get the genome
-  chromSizes <- getChromSizes(genome) %>%
-    dplyr::rename(chrom = .data$X1, size = .data$X2)
+  chromSizes <- getChromSizes(object)
 
   # Test on all annotations
-  olap <- valr::bed_intersect(toTest, rlReg, suffix = c("__peaks", "__RLFS"))
-  sig <- valr::bed_projection(toTest, rlReg, genome = chromSizes)
+  olap <- valr::bed_intersect(toTest, rlReg, suffix = c("__peaks", "__rlregion"))
+  sig <- valr::bed_fisher(toTest, rlReg, genome = chromSizes)
+  
+  # Return to object
+  slot(object@metadata$results, "rlRegionRes") <- list(
+    "Overlap" = olap,
+    "Test_results" = sig
+  )
 
   # Return results
-  return(
-    list(
-      "Overlapp" = olap,
-      "Test_resutls" = sig
-    )
-  )
+  return(object)
 }

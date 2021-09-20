@@ -28,6 +28,12 @@ setValidity(
     if (any(! GenomeInfoDb::genome(object) %in% aux$available_genomes)) {
       stop("'genome' must be one of aux$available_genomes.")
     }
+    
+    # Seqinfo
+    if (all(is.na(GenomeInfoDb::seqinfo(object)@seqlengths))) {
+      stop("Problem with genome, seqlengths not found. Please supply peaks as",
+           " GRanges with seqinfo (with seqlengths) already included.")
+    }
 
     # condType
     if (! object@metadata$condType %in% c("POS", "NEG", "NULL") &&
@@ -38,7 +44,7 @@ setValidity(
     # coverage
     coverage <- object@metadata$coverage
     if (object@metadata$coverage != "" &&
-        (file.exists(coverage) || urlExists(coverage))) {
+        (! file.exists(coverage) && ! urlExists(coverage))) {
       stop("No coverage found. Content of 'coverage' slot: ", 
            coverage, ". Set coverage with coverage(object) <-")
     }
@@ -94,6 +100,7 @@ setMethod(
 #' @param condType One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),
 #' or "NULL" (e.g., Input control.). Can be unspecified.
 #' @param sampleName A unique name for identifying this sample. Can be unspecified.
+#' @param quiet If TRUE, messages and warnings are suppressed. Default: FALSE.
 #' @examples 
 #' 
 #' pks <- "https://rlbase-data.s3.amazonaws.com/peaks/SRX1025890_hg38.broadPeak"
@@ -114,13 +121,32 @@ RLRanges <- function(
   genome = character(1),
   mode = character(1),
   condType = character(1),
-  sampleName = "User-selected sample"
+  sampleName = "User-selected sample",
+  quiet = FALSE
 ) {
   
   # Obtain GRanges -- works even if file-path given
   peaks <- regioneR::toGRanges(peaks)
+  
+  # Add in genome info
   GenomeInfoDb::seqlevelsStyle(peaks) <- "UCSC"
   GenomeInfoDb::genome(peaks) <- genome
+  
+  # Add in seq info if not already available
+  if (any(is.na(GenomeInfoDb::seqinfo(peaks)@seqlengths))) {
+    si <- GenomeInfoDb::getChromInfoFromUCSC(genome, as.Seqinfo = TRUE)
+    if (quiet) {
+      suppressWarnings(GenomeInfoDb::seqlevels(peaks) <- GenomeInfoDb::seqlevels(si))
+      suppressWarnings(GenomeInfoDb::seqinfo(peaks) <- si)
+    } else {
+      GenomeInfoDb::seqlevels(peaks) <- GenomeInfoDb::seqlevels(si)
+      GenomeInfoDb::seqinfo(peaks) <- si
+    }
+    
+    # Trim out-of-bounds ranges
+    peaks <- GenomicRanges::trim(peaks)
+    
+  }
   
   # Add new data to the metadata
   peaks@metadata <- c(

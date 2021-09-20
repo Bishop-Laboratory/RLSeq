@@ -2,45 +2,57 @@
 #'
 #' Annotates R-loop peaks as a GRanges object with gene-level information
 #'
-#' @param peaks A GRanges object containing R-loop peaks
-#' @param genome UCSC genome which peaks were generated from.
-#' Only "hg38" and "mm10" currently available.
-#' Use RLSeq::liftUtil() to convert to the correct format, if needed. Additionally,
-#' this can be an EnsDb or TxDb object.
-#' @return A tibble object containing annotated R-loop peaks
+#' @param object An RLRanges object.
+#' @param txdb The TxDb or EnsDb object containing gene annotations. If not 
+#' supplied, annotations will be automatically downloaded from AnnotationHub.
+#' @param quiet If TRUE, messages and warnings are suppressed.
+#' @return An RLRanges object with annotations added.
 #' @examples
-#'
-#' geneAnnotation(RLSeq::SRX1025890_peaks)
+#' 
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+#' 
+#' rlr <- geneAnnotation(rlr)
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-geneAnnotation <- function(peaks, genome) {
-
-  # Available genomes
-  if (genome == "hg38") {
-    if (!requireNamespace("EnsDb.Hsapiens.v86", quietly = TRUE)) {
-      stop(
-        "EnsDb.Hsapiens.v86 is required.",
-        " Please install it with BiocManager::install('EnsDb.Hsapiens.v86')"
-      )
-    }
-    edb <- EnsDb.Hsapiens.v86::EnsDb.Hsapiens.v86
-  } else if (genome == "mm10") {
-    if (!requireNamespace("EnsDb.Mmusculus.v79", quietly = TRUE)) {
-      stop(
-        "EnsDb.Mmusculus.v79 is required.",
-        " Please install it with BiocManager::install('EnsDb.Mmusculus.v79')"
-      )
-    }
-    edb <- EnsDb.Mmusculus.v79::EnsDb.Mmusculus.v79
-  } else if (class(genome) %in% c("EnsDb", "TxDb")) {
-    edb <- genome
-  } else {
-    stop("genome must be 'hg38' or 'mm10' or an object of class 'EnsDb' or 'TxDb'")
+geneAnnotation <- function(object, txdb=NULL, quiet=FALSE) {
+  
+  # Get genome from object
+  genome <- GenomeInfoDb::genome(object)[1]
+  if (! genome %in% c("hg38", "mm10") && is.null(txdb)) {
+    stop("No gene annotations available for object genome, ", genome, 
+         ". Provide TxDb or EnsDb object.")
   }
 
+  # If no TxDb provided, obtain from annotationhub
+  if (is.null(txdb)) {
+    if (quiet) {
+      suppressMessages(suppressWarnings({
+        ah <- AnnotationHub::AnnotationHub()
+        ahDb <- AnnotationHub::query(
+          x = ah,
+          pattern = c("TxDb", "UCSC", "knownGene", genome)
+        )
+        txdb <- ah[[names(which.max(ahDb@.db_uid))]]
+      }))
+    } else {
+      ah <- AnnotationHub::AnnotationHub()
+      ahDb <- AnnotationHub::query(
+        x = ah,
+        pattern = c("TxDb", "UCSC", "knownGene", genome)
+      )
+      txdb <- ah[[names(which.max(ahDb@.db_uid))]]
+    }
+  }
+  
   # Get the ensembl genes and conver to UCSC style
-  edb <- GenomicFeatures::genes(edb)
+  if (quiet) {
+    edb <- suppressMessages(GenomicFeatures::genes(txdb))
+  } else {
+    edb <- GenomicFeatures::genes(txdb)
+  }
   GenomeInfoDb::seqlevelsStyle(edb) <- "UCSC"
 
   # Wrangle EnsDb to tibble
@@ -48,24 +60,41 @@ geneAnnotation <- function(peaks, genome) {
     as.data.frame() %>%
     dplyr::select(
       chrom = .data$seqnames, .data$start,
-      .data$end, .data$strand, .data$gene_name
+      .data$end, .data$strand, .data$gene_id
     ) %>%
     tibble::as_tibble() %>%
-    dplyr::distinct(.data$gene_name, .keep_all = TRUE) %>%
+    dplyr::distinct(.data$gene_id, .keep_all = TRUE) %>%
     dplyr::mutate(chrom = as.character(.data$chrom))
 
   # Wrangle peaks to tibble
-  peaksIntersect <- peaks %>%
+  pkNames <- names(object)
+  peaksIntersect <- object %>%
     as.data.frame() %>%
     tibble::as_tibble() %>%
     dplyr::select(
       chrom = .data$seqnames, .data$start,
       .data$end, .data$width
     ) %>%
-    dplyr::mutate(chrom = as.character(.data$chrom))
+    dplyr::mutate(chrom = as.character(.data$chrom),
+                  pkName = {{ pkNames }})
 
   # Intersect
-  anno <- valr::bed_intersect(peaksIntersect, annoData, suffix = c("__userPeaks", "__EnsGenes"))
-
-  return(anno)
+  anno <- valr::bed_intersect(
+    peaksIntersect, 
+    annoData, 
+    suffix = c("__userPeaks", "__Gene")
+  )
+  
+  # Clean
+  pk_to_gene <- dplyr::select(
+    anno,
+    peak_name = .data$pkName__userPeaks, 
+    gene_id = .data$gene_id__Gene
+  ) %>%
+    dplyr::distinct()
+  
+  # Return to object
+  slot(object@metadata$results, name = "geneAnnoRes") <- pk_to_gene
+  
+  return(object)
 }

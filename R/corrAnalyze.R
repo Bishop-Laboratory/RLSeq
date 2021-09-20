@@ -4,14 +4,15 @@
 #' between the query sample and the RMapDB database.
 #'
 #' @param object An RLRanges object.
-#' @return A named list containing the results of correlation analysis.
+#' @return An RLRanges object with correlation results included.
 #' @examples
 #'
 #' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 #' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+#' rlr <- RLRanges(pks, coverage=cvg, genome="hg38", mode="DRIP")
 #' 
-#' rlr <- RLSeq::corrAnalyze(rlr)
+#' rlr <- corrAnalyze(rlr)
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
