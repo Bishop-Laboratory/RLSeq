@@ -5,10 +5,10 @@
 \title{Get RLFS Anno
 Helper function that retrieves RLFS}
 \usage{
-getRLFSAnno(genome)
+getRLFSAnno(object)
 }
 \arguments{
-\item{genome}{the UCSC genome name to retrieve RLFS for}
+\item{object}{An RLRanges object.}
 }
 \value{
 A GRanges object with RLFS for that species.

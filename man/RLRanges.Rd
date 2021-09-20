@@ -12,7 +12,8 @@ RLRanges(
   genome = character(1),
   mode = character(1),
   condType = character(1),
-  sampleName = "User-selected sample"
+  sampleName = "User-selected sample",
+  quiet = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ be unspecified.}
 or "NULL" (e.g., Input control.). Can be unspecified.}
 
 \item{sampleName}{A unique name for identifying this sample. Can be unspecified.}
+
+\item{quiet}{If TRUE, messages and warnings are suppressed. Default: FALSE.}
 }
 \description{
 \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks

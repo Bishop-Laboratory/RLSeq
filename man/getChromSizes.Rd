@@ -3,17 +3,17 @@
 \name{getChromSizes}
 \alias{getChromSizes}
 \title{Get Chrom Sizes
-Helper function which downloads chrom sizes from UCSC for a genome.}
+Helper function which extracts chrom sizes from an RLRanges object.}
 \usage{
-getChromSizes(genome)
+getChromSizes(object)
 }
 \arguments{
-\item{genome}{the UCSC genome for which to download chrom sizes}
+\item{object}{An RLRanges object.}
 }
 \value{
 A tibble containing chrom sizes
 }
 \description{
 Get Chrom Sizes
-Helper function which downloads chrom sizes from UCSC for a genome.
+Helper function which extracts chrom sizes from an RLRanges object.
 }
