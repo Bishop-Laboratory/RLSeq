@@ -109,16 +109,16 @@ mode_cols <- tibble(
 ## CondType
 condtype_cols <- tribble(
   ~condType, ~col,
-  "POS", "#41919D",
-  "NEG", "#6C8C91",
-  "NULL", "#868686"
+  "POS", "#dedee0",
+  "NEG", "#2e2e63",
+  "NULL", "#05052b"
 )
 
 ## Verdict
 verdict_cols <- tribble(
   ~verdict, ~col,
-  "Case", "#C69952",
-  "Control", "#B59C7F"
+  "Case", "#e0dede",
+  "Control", "#8a2c2c"
 )
 
 ## Save

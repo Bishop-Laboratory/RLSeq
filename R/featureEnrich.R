@@ -2,8 +2,7 @@
 #'
 #' @description Tests the enrichment of genomic features in supplied R-loop peaks.
 #'
-#' @param peaks A GRanges object containing R-loop peaks
-#' @param genome UCSC genome identifier indicating genome of supplied peaks.
+#' @param object An RLRanges object.
 #' @param annotations Annotation list. See details.
 #' @param downsample If a numeric, data will be down sampled to the requested number of peaks.
 #' This improves the speed of genomic shuffling and helps prevent p-value inflation.
@@ -43,19 +42,35 @@
 #'   "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
 #'   "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
 #' )
-#' RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations = small_anno, genome = "hg38")
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' rls <- RLRanges(pks, genome="hg38", mode="DRIP")
+#' featureEnrich(rls, annotations = small_anno)
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
-featureEnrich <- function(peaks,
-                          genome = c("hg38", "mm10"),
-                          annotations,
+featureEnrich <- function(object,
+                          annotations = NULL,
                           downsample = 10000,
                           quiet = FALSE,
                           cores = 1) {
 
   # Cutoff for stats tests
   MIN_ROWS <- 200
+  
+  # Check genome
+  genome <- GenomeInfoDb::genome(object)[1]
+  if(! genome %in% c("hg38", "mm10") & is.null(annotations)) {
+    stop("Genome is not supported by built-in annotations. ",
+         "Please supply custom ones of use one of hg38, mm10")
+  } else if (is.null(annotations)) {
+    # TODO: This MUST be replaced when RLHub is available
+    annot <- file.path(rlbase, "RLHub", paste0("annotations_primary_", 
+                                               genome, ".rda"))
+    tmp <- tempfile()
+    download.file(annot, destfile = tmp, quiet = TRUE)
+    load(tmp)
+    annotations <- annotations_primary
+  }
 
   # Choose apply function
   applyFun <- pbapply::pblapply
@@ -77,7 +92,7 @@ featureEnrich <- function(peaks,
     dplyr::rename(chrom = .data$X1, size = .data$X2)
 
   # Wrangle the peaks
-  toTest <- peaks %>%
+  toTest <- object %>%
     tibble::as_tibble() %>%
     dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
 
@@ -94,11 +109,14 @@ featureEnrich <- function(peaks,
   seeds <- 1:1000
   while (TRUE) {
     seed <- seeds[1]
-    toTestShuff <- try(valr::bed_shuffle(
-      x = toTest,
-      genome = chromSizes,
-      seed = seed
-    ), silent = TRUE)
+    toTestShuff <- try(
+      valr::bed_shuffle(
+        x = toTest,
+        genome = chromSizes,
+        seed = seed
+      )
+      , silent = TRUE
+    )
     if (class(toTestShuff)[1] != "try-error") break
     seeds <- seeds[-1]
   }
@@ -161,8 +179,11 @@ featureEnrich <- function(peaks,
   if (!quiet) {
     message(" - Done")
   }
+  
+  # Add to object
+  slot(object@metadata$results, name = "featureEnrichment") <- annoRes
 
-  return(annoRes)
+  return(object)
 }
 
 

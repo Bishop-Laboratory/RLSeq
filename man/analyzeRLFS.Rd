@@ -7,7 +7,7 @@
 analyzeRLFS(object, quiet = FALSE, ...)
 }
 \arguments{
-\item{object}{An RLRanges object generated with \code{RLRanges()}. Required.}
+\item{object}{An RLRanges object.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 

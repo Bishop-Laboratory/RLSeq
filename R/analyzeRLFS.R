@@ -2,7 +2,7 @@
 #'
 #' Analyzes the enrichment of peaks within R-loop forming sequences.
 #'
-#' @param object An RLRanges object generated with \code{RLRanges()}. Required.
+#' @param object An RLRanges object.
 #' @param mask GRanges object containing masked genomic ranges.
 #'  Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.

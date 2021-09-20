@@ -46,7 +46,7 @@ rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
 
-# Annotations can be found in RLHub
+# TODO: Annotations can be found in RLHub
 annot <- file.path(rlbase, "RLHub", "annotations_primary_hg38.rda")
 tmp <- tempfile()
 download.file(annot, destfile = tmp, quiet = TRUE)
@@ -213,6 +213,10 @@ The classifier is an ensemble model based on an online-learning scheme as detail
 rlr <- predictCondition(rlr)
 rlrRNH <- predictCondition(rlrRNH)
 
+# Access results
+s96_pred <- rlresult(rlr, "predictRes")
+rnh_pred <- rlresult(rlrRNH, "predictRes")
+
 # Results
 tibble::tibble(
   condition = c("S9.6", "S9.6 + RNaseH1"),
@@ -235,14 +239,14 @@ download.file(annot, destfile = tmp, quiet = TRUE)
 load(tmp)
 
 # Perform test
-annoResS96 <- featureEnrich(
-  peaks = s96, 
-  genome = "hg38",
+rlr <- featureEnrich(
+  object = rlr,
   annotations = annotations_primary,
   quiet = TRUE
 )
 
 # View Top Results
+annoResS96 <- rlresult(rlr, "featureEnrichment")
 annoResS96 %>%
   relocate(contains("fisher"), .after = type) %>%
   arrange(desc(stat_fisher_rl)) %>%
@@ -264,14 +268,14 @@ As a comparison, we also perform the same test with the RNaseH1-treated sample.
 
 ```{r}
 # Perform test
-annoResRNH <- featureEnrich(
-  peaks = rnh, 
-  genome = "hg38",
+rlrRNH <- featureEnrich(
+  object = rlrRNH,
   annotations = annotations_primary,
   quiet = TRUE
 )
 
 # View Top Results
+annoResRNH <- rlresult(rlrRNH, "featureEnrichment")
 annoResRNH %>%
   relocate(contains("fisher"), .after = type) %>%
   arrange(desc(stat_fisher_rl)) %>%
@@ -325,21 +329,34 @@ From this result, we plainly observe the stark contrast in enrichment between sa
 
 RLSeq provides a helper function, `plotEnrichment`, to facilitate the visualization of enrichment results.
 
-```{r}
-# Load the RLBase enrichment results to compare with
-rlbase_enrich <- file.path(rlbase, "RLHub", "feature_enrichment_per_sample.rda")
-tmp <- tempfile()
-download.file(rlbase_enrich, destfile = tmp, quiet = TRUE)
-load(tmp)
+```{r, warning=FALSE, figures-side, fig.show="hold", out.width="50%"}
+pltlst <- plotEnrichment(rlr)
+```
 
-plotEnrichment(
-  sampleRes=annoResS96,
-  rlbaseRes=feature_enrichment_per_sample
-)
+Encode cis-regulatory elements (CREs):
+
+```{r warning=FALSE}
+pltlst$Encode_CREs
+```
+
+Known Gene RNAs:
+
+```{r warning=FALSE}
+pltlst$knownGene_RNAs
 ```
 
 ### Correlation analysis
 
 Correlation analysis finds inter-sample correlation coefficients by using bin-level R-loop counts around gold-standard R-loop sites (sites profiled using ultra-long-read R-loop mapping -- "SMRF-Seq") [@Chédin2021].
+
+```{r}
+rlr <- corrAnalyze(rlr)
+```
+
+The results of this analysis may be visualized using `corrHeatmap`.
+
+```{r, fig.height=5, fig.width=6.8}
+corrHeatmap(rlr)
+```
 
 # References

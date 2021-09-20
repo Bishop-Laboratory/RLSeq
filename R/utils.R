@@ -188,11 +188,10 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
 #'
 #' Extract signal around GS R-loop sites
 #' @param coverage The path to a .bigWig file (can be a URL)
-#' @param genome The UCSC genome ID to use. (Currently, only "hg38" is supported)
 #' @param gssignal The GS signal obtained from RLHub.
 #' @return A named list containing the results of correlation analysis.
 #' @export
-getGSSignal <- function(coverage, genome, gssignal) {
+getGSSignal <- function(coverage, gssignal) {
   # Get the locations of the gs sites
   positions <- gssignal$location
   positions <- tibble::tibble(location = positions) %>%
