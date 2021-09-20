@@ -7,11 +7,11 @@
 liftUtil(ranges, genomeFrom, genomeTo)
 }
 \arguments{
-\item{ranges}{A GRanges object in hg19}
-
 \item{genomeFrom}{Genome of ranges supplied, in UCSC format (e.g., "hg19")}
 
 \item{genomeTo}{Genome to convert to (e.g., "hg38")}
+
+\item{object}{An RLRanges object}
 }
 \value{
 A lifted GRanges object

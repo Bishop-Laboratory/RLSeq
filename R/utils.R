@@ -15,22 +15,18 @@ urlExists <- function(url) {
 
 
 #' Get Chrom Sizes
-#' Helper function which downloads chrom sizes from UCSC for a genome.
-#' @param genome the UCSC genome for which to download chrom sizes
+#' Helper function which extracts chrom sizes from an RLRanges object.
+#' @param object An RLRanges object.
 #' @return A tibble containing chrom sizes
-#' @importFrom utils capture.output
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
-getChromSizes <- function(genome) {
-  chrom_sizes <- readr::read_tsv(
-    file.path(
-      BASE_UCSC, genome, "bigZips",
-      paste0(genome, ".chrom.sizes")
-    ),
-    col_names = FALSE,
-    show_col_types = FALSE,
-    progress = FALSE
-  )
-  return(chrom_sizes)
+getChromSizes <- function(object) {
+  GenomeInfoDb::seqinfo(object) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("chrom") %>%
+    tibble::as_tibble() %>%
+    dplyr::select(.data$chrom, size=.data$seqlengths)
 }
 
 
@@ -57,11 +53,13 @@ checkRLFSAnno <- function(genome) {
 
 #' Get RLFS Anno
 #' Helper function that retrieves RLFS
-#' @param genome the UCSC genome name to retrieve RLFS for
+#' @param object An RLRanges object.
 #' @return A GRanges object with RLFS for that species.
-#' @importFrom utils capture.output
 #' @export
-getRLFSAnno <- function(genome) {
+getRLFSAnno <- function(object) {
+  
+  # Get genome
+  genome <- GenomeInfoDb::genome(object)[1]
 
   # Check if annotations available first
   if (!checkRLFSAnno(genome)) {
@@ -135,7 +133,7 @@ getChain <- function(genomeFrom, genomeTo) {
 #'
 #' Convenience function for converting ranges from between assemblies
 #'
-#' @param ranges A GRanges object in hg19
+#' @param object An RLRanges object
 #' @param genomeFrom Genome of ranges supplied, in UCSC format (e.g., "hg19")
 #' @param genomeTo Genome to convert to (e.g., "hg38")
 #' @return A lifted GRanges object
@@ -190,6 +188,8 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
 #' @param coverage The path to a .bigWig file (can be a URL)
 #' @param gssignal The GS signal obtained from RLHub.
 #' @return A named list containing the results of correlation analysis.
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
 #' @export
 getGSSignal <- function(coverage, gssignal) {
   # Get the locations of the gs sites
@@ -217,4 +217,44 @@ getGSSignal <- function(coverage, gssignal) {
     con = rtracklayer::BigWigFile(coverage),
     selection = positions
   )
+}
+
+
+#' Table to Regions
+#' 
+#' Helper function to Convert "table" format to "regions" format.
+#' @param table A tibble in "Table" format from RLHub.
+#' @return A tibble in "regions" format.
+#' @importFrom dplyr %>%
+#' @importFrom rlang .data
+#' @export
+tableToRegions <- function(table) {
+  locpat <- "(.+):(.+)\\-(.+):(.+)"
+  table %>%
+    dplyr::mutate(
+      chrom = as.character(
+        gsub(.data$location, pattern = locpat, replacement = "\\1")
+      ),
+      start = as.numeric(
+        gsub(.data$location, pattern = locpat, replacement = "\\2")
+      ),
+      end = as.numeric(
+        gsub(.data$location, pattern = locpat, replacement = "\\3")
+      ),
+      strand = as.character(
+        gsub(.data$location, pattern = locpat, replacement = "\\4")
+      ),
+      strand = dplyr::case_when(
+        .data$strand == "." ~ "*",
+        TRUE ~ .data$strand
+      )
+    ) %>%
+    dplyr::select(
+      .data$chrom,
+      .data$start,
+      .data$end, 
+      .data$strand, 
+      name = .data$rlregion
+    ) %>%
+    dplyr::distinct()
 }

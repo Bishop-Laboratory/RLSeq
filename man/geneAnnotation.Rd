@@ -4,23 +4,27 @@
 \alias{geneAnnotation}
 \title{Annotate R-Loops with Genes}
 \usage{
-geneAnnotation(peaks, genome)
+geneAnnotation(object, txdb = NULL, quiet = FALSE)
 }
 \arguments{
-\item{peaks}{A GRanges object containing R-loop peaks}
+\item{object}{An RLRanges object.}
 
-\item{genome}{UCSC genome which peaks were generated from.
-Only "hg38" and "mm10" currently available.
-Use RLSeq::liftUtil() to convert to the correct format, if needed. Additionally,
-this can be an EnsDb or TxDb object.}
+\item{txdb}{The TxDb or EnsDb object containing gene annotations. If not
+supplied, annotations will be automatically downloaded from AnnotationHub.}
+
+\item{quiet}{If TRUE, messages and warnings are suppressed.}
 }
 \value{
-A tibble object containing annotated R-loop peaks
+An RLRanges object with annotations added.
 }
 \description{
 Annotates R-loop peaks as a GRanges object with gene-level information
 }
 \examples{
 
-geneAnnotation(RLSeq::SRX1025890_peaks)
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+
+rlr <- geneAnnotation(rlr)
+
 }

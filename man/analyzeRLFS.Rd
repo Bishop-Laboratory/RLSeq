@@ -4,17 +4,17 @@
 \alias{analyzeRLFS}
 \title{Analyze RLFS}
 \usage{
-analyzeRLFS(object, quiet = FALSE, ...)
+analyzeRLFS(object, mask = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
+\item{mask}{GRanges object containing masked genomic ranges.
+Not needed unless masked genome unavailable (see RLSeq::genomeMasks).}
+
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
-
-\item{mask}{GRanges object containing masked genomic ranges.
-Not needed unless masked genome unavailable (see RLSeq::genomeMasks).}
 }
 \value{
 A named list containing the results of RegioneR,
