@@ -1,4 +1,4 @@
-## Gene Annotations
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
 **`r GenomeInfoDb::genome(object)[1]`** Gene annotations were downloaded from *AnnotationHub* and overlapped with R-loop ranges in **`r object@metadata$sampleName`**. The resulting gene table was then filtered for the top 2000 peaks and is observed here:
 
@@ -13,9 +13,9 @@ spec_now <- paste0(
 object %>%
   as.data.frame() %>%
   tibble::rownames_to_column(var = "peak_name") %>%
-  slice_max(V9, n = 2000) %>%
-  inner_join(geneRes, by = "peak_name") %>%
-  relocate(gene_id, .after = peak_name) %>%
+  dplyr::slice_max(V9, n = 2000) %>%
+  dplyr::inner_join(geneRes, by = "peak_name") %>%
+  dplyr::relocate(gene_id, .after = peak_name) %>%
   DT::datatable(
     options = list(
           dom = "Bfrtip", 
