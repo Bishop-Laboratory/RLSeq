@@ -1,21 +1,9 @@
-### Correlation analysis
+## Correlation analysis
 
-Using the method described in *Chedin et al. 2020*, the correlation between `r sampleName` and the 
-other samples in *RMapDB* was calculated. The resulting correlation matrix is available in the `QC` folder. 
-
-
-Correlation heatmap (full-size image in `QC` folder)
+Using the method described in *Chedin et al. 2020*, the correlation between **`r object@metadata$sampleName`** and the samples in *RLBase* was calculated. In the resulting heatmap, we can observe the **`r object@metadata$sampleName`** which is identified in the `group` annotation as `user_selected`. 
 
 ```{r fig.height=8, fig.width=10}
-RSeqR::corrHeatmap(corrRes)
+corrHeatmap(object)
 ```
-
-
-PCA Plot
-
-```{r fig.height=8, fig.width=10}
-
-```
-
 
 ***
