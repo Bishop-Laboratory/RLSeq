@@ -22,8 +22,7 @@ interpreting R-loop mapping results.
 \examples{
 
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
 rlr <- analyzeRLFS(rlr)
 rlr <- predictCondition(rlr)
-
 }

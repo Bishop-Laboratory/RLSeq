@@ -4,11 +4,11 @@
 pred <- rlresult(object, resultName = "predictRes")
 verd <- ifelse(
   pred$Verdict == "Case", 
-  "<strong style='color: #602D64'>Case</strong>", 
-  "<strong style='color: red'>Control</strong>"
+  "<strong style='color: #602D64'>\"Case\"</strong> (i.e., robust R-loop mapping)", 
+  "<strong style='color: red'>\"Control\"</strong> (i.e., poor R-loop mapping)"
 )
 ```
-<span style="font-size: 1.5em">Verdict for `r object@metadata$sampleName` is `r verd`.</span>
+<span style="font-size: 1.5em">Predicted label for `r object@metadata$sampleName` is `r verd`.</span>
 
 ### Details
 
@@ -48,7 +48,7 @@ tibble::tibble(
                              position = "left", full_width=FALSE)
 ```
 
-From these features, classification was performed to derive a *verdict* regarding whether the sample mapped R-loops or not. In short, "Case" indicates any sample for which all the following are true:
+From these features, classification was performed to derive a *verdict* (predicted label) regarding whether the sample mapped R-loops or not. In short, "Case" indicates any sample for which all the following are true:
 
 1. **Criteria 1**: The RLFS Permutation test P value is significant (p < .05)
 2. **Criteria 2**: The Z-score distribution middle is > 0.

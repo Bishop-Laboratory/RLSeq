@@ -22,7 +22,6 @@ A convenience function which runs the full RLSeq pipeline.
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-rlr <- RLRanges(pks, coverage=cvg,  genome="hg38", mode="DRIP")
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
 rlr <- RLSeq(rlr)
-
 }
