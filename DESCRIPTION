@@ -70,5 +70,6 @@ Imports:
     ggpattern,
     AnnotationHub,
     VennDiagram,
-    futile.logger
+    futile.logger,
+    DT
 VignetteBuilder: knitr

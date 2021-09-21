@@ -358,7 +358,11 @@ pltlst$knownGene_RNAs
 
 <details>
 
-<summary>Using the `splitby` parameter</summary>
+<summary>
+
+Using the `splitby` parameter
+
+</summary>
 
 The `splitby` parameter allows for plotting with respect to `verdict` or `condType`. This can be useful when trying to determine whether a particular annotation is uniquely-enriched in high-quality samples. We also set `onlyCase = FALSE` so that both "Case" and "Control" samples are displayed.
 

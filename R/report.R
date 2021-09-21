@@ -24,7 +24,7 @@ report <- function(object,
                    ...) {
   
   # Get the template
-  template <- system.file("Rmd", "reportTemplate.Rmd", package = "RLSeq")
+  template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
 
   # Render template  
   rmarkdown::render(
@@ -34,8 +34,7 @@ report <- function(object,
     ),
     output_format = "html_document",
     output_dir = normalizePath(dirname(output)),
-    output_file = output, 
-    ...
+    output_file = output
   )
   
   # Return
