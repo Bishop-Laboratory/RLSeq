@@ -1,20 +1,25 @@
-## Sample classification
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
 ```{r}
 pred <- rlresult(object, resultName = "predictRes")
 verd <- ifelse(
-  pred$Verdict == "Case", "<strong style='color: green'>Case</strong>", 
-  "<strong style='color: red'>Control</control>"
+  pred$Verdict == "Case", 
+  "<strong style='color: #602D64'>Case</strong>", 
+  "<strong style='color: red'>Control</strong>"
 )
 ```
-Verdict for `r object@metadata$sampleName` is `r verd`. 
+<span style="font-size: 1.5em">Verdict for `r object@metadata$sampleName` is `r verd`.</span>
 
 ### Details
+
+<details>
+
+<summary>Additional Details</summary>
 
 To evaluate sample quality, a binary classifier was developed via the online-learning approach described in the RLSuite manuscript. The classifier evaluates features engineered from the RLFS Z score distribution, specifically, the following features:
 
 ```{r}
-feature_key <- tribble(
+feature_key <- tibble::tribble(
   ~feature, ~description,
   "Z1", "mean of Z",
   "Z2", "variance of Z",
@@ -33,17 +38,17 @@ feature_key <- tribble(
 tibble::tibble(
   pred$Features
 ) %>% 
-  right_join(feature_key, by = "feature") %>%
-  relocate(description, .after = feature) %>%
+  dplyr::right_join(feature_key, by = "feature") %>%
+  dplyr::relocate(description, .after = feature) %>%
   kableExtra::kable(caption = paste0(
-    "Description of classifier features with raw and transformed values used to evaluate <strong>", 
-    object@metadata$sampleName, "</strong>. Abbrevitations: Z, Z-score",
+    "Abbrevitations: Z, Z-score",
     " distribution; ACF, autocorrelation function; FT, Fourier Transform."
   )) %>% 
-  kableExtra::kable_styling()
+  kableExtra::kable_material(c("striped", "hover"), 
+                             position = "left", full_width=FALSE)
 ```
 
-From these features, a multi-part classification was performed. In short, "Case" indicates any sample for which all the following are true:
+From these features, classification was performed to derive a *verdict* regarding whether the sample mapped R-loops or not. In short, "Case" indicates any sample for which all the following are true:
 
 1. **Criteria 1**: The RLFS Permutation test P value is significant (p < .05)
 2. **Criteria 2**: The Z-score distribution middle is > 0.
@@ -53,14 +58,27 @@ From these features, a multi-part classification was performed. In short, "Case"
 The criteria for **`r object@metadata$sampleName`** are shown below:
 
 ```{r}
-tibble(
-  Criteria = paste0(seq(4),". ", names(pred$Criteria)),
-  Result = unlist(pred$Criteria)
+tibble::tibble(
+    Criteria = paste0(seq(4),". ", names(pred$Criteria)),
+    Result = unlist(pred$Criteria)
 ) %>%
-  kableExtra::kable(caption = paste0("Results from quality analysis of <strong>",
-                                     object@metadata$sampleName, "</strong>")) %>%
-  kableExtra::kable_styling() %>%
-  kableExtra::column_spec(2, color = ifelse(unlist(pred$Criteria), "green", "red")) 
+    kableExtra::kable(caption = paste0(
+        "Results from quality analysis of <strong>",
+        object@metadata$sampleName, "</strong>")
+    ) %>%
+    kableExtra::kable_material(c("striped", "hover"),
+                               full_width=FALSE,
+                               position="float_right") %>%
+    kableExtra::column_spec(
+        column = 2, 
+        color = ifelse(unlist(pred$Criteria), "#A45BA4", "red"),
+        bold = TRUE
+    ) 
 ```
+
+These results led to the final prediction: `r verd`.
+
+</details>
+
 
 ***

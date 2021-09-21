@@ -1,70 +1,160 @@
 ---
 title: "RLSeq Report"
+subtitle: "<strong>`r object@metadata$sampleName`</strong>"
+date: "`r Sys.Date()`"
 output: 
   html_document:
-    code_folding: hide
-    theme: flatly
-    highlight: textmate
+    css: "report_style.css"
+    theme: "flatly"
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false 
+    toc_depth: 2
+    code_download: true
+    includes:
+      in_header: "header.html"
 params:
   object: "placeholder"
 ---
 
+<img src="logo.png" align="right" alt="logo" width="220" style = "border: none; float: right;">
 
 ```{r setup, include=FALSE, echo=FALSE}
-object <- params$object
+
+# Setup chunk options
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  cache = FALSE,
+  echo = FALSE
+)
 
 # Libraries
 library(magrittr)
 library(rlang)
 
 # Enable
-DT::datatable(matrix(), extensions="Buttons") 
+DT::datatable(matrix(), extensions="Buttons")
 
 # Wrangle results and trigger conditional templates
+object <- params$object
 rlres <- object@metadata$results
 rlreslst <- lapply(slotNames(rlres), function(sn) {
   tryCatch(rlresult(object, sn), error = function(e) {NULL})
 })
 names(rlreslst) <- slotNames(rlres)
+res_order <- c(
+  "rlfsRes", "predictRes", "featureEnrichment", 
+  "correlationMat", "geneAnnoRes", "rlRegionRes"
+)
+funcs <- c(
+  "analyzeRLFS", "predictCondition", "featureEnrich", 
+  "corrAnalyze", "geneAnnotation", "rlRegionTest"
+)
+names(res_order) <- c(
+  "RLFS Analysis", 
+  "Sample classification",
+  "Feature enrichment test",
+  "Correlation analysis",
+  "Gene Annotations",
+  "RL-Regions Test"
+)
+rlreslst <- rlreslst[res_order]
 isnull <- sapply(rlreslst, is.null)
-rlreslst <- rlreslst[! isnull]
 ```
 
-<br>
+# Summary
+
+This report was generated with **RLSeq v`r packageVersion("RLSeq")`**.
+
+### Sample information
 
 Sample name: <strong>`r object@metadata$sampleName`</strong>
 
 Sample type: <strong>`r object@metadata$mode`</strong>
 
-Genome: <strong>`r GenomeInfoDb::genome(object)`</strong>
+Genome: <strong>`r GenomeInfoDb::genome(object)[1]`</strong>
 
 Time: <strong>`r date()`</strong>
 
-## Analysis results
+### Results summary
 
 ```{r}
+tibble::tibble(
+  Result = paste0("<a href=\"#", res_order,"\">", names(res_order), "</a>"),
+  Available = ! isnull
+) %>%
+  kableExtra::kbl(escape = FALSE) %>%
+  kableExtra::kable_material(c("striped", "hover")) %>%
+  kableExtra::column_spec(
+    column = 2,
+    color = ifelse(! isnull, "black", "grey"),
+    bold = ! isnull
+  ) 
+```
+
+# Results
+
+```{r childRMD, results='asis'}
 rmdlst <- lapply(
-  names(rlreslst),
-  function(res) {
-    knitr::knit_child(
-      system.file(
-        "Rmd",
-        paste0(res, ".Rmd"),
-        package = "RLSeq"
-      ), 
-      envir = environment(), 
-      quiet = TRUE
-    )
-  }
+    seq(res_order),
+    function(i) {
+        resAnchor <- res_order[i]
+        func <- funcs[i]
+        if (isnull[i]) {
+            knitr::knit_child(
+                text=c(
+                    '## `r i`. `r names(resAnchor)` {#`r resAnchor`}',
+                    '',
+                    paste0('*Unavailable*. Run `', func,
+                           '()` and then `report()` again to view this result.'),
+                    '',
+                    '***',
+                    ''
+                ),
+                envir = environment(), 
+                quiet = TRUE
+            )
+        } else {
+            knitr::knit_child(
+                system.file(
+                    "Rmd",
+                    paste0(resAnchor, ".Rmd"),
+                    package = "RLSeq"
+                ), 
+                envir = environment(), 
+                quiet = TRUE
+            )
+        }
+    }
 )
 cat(unlist(rmdlst), sep = "\n")
 ```
 
-***
+# Other
+
+> For more information about *RLSeq* please visit the package homepage [here](https://github.com/Bishop-Laboratory/RLSeq){target="_blank"}.
+
+**Note**: if you use *RLSeq* in published research, please reference:
+
+> Miller et al., RLSeq, (2021), GitHub repository, [Bishop-Laboratory/RLSeq](https://github.com/Bishop-Laboratory/RLSeq)
+
+## Session info
+
+<details>
+
+<summary>Session info</summary>
+
+```{r}
+sessionInfo()
+```
+
+</details>
 
 &nbsp;
 <hr />
-<p style="text-align: center;">RLSeq © `r format(Sys.Date(), "%Y")``, <a href="https://gccri.bishop-lab.uthscsa.edu/"  target="_blank">Bishop Lab</a>, UT Health San Antonio</p>
-<p style="text-align: center;">RLSeq maintainer: <span style="color: #808080;"><em>millerh1@uthscsa.edu</em></span></p>
+<p style="text-align: center;">RLSeq © `r format(Sys.Date(), "%Y")`, <a href="https://gccri.bishop-lab.uthscsa.edu/"  target="_blank">Bishop Lab</a>, UT Health San Antonio</p>
+<p style="text-align: center;">RLSeq maintainer: <span style="color: #808080;"><em><a href="mailto:millerh1@uthscsa.edu">Henry Miller</a></em></span></p>
 
 &nbsp;
