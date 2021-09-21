@@ -23,8 +23,7 @@ Annotates R-loop peaks as a GRanges object with gene-level information
 \examples{
 
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
 
 rlr <- geneAnnotation(rlr)
-
 }

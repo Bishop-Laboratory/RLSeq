@@ -59,10 +59,10 @@ A list which can be generated from the RLHub package or via local sources.\prefo
 }
 \examples{
 small_anno <- list(
-  "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-  "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
+    "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
+    "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
 )
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rls <- RLRanges(pks, genome="hg38", mode="DRIP")
+rls <- RLRanges(pks, genome = "hg38", mode = "DRIP")
 featureEnrich(rls, annotations = small_anno)
 }

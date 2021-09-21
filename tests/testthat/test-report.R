@@ -1,7 +1,12 @@
-
-test_that(desc = "Test report", {
-  expect_null(
-    RLSeq::report(RLSeq::SRX1025890, outputFile = "report.html")
+test_that(desc = "RLSeq report", {
+  # Load 
+  load("rlr.rda")
+  
+  # Plot the enrich
+  expect_true(
+    RLSeq::report(
+      object = rlr, 
+      quiet = TRUE
+    )
   )
-  file.remove("report.html")
 })

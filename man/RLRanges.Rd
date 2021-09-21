@@ -44,11 +44,11 @@ pks <- "https://rlbase-data.s3.amazonaws.com/peaks/SRX1025890_hg38.broadPeak"
 cvg <- "https://rlbase-data.s3.amazonaws.com/coverage/SRX1025890_hg38.bw"
 
 rlrs <- RLRanges(
-  peaks = pks,
-  coverage = cvg,
-  mode = "DRIP",
-  genome = "hg38",
-  condType = "POS",
-  sampleName = "TC32 DRIP-Seq"
+    peaks = pks,
+    coverage = cvg,
+    mode = "DRIP",
+    genome = "hg38",
+    condType = "POS",
+    sampleName = "TC32 DRIP-Seq"
 )
 }

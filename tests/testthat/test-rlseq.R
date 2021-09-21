@@ -1,12 +1,13 @@
-test_that(desc = "RL Region Test works", {
+test_that(desc = "Test that RLSeq works", {
   
   # Load 
   load("rlr.rda")
   
   # Plot the enrich
   expect_s4_class(
-    RLSeq::rlRegionTest(
-      object = rlr
+    RLSeq::RLSeq(
+      object = rlr, 
+      quiet = TRUE
     ),
     "RLRanges"
   )

@@ -17,7 +17,7 @@ Tests the overlap of peaks within R-loop regions
 }
 \examples{
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome="hg38", mode="DRIP", quiet=TRUE)
+rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP", quiet = TRUE)
 
 rlr <- rlRegionTest(rlr)
 }
