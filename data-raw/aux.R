@@ -8,6 +8,8 @@ library(tidyverse)
 
 ## RLBase samples ##
 
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+
 # Load the RLBase samples
 rlbase_enrich <- file.path(rlbase, "RLHub", "rlsamples.rda")
 tmp <- tempfile()
@@ -35,13 +37,13 @@ download.file(avgs, destfile = tmp, quiet = TRUE)
 load(tmp)
 genomes <- available_genomes %>%
   as_tibble() %>%
-  rename(rlfs_available = homer_anno_available) %>%
-  filter(rlfs_available, genes_available) %>%
+  dplyr::rename(rlfs_available = homer_anno_available) %>%
+  dplyr::filter(rlfs_available, genes_available) %>%
   pull(UCSC_orgID)
 
 # Get the available modes (no bisulfite currently supported)
 available_modes <- rlsamples %>%
-  select(mode, family, ip_type, strand_specific, moeity, bisulfite_seq) %>%
+  dplyr::select(mode, family, ip_type, strand_specific, moeity, bisulfite_seq) %>%
   distinct()
 
 
@@ -85,26 +87,20 @@ ip_cols <- tribble(
   )
 
 ## Modes within each
-full_cols <- c(
-  "#C12930", "#8D2840", "#9B416E", "#77518F", "#5D3C9D", "#354980",
-  "#385D37", "#2E294E", "#501B35", "#8A5D54", "#413284", "#09360D",
-  "#592566", "#F3B80C", "#B8934E", "#CB886D", "#BDB0D5", "#86C1B9",
-  "#A94548", "#6C557F", "#463852", "#224431"
-)
-
-set.seed(42)
-mode_cols <- tibble(
-  mode = unique(rlsamples$mode),
-  POS = sample(full_cols, length(unique(rlsamples$mode)))
-) %>%
-  mutate(
-    "NEG" = colorspace::desaturate(POS, amount = .6),
-    "NULL" = colorspace::desaturate(POS, amount = 1),
-    "NULL" = case_when(
-      is.na(`NULL`) ~ colorspace::desaturate(POS, amount = 0.75),
-      TRUE ~ `NULL`
+# From https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 110)[1:n]
+}
+modes <- unique(rlsamples$mode)
+set.seed(5); mode_cols <- tibble(
+  mode = sample(modes, size = length(modes)),
+  col = gg_color_hue(
+    length(
+      modes
     )
   )
+)
 
 ## CondType
 condtype_cols <- tribble(
@@ -121,6 +117,13 @@ verdict_cols <- tribble(
   "Control", "#8a2c2c"
 )
 
+## Heatcols
+heatcols <- tribble(
+  ~selected, ~col,
+  "RLBase", "#e0dede",
+  "user_selected", "#2c408a"
+)
+
 ## Save
 aux <- list(
   db_cols = db_cols,
@@ -128,6 +131,7 @@ aux <- list(
   rlbps = rlbps,
   ip_cols = ip_cols,
   mode_cols = mode_cols,
+  heat_cols = heatcols,
   condtype_cols = condtype_cols,
   verdict_cols = verdict_cols,
   available_modes = available_modes,
