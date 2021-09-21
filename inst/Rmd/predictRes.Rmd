@@ -1,42 +1,66 @@
-### R-Loop Forming Sequences (RLFS) Enrichment
-
-RLFS were derived across the genome using [`QmRLFS-finder.py`](https://github.com/piroonj/QmRLFS-finder){target="_blank"}. R-loop broad peaks were called with `macs2` and then compared with RLFS using `permTest` from the `RegioneR` R package. An empirical distribution of RLFS was generated using the `circularRandomizeRegions` method and compared to the peaks in order to calculate enrichment p value and zscore (effect size of enrichment). 
-
+## Sample classification
 
 ```{r}
-pt <- rlfs_data[[1]]
-pval <- pt[[1]]$pval
-ntimes <- pt[[1]]$ntimes
-zscore <- pt[[1]]$zscore
+pred <- rlresult(object, resultName = "predictRes")
+verd <- ifelse(
+  pred$Verdict == "Case", "<strong style='color: green'>Case</strong>", 
+  "<strong style='color: red'>Control</control>"
+)
+```
+Verdict for `r object@metadata$sampleName` is `r verd`. 
 
-rlfs_pval_color <- ifelse(pval > .05, 'red', ifelse(pval > .01, 'orange', 'green'))
-rlfs_zs_color <- ifelse(zscore < 5, 'red', ifelse(zscore < 15, 'orange', 'green'))
+### Details
 
-lz <- rlfs_data[[2]]
+To evaluate sample quality, a binary classifier was developed via the online-learning approach described in the RLSuite manuscript. The classifier evaluates features engineered from the RLFS Z score distribution, specifically, the following features:
+
+```{r}
+feature_key <- tribble(
+  ~feature, ~description,
+  "Z1", "mean of Z",
+  "Z2", "variance of Z",
+  "Zacf1", "mean of Z ACF",
+  "Zacf2", "variance of Z ACF",
+  "ReW1", "mean of FT of Z (real part)",
+  "ReW2", "variance of FT of Z (real part)",
+  "ImW1", "mean of FT of Z (imaginary part)",
+  "ImW2", "variance of FT of Z (imaginary part)",
+  "ReWacf1", "mean of FT of Z ACF (real part)",
+  "ReWacf2", "variance of FT of Z ACF (real part)",
+  "ImWacf1", "mean of FT of Z ACF (imaginary part)",
+  "ImWacf2", "variance of FT of Z ACF (imaginary part)"
+) 
+
+tibble::tibble(
+  pred$Features
+) %>% 
+  right_join(feature_key, by = "feature") %>%
+  relocate(description, .after = feature) %>%
+  kableExtra::kable(caption = paste0(
+    "Description of classifier features with raw and transformed values used to evaluate <strong>", 
+    object@metadata$sampleName, "</strong>. Abbrevitations: Z, Z-score",
+    " distribution; ACF, autocorrelation function; FT, Fourier Transform."
+  )) %>% 
+  kableExtra::kable_styling()
 ```
 
+From these features, a multi-part classification was performed. In short, "Case" indicates any sample for which all the following are true:
 
-From this analysis, the empirically-determined p value was <strong style="color: `r rlfs_pval_color`">`r pval`</strong> (with `r ntimes` permutations, the minimum possible p value was `r 1/(1 + ntimes)`).
-The enrichment z-score was <strong style="color: `r rlfs_zs_color`">`r zscore`</strong>.
+1. **Criteria 1**: The RLFS Permutation test P value is significant (p < .05)
+2. **Criteria 2**: The Z-score distribution middle is > 0.
+3. **Criteria 3**: The Z-score distribution middle is > the start and the end.
+4. **Criteria 4**: The model predicts a label of "Case". 
 
+The criteria for **`r object@metadata$sampleName`** are shown below:
 
-```{r fig.height=6, fig.width=10}
-plot(pt)
+```{r}
+tibble(
+  Criteria = paste0(seq(4),". ", names(pred$Criteria)),
+  Result = unlist(pred$Criteria)
+) %>%
+  kableExtra::kable(caption = paste0("Results from quality analysis of <strong>",
+                                     object@metadata$sampleName, "</strong>")) %>%
+  kableExtra::kable_styling() %>%
+  kableExtra::column_spec(2, color = ifelse(unlist(pred$Criteria), "green", "red")) 
 ```
-
-```{r fig.height=6, fig.width=10}
-to_plot <- data.frame("zscore" = lz$`regioneR::numOverlaps`$shifted.z.scores,
-                      "shift" = lz$`regioneR::numOverlaps`$shifts)
-plt <- ggplot2::ggplot(to_plot, ggplot2::aes(y = .data$zscore,
-                                             x = .data$shift)) +
-  ggplot2::geom_line() +
-  ggplot2::labs(title = "Peak enrichment around RLFS") +
-  ggplot2::ylab("Peak Enrichment (Z-Score)") +
-  ggplot2::xlab("Distance to RLFS (bp)") +
-  ggplot2::theme_bw(base_size = 15)
-plotly::ggplotly(plt)
-
-```
-
 
 ***
