@@ -1,7 +1,7 @@
 #' Generate an RLSeq Report
 #'
 #' @param object An RLRanges object.
-#' @param output A path indicating the report output HTML file. Default: "rlreport.html"
+#' @param reportPath A path indicating the report output HTML file. Default: "rlreport.html"
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `rmarkdown::render()`
 #' @return TRUE
@@ -19,22 +19,22 @@
 #' @importFrom rlang .data
 #' @export
 report <- function(object, 
-                   output = "rlreport.html", 
+                   reportPath = "rlreport.html", 
                    quiet=FALSE,
                    ...) {
   
   # Get the template
   template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
 
-  # Render template  
+  # Render template
   rmarkdown::render(
     template,
     params = list(
       "object"=object
     ),
     output_format = "html_document",
-    output_dir = normalizePath(dirname(output)),
-    output_file = output
+    output_dir = normalizePath(dirname(reportPath)),
+    output_file = reportPath
   )
   
   # Return

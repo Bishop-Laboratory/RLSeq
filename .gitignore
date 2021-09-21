@@ -9,3 +9,6 @@ data-raw/RMapDB_generate
 inst/doc
 /doc/
 /Meta/
+rlreport.html
+rlr.rda
+rlrRNH.rda

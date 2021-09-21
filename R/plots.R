@@ -53,6 +53,7 @@ corrHeatmap <- function(object,
                         ...) {
 
   # TODO: NEED RLHub for this
+  rlbase <- "https://rlbase-data.s3.amazonaws.com"
   rlsamples <- file.path(rlbase, "RLHub", "rlsamples.rda")
   tmp <- tempfile()
   download.file(rlsamples, destfile = tmp, quiet = TRUE)
@@ -85,7 +86,7 @@ corrHeatmap <- function(object,
         mode = object@metadata$mode,
         # condType = object@metadata$condType,
         verdict = prediction$Verdict,
-        group = "user_selected"
+        group = object@metadata$sampleName
       )
     ) %>%
     dplyr::distinct(.data$rlsample, .keep_all = TRUE) %>%
@@ -113,16 +114,16 @@ corrHeatmap <- function(object,
   )
   
   # Wrangle colors
-  mode_cols <- aux$mode_cols$POS
+  mode_cols <- aux$mode_cols$col
   names(mode_cols) <- aux$mode_cols$mode
   cond_cols <- aux$condtype_cols$col
   names(cond_cols) <- aux$condtype_cols$condType
   verd_cols <- aux$verdict_cols$col
   names(verd_cols) <- aux$verdict_cols$verdict
-  group_cols <- c(
-    "user_selected" = "firebrick",
-    "RLBase" = "grey"
-  )
+  group_cols <- setNames(c(
+    aux$heat_cols$col[aux$heat_cols$selected == "user_selected"],
+    aux$heat_cols$col[aux$heat_cols$selected == "RLBase"]
+  ), nm = c(object@metadata$sampleName, "RLBase"))
   cat_cols <- list(
     "mode" = mode_cols,
     # "condType" = c(cond_cols, "grey"),
@@ -183,6 +184,7 @@ plotEnrichment <- function(object,
   yval <- "stat_fisher_rl"
   
   # TODO: NEEDS to be replaced with RLHub
+  rlbase <- "https://rlbase-data.s3.amazonaws.com"
   rlbase_enrich <- file.path(rlbase, "RLHub", "feature_enrichment_per_sample.rda")
   tmp <- tempfile()
   download.file(rlbase_enrich, destfile = tmp, quiet = TRUE)
@@ -408,6 +410,7 @@ plotRLRegionOverlap <- function(object, returnData=FALSE) {
   
   # Get RLRegions 
   # TODO: NEEDS to be in RLHub 
+  rlbase <- "https://rlbase-data.s3.amazonaws.com"
   rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
   tmp <- tempfile()
   download.file(rlregions_table, destfile = tmp, quiet = TRUE)

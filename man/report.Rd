@@ -4,12 +4,12 @@
 \alias{report}
 \title{Generate an RLSeq Report}
 \usage{
-report(object, output = "rlreport.html", quiet = FALSE, ...)
+report(object, reportPath = "rlreport.html", quiet = FALSE, ...)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
-\item{output}{A path indicating the report output HTML file. Default: "rlreport.html"}
+\item{reportPath}{A path indicating the report output HTML file. Default: "rlreport.html"}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
