@@ -3,14 +3,14 @@
 #' @return logical. TRUE if status code 200, FALSE if not
 #' @export
 urlExists <- function(url) {
-  identical(
-    httr::status_code(
-      # Checks HEAD only due to size constraints
-      httr::HEAD(
-        url
-      )
-    ), 200L # Checks if response is ok
-  )
+    identical(
+        httr::status_code(
+            # Checks HEAD only due to size constraints
+            httr::HEAD(
+                url
+            )
+        ), 200L # Checks if response is ok
+    )
 }
 
 
@@ -22,11 +22,11 @@ urlExists <- function(url) {
 #' @importFrom rlang .data
 #' @export
 getChromSizes <- function(object) {
-  GenomeInfoDb::seqinfo(object) %>%
-    as.data.frame() %>%
-    tibble::rownames_to_column("chrom") %>%
-    tibble::as_tibble() %>%
-    dplyr::select(.data$chrom, size=.data$seqlengths)
+    GenomeInfoDb::seqinfo(object) %>%
+        as.data.frame() %>%
+        tibble::rownames_to_column("chrom") %>%
+        tibble::as_tibble() %>%
+        dplyr::select(.data$chrom, size = .data$seqlengths)
 }
 
 
@@ -36,18 +36,18 @@ getChromSizes <- function(object) {
 #' @return A logical, TRUE if available, FALSE if not
 #' @export
 checkRLFSAnno <- function(genome) {
-  return(
-    urlExists(
-      paste0(
-        file.path(
-          RLBASE_URL,
-          "rlfs-beds/"
-        ),
-        genome,
-        ".rlfs.bed"
-      )
+    return(
+        urlExists(
+            paste0(
+                file.path(
+                    RLBASE_URL,
+                    "rlfs-beds/"
+                ),
+                genome,
+                ".rlfs.bed"
+            )
+        )
     )
-  )
 }
 
 
@@ -57,31 +57,31 @@ checkRLFSAnno <- function(genome) {
 #' @return A GRanges object with RLFS for that species.
 #' @export
 getRLFSAnno <- function(object) {
-  
-  # Get genome
-  genome <- GenomeInfoDb::genome(object)[1]
 
-  # Check if annotations available first
-  if (!checkRLFSAnno(genome)) {
-    stop("No RLFS annotations available for ", genome)
-  }
+    # Get genome
+    genome <- GenomeInfoDb::genome(object)[1]
 
-  # Read in RLFS
-  tsvRLFS <- readr::read_tsv(
-    paste0(
-      file.path(
-        RLBASE_URL, "rlfs-beds/"
-      ),
-      genome,
-      ".rlfs.bed"
-    ),
-    col_names = FALSE,
-    show_col_types = FALSE,
-    progress = FALSE
-  )
+    # Check if annotations available first
+    if (!checkRLFSAnno(genome)) {
+        stop("No RLFS annotations available for ", genome)
+    }
 
-  # Return as a GRanges object
-  return(regioneR::toGRanges(as.data.frame(tsvRLFS)))
+    # Read in RLFS
+    tsvRLFS <- readr::read_tsv(
+        paste0(
+            file.path(
+                RLBASE_URL, "rlfs-beds/"
+            ),
+            genome,
+            ".rlfs.bed"
+        ),
+        col_names = FALSE,
+        show_col_types = FALSE,
+        progress = FALSE
+    )
+
+    # Return as a GRanges object
+    return(regioneR::toGRanges(as.data.frame(tsvRLFS)))
 }
 
 
@@ -93,39 +93,39 @@ getRLFSAnno <- function(object) {
 #' @export
 getChain <- function(genomeFrom, genomeTo) {
 
-  # Get URL
-  url <- file.path(
-    BASE_UCSC,
-    genomeFrom,
-    "liftOver",
-    paste0(
-      genomeFrom, "To",
-      paste0(
-        toupper(substring(genomeTo, 1, 1)),
-        substring(genomeTo, 2)
-      ),
-      ".over.chain.gz"
+    # Get URL
+    url <- file.path(
+        BASE_UCSC,
+        genomeFrom,
+        "liftOver",
+        paste0(
+            genomeFrom, "To",
+            paste0(
+                toupper(substring(genomeTo, 1, 1)),
+                substring(genomeTo, 2)
+            ),
+            ".over.chain.gz"
+        )
     )
-  )
 
-  # Check if exists
-  stopifnot(urlExists(url))
+    # Check if exists
+    stopifnot(urlExists(url))
 
-  # Check if R.utils available
-  if (!requireNamespace("R.utils", quietly = TRUE)) {
-    stop("R.utils is required. Please install it with install.packages('R.utils')")
-  }
+    # Check if R.utils available
+    if (!requireNamespace("R.utils", quietly = TRUE)) {
+        stop("R.utils is required. Please install it with install.packages('R.utils')")
+    }
 
-  # Get the chain
-  tmp <- tempfile()
-  download.file(url, destfile = paste0(tmp, ".gz"))
-  R.utils::gunzip(paste0(tmp, ".gz"))
-  chain <- rtracklayer::import.chain(tmp)
+    # Get the chain
+    tmp <- tempfile()
+    download.file(url, destfile = paste0(tmp, ".gz"))
+    R.utils::gunzip(paste0(tmp, ".gz"))
+    chain <- rtracklayer::import.chain(tmp)
 
-  # Return as a GRanges object
-  return(
-    chain
-  )
+    # Return as a GRanges object
+    return(
+        chain
+    )
 }
 
 
@@ -137,28 +137,25 @@ getChain <- function(genomeFrom, genomeTo) {
 #' @param genomeFrom Genome of ranges supplied, in UCSC format (e.g., "hg19")
 #' @param genomeTo Genome to convert to (e.g., "hg38")
 #' @return A lifted GRanges object
-#' @examples
-#'
-#' hg38Lift(RLSeq::SRX1025890_peaks_hg19)
 #' @export
 liftUtil <- function(ranges, genomeFrom, genomeTo) {
 
-  # Get the chain
-  chain <- getChain(genomeFrom, genomeTo)
+    # Get the chain
+    chain <- getChain(genomeFrom, genomeTo)
 
-  # Make sure names exist
-  if (is.null(names(ranges))) {
-    names(ranges) <- seq(GenomicRanges::start(ranges))
-  }
+    # Make sure names exist
+    if (is.null(names(ranges))) {
+        names(ranges) <- seq(GenomicRanges::start(ranges))
+    }
 
-  # Lift Over
-  lifted <- unlist(rtracklayer::liftOver(ranges, chain = chain))
+    # Lift Over
+    lifted <- unlist(rtracklayer::liftOver(ranges, chain = chain))
 
-  # Force uniqueness
-  nms <- duplicated(names(lifted))
-  lifted <- lifted[nms, ]
+    # Force uniqueness
+    nms <- duplicated(names(lifted))
+    lifted <- lifted[nms, ]
 
-  return(lifted)
+    return(lifted)
 }
 
 
@@ -173,12 +170,12 @@ liftUtil <- function(ranges, genomeFrom, genomeTo) {
 #' @importFrom utils write.table
 #' @export
 grangesToBed <- function(granges, write = FALSE, filename = NULL) {
-  df <- as.data.frame(granges)
-  names(df)[1] <- paste0("#", names(df)[1])
-  if (write) {
-    write.table(df, file = paste0(filename, ".bed"), sep = "\t", col.names = NA)
-  }
-  return(df)
+    df <- as.data.frame(granges)
+    names(df)[1] <- paste0("#", names(df)[1])
+    if (write) {
+        write.table(df, file = paste0(filename, ".bed"), sep = "\t", col.names = NA)
+    }
+    return(df)
 }
 
 
@@ -192,36 +189,36 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
 #' @importFrom rlang .data
 #' @export
 getGSSignal <- function(coverage, gssignal) {
-  # Get the locations of the gs sites
-  positions <- gssignal$location
-  positions <- tibble::tibble(location = positions) %>%
-    dplyr::mutate(
-      seqnames = gsub(.data$location,
-        pattern = "(.+)_(.+)_(.+)",
-        replacement = "\\1"
-      ),
-      start = gsub(.data$location,
-        pattern = "(.+)_(.+)_(.+)",
-        replacement = "\\2"
-      ),
-      end = gsub(.data$location,
-        pattern = "(.+)_(.+)_(.+)",
-        replacement = "\\3"
-      )
-    ) %>%
-    dplyr::select(-.data$location) %>%
-    GenomicRanges::makeGRangesFromDataFrame()
+    # Get the locations of the gs sites
+    positions <- gssignal$location
+    positions <- tibble::tibble(location = positions) %>%
+        dplyr::mutate(
+            seqnames = gsub(.data$location,
+                pattern = "(.+)_(.+)_(.+)",
+                replacement = "\\1"
+            ),
+            start = gsub(.data$location,
+                pattern = "(.+)_(.+)_(.+)",
+                replacement = "\\2"
+            ),
+            end = gsub(.data$location,
+                pattern = "(.+)_(.+)_(.+)",
+                replacement = "\\3"
+            )
+        ) %>%
+        dplyr::select(-.data$location) %>%
+        GenomicRanges::makeGRangesFromDataFrame()
 
-  # Read in the bigWig file using these locations
-  bw <- rtracklayer::import(
-    con = rtracklayer::BigWigFile(coverage),
-    selection = positions
-  )
+    # Read in the bigWig file using these locations
+    bw <- rtracklayer::import(
+        con = rtracklayer::BigWigFile(coverage),
+        selection = positions
+    )
 }
 
 
 #' Table to Regions
-#' 
+#'
 #' Helper function to Convert "table" format to "regions" format.
 #' @param table A tibble in "Table" format from RLHub.
 #' @return A tibble in "regions" format.
@@ -229,32 +226,32 @@ getGSSignal <- function(coverage, gssignal) {
 #' @importFrom rlang .data
 #' @export
 tableToRegions <- function(table) {
-  locpat <- "(.+):(.+)\\-(.+):(.+)"
-  table %>%
-    dplyr::mutate(
-      chrom = as.character(
-        gsub(.data$location, pattern = locpat, replacement = "\\1")
-      ),
-      start = as.numeric(
-        gsub(.data$location, pattern = locpat, replacement = "\\2")
-      ),
-      end = as.numeric(
-        gsub(.data$location, pattern = locpat, replacement = "\\3")
-      ),
-      strand = as.character(
-        gsub(.data$location, pattern = locpat, replacement = "\\4")
-      ),
-      strand = dplyr::case_when(
-        .data$strand == "." ~ "*",
-        TRUE ~ .data$strand
-      )
-    ) %>%
-    dplyr::select(
-      .data$chrom,
-      .data$start,
-      .data$end, 
-      .data$strand, 
-      name = .data$rlregion
-    ) %>%
-    dplyr::distinct()
+    locpat <- "(.+):(.+)\\-(.+):(.+)"
+    table %>%
+        dplyr::mutate(
+            chrom = as.character(
+                gsub(.data$location, pattern = locpat, replacement = "\\1")
+            ),
+            start = as.numeric(
+                gsub(.data$location, pattern = locpat, replacement = "\\2")
+            ),
+            end = as.numeric(
+                gsub(.data$location, pattern = locpat, replacement = "\\3")
+            ),
+            strand = as.character(
+                gsub(.data$location, pattern = locpat, replacement = "\\4")
+            ),
+            strand = dplyr::case_when(
+                .data$strand == "." ~ "*",
+                TRUE ~ .data$strand
+            )
+        ) %>%
+        dplyr::select(
+            .data$chrom,
+            .data$start,
+            .data$end,
+            .data$strand,
+            name = .data$rlregion
+        ) %>%
+        dplyr::distinct()
 }

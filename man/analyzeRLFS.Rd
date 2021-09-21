@@ -26,7 +26,6 @@ Analyzes the enrichment of peaks within R-loop forming sequences.
 
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome="hg38", mode="DRIP")
+rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
 rlr <- analyzeRLFS(rlr)
-
 }

@@ -1,6 +1,15 @@
-test_that(desc = "Test that annotatePeaks returns a GRanges object", {
-  expect_s3_class(
-    RLSeq::geneAnnotation(SRX1025890_peaks, genome = "hg38"),
-    "tbl_df"
+test_that(desc = "Test that gene annotation works", {
+  
+  # Load 
+  load("rlr.rda")
+  
+  # Plot the enrich
+  expect_s4_class(
+    RLSeq::geneAnnotation(
+      object = rlr, 
+      quiet = TRUE
+    ),
+    "RLRanges"
   )
+  
 })
