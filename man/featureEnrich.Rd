@@ -4,62 +4,87 @@
 \alias{featureEnrich}
 \title{Tests Genomic Feature Enrichment}
 \usage{
-featureEnrich(
-  peaks,
-  genome = c("hg38", "mm10"),
-  annotations,
-  quiet = FALSE,
-  cores = 1
-)
+featureEnrich(object, annotations = NULL, downsample = 10000, quiet = FALSE)
 }
 \arguments{
-\item{peaks}{A GRanges object containing R-loop peaks}
-
-\item{genome}{UCSC genome identifier indicating genome of supplied peaks.}
+\item{object}{An RLRanges object.}
 
 \item{annotations}{Annotation list. See details.}
 
-\item{quiet}{If TRUE, messages will be suppressed. Default: False}
+\item{downsample}{If a numeric, data will be down sampled to the requested
+number of peaks.
+This improves the speed of genomic shuffling and
+helps prevent p-value inflation.
+If FALSE, then downsampling will not be performed. Default: 10000.}
 
-\item{cores}{Cores for use in parallel operations. Default: 1
+\item{quiet}{If TRUE, messages will be suppressed. Default: False
 the same format as RLSeq::annotationLst.}
 }
 \value{
 A tibble containing the results of the enrichment test.
 }
 \description{
-Tests the enrichment of genomic features in supplied R-loop peaks.
+Tests the enrichment of genomic features in supplied peaks.
 }
 \details{
-\strong{annotations}:
-A list which can be generated from the RLHub package or via local sources.\preformatted{\\emph\{RLHub\}: \code{RLHub['annots_hg38']} will return the full suite of annotations
-  for the hg38 genome. 
- 
-\\emph\{custom\}: The only requirement is that \code{annotations} is a named 
-  list of \code{tbl}s in which each \code{tbl} follows the structure:
-  
-  \\tabular\{lllll\}\{
-    chrom \\tab start \\tab end \\tab strand \\tab name\\cr
-    chr1 \\tab 10015 \\tab 10498 \\tab + \\tab skewr__C_SKEW__1\\cr
-    chr1 \\tab 10614 \\tab 11380 \\tab + \\tab skewr__G_SKEW__1\\cr
-    ...
-  \}
-  
-  Such a list can be generated directly from RLBase S3 bucket files:
-  
-  \preformatted{
-        small_anno <- list(
-          "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-          "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
-          )
-      }
+\strong{annotations}: A list which can be generated from the RLHub package
+or via local sources.
+
+\strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of
+annotations for the hg38 genome.
+
+\strong{custom}: The only requirement is that \code{annotations} is a
+named list of \code{tbl}s in which each \code{tbl} follows the structure:
+
+\tabular{lllll}{
+chrom \tab start \tab end \tab strand \tab name\cr
+chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
+chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
+...
+}
+
+Such a list can be generated directly from RLBase S3 bucket files:
+
+\preformatted{
+  small_anno <- list(
+    "Centromeres" = readr::read_csv(
+      paste0(
+          "https://rlbase-data.s3.amazonaws.com",
+          "/annotations/hg38/Centromeres.csv.gz"
+      )
+    ),
+    "SkewR" = readr::read_csv(
+      paste0(
+          "https://rlbase-data.s3.amazonaws.com/",
+          "annotations/hg38/SkewR.csv.gz")
+    )
+  )
 }
 }
 \examples{
-small_anno <- list(
-          "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-          "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
-          )
-RLSeq::featureEnrich(RLSeq::SRX1025890_peaks, annotations=small_anno, genome="hg38")
 
+# Example RLRanges dataset
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+
+# RL Region Test
+featureEnrich(rlr)
+
+# With custom annotations
+small_anno <- list(
+    "Centromeres" = readr::read_csv(
+        paste0(
+            "https://rlbase-data.s3.amazonaws.com/",
+            "annotations/hg38/Centromeres.csv.gz"
+        ),
+        show_col_types = FALSE
+    ),
+    "SkewR" = readr::read_csv(
+        paste0(
+            "https://rlbase-data.s3.amazonaws.com/",
+            "annotations/hg38/SkewR.csv.gz"
+        ),
+        show_col_types = FALSE
+    )
+)
+featureEnrich(rlr, annotations = small_anno)
 }

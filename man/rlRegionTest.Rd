@@ -4,22 +4,22 @@
 \alias{rlRegionTest}
 \title{R-Loop region test}
 \usage{
-rlRegionTest(peaks, genome = "hg38")
+rlRegionTest(object)
 }
 \arguments{
-\item{peaks}{A GRanges object containing R-loop peaks}
-
-\item{genome}{UCSC genome identifier to use. Can be only "hg38" currently.
-If you have "hg19" peaks, please use RLSeq::liftUtil() to convert them.}
+\item{object}{An RLRanges object with genome "hg38".}
 }
 \value{
-A named list containing the results of testing.
+An RLRanges object with test results included.
 }
 \description{
-Tests the overlap of peaks within R-loop regions
+Tests the overlap of user-supplied ranges with R-loop regions.
 }
 \examples{
 
-RLSeq::rlRegionTest(RLSeq::SRX1025890_peaks, genome="hg38")
+# Example RLRanges data
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
+# RL Region Test
+rlRegionTest(rlr)
 }

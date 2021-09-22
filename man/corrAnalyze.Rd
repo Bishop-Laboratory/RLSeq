@@ -4,24 +4,23 @@
 \alias{corrAnalyze}
 \title{Analyze Correlations}
 \usage{
-corrAnalyze(coverage, genome = "hg38")
+corrAnalyze(object)
 }
 \arguments{
-\item{coverage}{The path to a coverage (.bigWig/.bw) file (can be a URL).}
-
-\item{genome}{The UCSC genome ID to use. (Currently only "hg38" is supported)}
+\item{object}{An RLRanges object.}
 }
 \value{
-A named list containing the results of correlation analysis.
+An RLRanges object with correlation results included.
 }
 \description{
 Finds the pairwise correlation in signal around gold-standard R-Loop sites
-between the query sample and the RMapDB database.
+between the query sample and the RLBase database.
 }
 \examples{
 
-BW_URL <- paste0("https://rmapdb-data.s3.us-east-2.amazonaws.com/bigwigs/",
-                 "rseq-coverage-unstranded/SRX1025890_hg38.bw")
-result <- RLSeq::corrAnalyze(BW_URL, genome="hg38")
+# Example RLRanges object
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
+# run corrAnalyze
+rlr <- corrAnalyze(rlr)
 }
