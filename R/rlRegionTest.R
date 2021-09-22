@@ -1,18 +1,32 @@
 #' R-Loop region test
 #'
-#' Tests the overlap of peaks within R-loop regions
+#' Tests the overlap of user-supplied ranges with R-loop regions.
 #'
 #' @param object An RLRanges object with genome "hg38".
 #' @return An RLRanges object with test results included.
-#' @examples
+#' @examples 
+#' \dontrun{
+#' 
+#' # Get example data
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
 #' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP", quiet = TRUE)
-#'
-#' rlr <- rlRegionTest(rlr)
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' 
+#' # RL Region Test
+#' rlRegionTest(rlr)
+#' 
+#' }
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
 rlRegionTest <- function(object) {
+    
+    # Stop if not genome == hg38
+    if (! GenomeInfoDb::genome(object)[1] == "hg38") {
+        stop("Only 'hg38' ranges are allowed. Please convert to 'hg38' ",
+             "using a lift-over or skip this step.")
+    }
 
     # Wrangle the peaks
     pkName <- names(object)

@@ -19,3 +19,20 @@ A Heatmap object.
 \description{
 Plot Correlation Results
 }
+\examples{
+\dontrun{
+
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Run RLSeq
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+rlr <- RLSeq(rlr)
+
+# Corr heatmap
+corrHeatmap(rlr)
+corrHeatmap(rlr, returnData=TRUE)
+}
+}

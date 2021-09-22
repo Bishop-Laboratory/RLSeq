@@ -1,19 +1,29 @@
 #' Analyze RLFS
 #'
-#' Analyzes the enrichment of peaks within R-loop forming sequences.
+#' Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
 #'
 #' @param object An RLRanges object.
 #' @param mask GRanges object containing masked genomic ranges.
 #'  Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
+#'  Custom masks can be generated using regioneR::getMask().
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
 #' @return An RLRanges object with RLFS analysis results included.
-#' @examples
-#'
+#' @examples 
+#' \dontrun{
+#' 
+#' # Example dataset
 #' rlbase <- "https://rlbase-data.s3.amazonaws.com"
 #' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Get RLRanges object
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' 
+#' # Perform RLFS analysis
 #' rlr <- analyzeRLFS(rlr)
+#' 
+#' }
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @importFrom utils capture.output

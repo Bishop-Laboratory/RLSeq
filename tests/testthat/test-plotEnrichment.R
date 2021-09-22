@@ -24,6 +24,25 @@ test_that(desc = "Test plotEnrichment", {
         ),
         "list"
     )
+    expect_type(
+        RLSeq::plotEnrichment(
+            object = rlr,
+            modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+            onlyCase=FALSE, 
+            splitby="verdict"
+        ),
+        "list"
+    )
+    expect_type(
+        RLSeq::plotEnrichment(
+            object = rlr,
+            modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+            onlyCase=FALSE, 
+            splitby="verdict",
+            returnData = TRUE
+        ),
+        "list"
+    )
     expect_error(
         RLSeq::plotEnrichment(
             object = rlr,

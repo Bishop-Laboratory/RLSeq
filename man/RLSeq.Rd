@@ -13,15 +13,21 @@ RLSeq(object, quiet = FALSE)
 }
 \value{
 An RLRanges object with all results available.
-}
-\description{
-A convenience function which runs the full RLSeq pipeline.
-}
-\examples{
+\dontrun{
 
+# Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Build RLRanges object
 rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+# Run RLSeq
 rlr <- RLSeq(rlr)
+
+}
+}
+\description{
+Runs the full RLSeq pipeline.
 }

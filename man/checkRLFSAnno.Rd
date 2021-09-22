@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{checkRLFSAnno}
 \alias{checkRLFSAnno}
-\title{Check RLFS Anno
+\title{Check RLFS
 Helper function that checks whether a genome has RLFS available}
 \usage{
 checkRLFSAnno(genome)
@@ -14,6 +14,6 @@ checkRLFSAnno(genome)
 A logical, TRUE if available, FALSE if not
 }
 \description{
-Check RLFS Anno
+Check RLFS
 Helper function that checks whether a genome has RLFS available
 }

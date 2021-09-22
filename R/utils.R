@@ -1,7 +1,6 @@
 #' Check if URL exists
 #' @param url URL to check
 #' @return logical. TRUE if status code 200, FALSE if not
-#' @export
 urlExists <- function(url) {
     identical(
         httr::status_code(
@@ -20,7 +19,6 @@ urlExists <- function(url) {
 #' @return A tibble containing chrom sizes
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
-#' @export
 getChromSizes <- function(object) {
     GenomeInfoDb::seqinfo(object) %>%
         as.data.frame() %>%
@@ -30,11 +28,10 @@ getChromSizes <- function(object) {
 }
 
 
-#' Check RLFS Anno
+#' Check RLFS 
 #' Helper function that checks whether a genome has RLFS available
 #' @param genome the UCSC genome name to check
 #' @return A logical, TRUE if available, FALSE if not
-#' @export
 checkRLFSAnno <- function(genome) {
     return(
         urlExists(
@@ -51,11 +48,10 @@ checkRLFSAnno <- function(genome) {
 }
 
 
-#' Get RLFS Anno
-#' Helper function that retrieves RLFS
+#' Get RLFS 
+#' Helper function that retrieves RLFS ranges
 #' @param object An RLRanges object.
 #' @return A GRanges object with RLFS for that species.
-#' @export
 getRLFSAnno <- function(object) {
 
     # Get genome
@@ -85,100 +81,6 @@ getRLFSAnno <- function(object) {
 }
 
 
-#' Get Chain
-#' Helper function that retrieves chain file for liftUtil()
-#' @param genomeFrom the UCSC genome name to convert from.
-#' @param genomeTo the UCSC genome name to convert to.
-#' @importFrom utils download.file
-#' @export
-getChain <- function(genomeFrom, genomeTo) {
-
-    # Get URL
-    url <- file.path(
-        BASE_UCSC,
-        genomeFrom,
-        "liftOver",
-        paste0(
-            genomeFrom, "To",
-            paste0(
-                toupper(substring(genomeTo, 1, 1)),
-                substring(genomeTo, 2)
-            ),
-            ".over.chain.gz"
-        )
-    )
-
-    # Check if exists
-    stopifnot(urlExists(url))
-
-    # Check if R.utils available
-    if (!requireNamespace("R.utils", quietly = TRUE)) {
-        stop("R.utils is required. Please install it with install.packages('R.utils')")
-    }
-
-    # Get the chain
-    tmp <- tempfile()
-    download.file(url, destfile = paste0(tmp, ".gz"))
-    R.utils::gunzip(paste0(tmp, ".gz"))
-    chain <- rtracklayer::import.chain(tmp)
-
-    # Return as a GRanges object
-    return(
-        chain
-    )
-}
-
-
-#' Lift Over Utility
-#'
-#' Convenience function for converting ranges from between assemblies
-#'
-#' @param object An RLRanges object
-#' @param genomeFrom Genome of ranges supplied, in UCSC format (e.g., "hg19")
-#' @param genomeTo Genome to convert to (e.g., "hg38")
-#' @return A lifted GRanges object
-#' @export
-liftUtil <- function(ranges, genomeFrom, genomeTo) {
-
-    # Get the chain
-    chain <- getChain(genomeFrom, genomeTo)
-
-    # Make sure names exist
-    if (is.null(names(ranges))) {
-        names(ranges) <- seq(GenomicRanges::start(ranges))
-    }
-
-    # Lift Over
-    lifted <- unlist(rtracklayer::liftOver(ranges, chain = chain))
-
-    # Force uniqueness
-    nms <- duplicated(names(lifted))
-    lifted <- lifted[nms, ]
-
-    return(lifted)
-}
-
-
-#' GRanges To Bed
-#'
-#' Converts a GRanges object to a .bed formatted DataFrame and writes to file if requested
-#'
-#' @param granges A GRanges object containing DRIP-Seq peaks
-#' @param write A boolean determining if the converted DataFrame will be written to a .bed file
-#' @param filename A string containing the desired file name if writing to file
-#' @return A DataFrame object containing the GRanges content formatted according to .bed standards
-#' @importFrom utils write.table
-#' @export
-grangesToBed <- function(granges, write = FALSE, filename = NULL) {
-    df <- as.data.frame(granges)
-    names(df)[1] <- paste0("#", names(df)[1])
-    if (write) {
-        write.table(df, file = paste0(filename, ".bed"), sep = "\t", col.names = NA)
-    }
-    return(df)
-}
-
-
 #' Get GS Signal
 #'
 #' Extract signal around GS R-loop sites
@@ -187,7 +89,6 @@ grangesToBed <- function(granges, write = FALSE, filename = NULL) {
 #' @return A named list containing the results of correlation analysis.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
-#' @export
 getGSSignal <- function(coverage, gssignal) {
     # Get the locations of the gs sites
     positions <- gssignal$location
@@ -224,7 +125,6 @@ getGSSignal <- function(coverage, gssignal) {
 #' @return A tibble in "regions" format.
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
-#' @export
 tableToRegions <- function(table) {
     locpat <- "(.+):(.+)\\-(.+):(.+)"
     table %>%
