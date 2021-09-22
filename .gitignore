@@ -1,4 +1,5 @@
 .Rproj.user
+*.Rproj
 .Rhistory
 .Rdata
 tests/**/*.html
@@ -9,3 +10,9 @@ data-raw/RMapDB_generate
 inst/doc
 /doc/
 /Meta/
+rlreport.html
+rlseq_report.html
+rlr.rda
+rlrRNH.rda
+tests/testthat/rlreport.html
+.gitattributes

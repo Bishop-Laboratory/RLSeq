@@ -2,18 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{getRLFSAnno}
 \alias{getRLFSAnno}
-\title{Get RLFS Anno
-Helper function that retrieves RLFS}
+\title{Get RLFS
+Helper function that retrieves RLFS ranges}
 \usage{
-getRLFSAnno(genome)
+getRLFSAnno(object)
 }
 \arguments{
-\item{genome}{the UCSC genome name to retrieve RLFS for}
+\item{object}{An RLRanges object.}
 }
 \value{
 A GRanges object with RLFS for that species.
 }
 \description{
-Get RLFS Anno
-Helper function that retrieves RLFS
+Get RLFS
+Helper function that retrieves RLFS ranges
 }
