@@ -19,7 +19,7 @@ verd <- ifelse(
 To evaluate sample quality, a binary classifier was developed via the online-learning approach described in the RLSuite manuscript. The classifier evaluates features engineered from the RLFS Z score distribution, specifically, the following features:
 
 ```{r}
-feature_key <- tibble::tribble(
+feature_key <- dplyr::tribble(
   ~feature, ~description,
   "Z1", "mean of Z",
   "Z2", "variance of Z",
@@ -35,7 +35,7 @@ feature_key <- tibble::tribble(
   "ImWacf2", "variance of FT of Z ACF (imaginary part)"
 ) 
 
-tibble::tibble(
+dplyr::tibble(
   pred$Features
 ) %>% 
   dplyr::right_join(feature_key, by = "feature") %>%
@@ -58,7 +58,7 @@ From these features, classification was performed to derive a *verdict* (predict
 The criteria for **`r object@metadata$sampleName`** are shown below:
 
 ```{r}
-tibble::tibble(
+dplyr::tibble(
     Criteria = paste0(seq(4),". ", names(pred$Criteria)),
     Result = unlist(pred$Criteria)
 ) %>%

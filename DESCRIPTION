@@ -29,44 +29,48 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Suggests: 
+    AnnotationDbi,
     BiocStyle,
     covr,
-    EnsDb.Hsapiens.v86,
-    EnsDb.Mmusculus.v79,
+    DT,
+    httr,
+    jsonlite,
+    kableExtra,
+    kernlab,
     knitr,
+    magick,
+    MASS,
+    org.Hs.eg.db,
     R.utils,
-    testthat (>= 3.0.0)
+    randomForest,
+    readr,
+    rmarkdown,
+    rpart,
+    testthat (>= 3.0.0),
+    tibble,
+    tidyr
 Config/testthat/edition: 3
 Depends: 
     R (>= 2.10)
 Imports: 
-    kableExtra,
-    readr,
-    tibble,
     dplyr,
     ggplot2,
     RColorBrewer,
-    stringr,
     grid,
-    rlang,
-    rmarkdown,
-    httr,
     regioneR,
     valr,
-    caret,
     caretEnsemble,
     GenomicFeatures,
-    kernlab,
-    randomForest,
-    rpart,
-    MASS,
     rtracklayer,
-    tidyr,
     GenomicRanges,
     GenomeInfoDb,
     ComplexHeatmap,
     AnnotationHub,
     VennDiagram,
     futile.logger,
-    DT
+    callr,
+    circlize,
+    ggplotify,
+    ggprism,
+    methods
 VignetteBuilder: knitr

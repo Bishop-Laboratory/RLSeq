@@ -27,7 +27,7 @@
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
 
@@ -76,7 +76,7 @@ geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
             chrom = .data$seqnames, .data$start,
             .data$end, .data$strand, .data$gene_id
         ) %>%
-        tibble::as_tibble() %>%
+        dplyr::as_tibble() %>%
         dplyr::distinct(.data$gene_id, .keep_all = TRUE) %>%
         dplyr::mutate(chrom = as.character(.data$chrom))
 
@@ -84,7 +84,7 @@ geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
     pkNames <- names(object)
     peaksIntersect <- object %>%
         as.data.frame() %>%
-        tibble::as_tibble() %>%
+        dplyr::as_tibble() %>%
         dplyr::select(
             chrom = .data$seqnames, .data$start,
             .data$end, .data$width
@@ -110,7 +110,7 @@ geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
         dplyr::distinct()
 
     # Return to object
-    slot(object@metadata$results, name = "geneAnnoRes") <- pk_to_gene
+    methods::slot(object@metadata$results, name = "geneAnnoRes") <- pk_to_gene
 
     return(object)
 }

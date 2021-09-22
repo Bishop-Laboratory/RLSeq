@@ -5,6 +5,7 @@
 #' @param object An RLRanges object.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @return An RLRanges object with all results available.
+#' @examples 
 #' \dontrun{
 #' 
 #' # Example dataset

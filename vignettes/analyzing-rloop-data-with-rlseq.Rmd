@@ -221,7 +221,7 @@ s96_pred <- rlresult(rlr, "predictRes")
 rnh_pred <- rlresult(rlrRNH, "predictRes")
 
 # Results
-tibble::tibble(
+dplyr::tibble(
   condition = c("S9.6", "S9.6 + RNaseH1"),
   verdict = c(s96_pred$Verdict, rnh_pred$Verdict)
 ) %>% 
@@ -277,7 +277,7 @@ annoResRNH <- rlresult(rlrRNH, "featureEnrichment")
 annoResRNH %>%
   relocate(contains("fisher"), .after = type) %>%
   arrange(desc(stat_fisher_rl)) %>%
-  DT::datatable()
+  DT::datatable(options = list(scrollX=TRUE))
 ```
 
 We found that the top hits were different from those uncovered in the positive (S9.6 -RNaseH1) condition. Particularly, there was stark enrichment for repetitive elements and a diminished enrichment for genomic features.

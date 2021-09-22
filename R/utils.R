@@ -1,15 +1,19 @@
 #' Check if URL exists
-#' @param url URL to check
+#' @param urlcon URL to check
 #' @return logical. TRUE if status code 200, FALSE if not
-urlExists <- function(url) {
-    identical(
-        httr::status_code(
-            # Checks HEAD only due to size constraints
-            httr::HEAD(
-                url
-            )
-        ), 200L # Checks if response is ok
+urlExists <- function(urlcon) {
+    res <- tryCatch(
+        {
+            con <- url(urlcon, open = "rb")
+            close(con)
+            return(TRUE)
+        },
+        error = function(e) {
+            close(con)
+            return(NULL)
+        }
     )
+    return(! is.null(res))
 }
 
 
@@ -18,13 +22,13 @@ urlExists <- function(url) {
 #' @param object An RLRanges object.
 #' @return A tibble containing chrom sizes
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 getChromSizes <- function(object) {
-    GenomeInfoDb::seqinfo(object) %>%
-        as.data.frame() %>%
-        tibble::rownames_to_column("chrom") %>%
-        tibble::as_tibble() %>%
-        dplyr::select(.data$chrom, size = .data$seqlengths)
+    cs <- GenomeInfoDb::seqinfo(object) %>%
+        as.data.frame()
+    cs$chrom <- rownames(cs) 
+    dplyr::as_tibble(cs) %>%
+        dplyr::select(.data$chrom, size = .data$seqlengths)  
 }
 
 
@@ -63,21 +67,18 @@ getRLFSAnno <- function(object) {
     }
 
     # Read in RLFS
-    tsvRLFS <- readr::read_tsv(
+    rlfs <- rtracklayer::import.bed(
         paste0(
             file.path(
                 RLBASE_URL, "rlfs-beds/"
             ),
             genome,
             ".rlfs.bed"
-        ),
-        col_names = FALSE,
-        show_col_types = FALSE,
-        progress = FALSE
+        )
     )
 
     # Return as a GRanges object
-    return(regioneR::toGRanges(as.data.frame(tsvRLFS)))
+    return(rlfs)
 }
 
 
@@ -88,11 +89,11 @@ getRLFSAnno <- function(object) {
 #' @param gssignal The GS signal obtained from RLHub.
 #' @return A named list containing the results of correlation analysis.
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 getGSSignal <- function(coverage, gssignal) {
     # Get the locations of the gs sites
     positions <- gssignal$location
-    positions <- tibble::tibble(location = positions) %>%
+    positions <- dplyr::tibble(location = positions) %>%
         dplyr::mutate(
             seqnames = gsub(.data$location,
                 pattern = "(.+)_(.+)_(.+)",
@@ -124,7 +125,7 @@ getGSSignal <- function(coverage, gssignal) {
 #' @param table A tibble in "Table" format from RLHub.
 #' @return A tibble in "regions" format.
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 tableToRegions <- function(table) {
     locpat <- "(.+):(.+)\\-(.+):(.+)"
     table %>%

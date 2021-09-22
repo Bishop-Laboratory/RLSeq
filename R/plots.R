@@ -26,7 +26,7 @@ plotRLFSRes <- function(object,
     rlfsRes <- rlresult(object, resultName = "rlfsRes")
 
     # Obtain the plot data
-    pltdat <- tibble::tibble(
+    pltdat <- dplyr::tibble(
         "zscore" = rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifted.z.scores,
         "shift" = rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifts
     )
@@ -87,7 +87,7 @@ corrHeatmap <- function(object,
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
     rlsamples <- file.path(rlbase, "RLHub", "rlsamples.rda")
     tmp <- tempfile()
-    download.file(rlsamples, destfile = tmp, quiet = TRUE)
+    utils::download.file(rlsamples, destfile = tmp, quiet = TRUE)
     load(tmp)
 
     # Get the correlation matrix
@@ -112,7 +112,7 @@ corrHeatmap <- function(object,
             .data$verdict, .data$group
         ) %>%
         dplyr::bind_rows(
-            tibble::tibble(
+            dplyr::tibble(
                 rlsample = object@metadata$sampleName,
                 mode = object@metadata$mode,
                 # condType = object@metadata$condType,
@@ -120,8 +120,10 @@ corrHeatmap <- function(object,
                 group = object@metadata$sampleName
             )
         ) %>%
-        dplyr::distinct(.data$rlsample, .keep_all = TRUE) %>%
-        tibble::column_to_rownames(var = "rlsample")
+        dplyr::distinct(.data$rlsample, .keep_all = TRUE)
+    annoCorr <- as.data.frame(annoCorr)
+    rownames(annoCorr) <- annoCorr$rlsample
+    annoCorr <- annoCorr[,-which(colnames(annoCorr) == "rlsample")]
 
     # Filter for available / desired samples
     toSelect <- colnames(corrRes)
@@ -133,7 +135,7 @@ corrHeatmap <- function(object,
 
     # Pallete
     paletteLength <- 100
-    myColor <- colorRampPalette(
+    myColor <- grDevices::colorRampPalette(
         rev(RColorBrewer::brewer.pal(n = 7, name = "RdBu"))
     )(paletteLength)
     # length(breaks) == length(paletteLength) + 1
@@ -146,15 +148,15 @@ corrHeatmap <- function(object,
     )
 
     # Wrangle colors
-    mode_cols <- aux$mode_cols$col
-    names(mode_cols) <- aux$mode_cols$mode
-    cond_cols <- aux$condtype_cols$col
-    names(cond_cols) <- aux$condtype_cols$condType
-    verd_cols <- aux$verdict_cols$col
-    names(verd_cols) <- aux$verdict_cols$verdict
-    group_cols <- setNames(c(
-        aux$heat_cols$col[aux$heat_cols$selected == "user_selected"],
-        aux$heat_cols$col[aux$heat_cols$selected == "RLBase"]
+    mode_cols <- RLSeq::auxdata$mode_cols$col
+    names(mode_cols) <- RLSeq::auxdata$mode_cols$mode
+    cond_cols <- RLSeq::auxdata$condtype_cols$col
+    names(cond_cols) <- RLSeq::auxdata$condtype_cols$condType
+    verd_cols <- RLSeq::auxdata$verdict_cols$col
+    names(verd_cols) <- RLSeq::auxdata$verdict_cols$verdict
+    group_cols <- stats::setNames(c(
+        RLSeq::auxdata$heat_cols$col[RLSeq::auxdata$heat_cols$selected == "user_selected"],
+        RLSeq::auxdata$heat_cols$col[RLSeq::auxdata$heat_cols$selected == "RLBase"]
     ), nm = c(object@metadata$sampleName, "RLBase"))
     cat_cols <- list(
         "mode" = mode_cols,
@@ -232,7 +234,7 @@ corrHeatmap <- function(object,
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 plotEnrichment <- function(object,
     modes = NULL,
@@ -249,21 +251,25 @@ plotEnrichment <- function(object,
     
     # Verify modes
     if (! is.null(modes)) {
-        stopifnot(all(modes %in% aux$mode_cols$mode)) 
+        stopifnot(all(modes %in% RLSeq::auxdata$mode_cols$mode)) 
     }
     
     # TODO: NEEDS to be replaced with RLHub
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
-    rlbase_enrich <- file.path(rlbase, "RLHub", "feature_enrichment_per_sample.rda")
+    feature_enrichment_per_sample <- file.path(
+        rlbase, "RLHub", "feature_enrichment_per_sample.rda"
+    )
     tmp <- tempfile()
-    download.file(rlbase_enrich, destfile = tmp, quiet = TRUE)
+    utils::download.file(
+        feature_enrichment_per_sample, destfile = tmp, quiet = TRUE
+    )
     load(tmp)
     rlbaseRes <- feature_enrichment_per_sample
 
     # TODO: NEEDS to be replaced with RLHub
-    rlbase_samples <- file.path(rlbase, "RLHub", "rlsamples.rda")
+    rlsamples <- file.path(rlbase, "RLHub", "rlsamples.rda")
     tmp <- tempfile()
-    download.file(rlbase_samples, destfile = tmp, quiet = TRUE)
+    utils::download.file(rlsamples, destfile = tmp, quiet = TRUE)
     load(tmp)
 
     # Get enrichment results from object
@@ -321,9 +327,7 @@ plotEnrichment <- function(object,
 
     # Wrap strings
     input_data$type <- gsub(input_data$type, pattern = "_", replacement = " ")
-    input_data$type[nchar(input_data$type) > 30] <-
-        stringr::str_wrap(input_data$type[nchar(input_data$type) > 30], 30)
-
+    
     # Make selected explicit
     input_data$selected <- ifelse(input_data$experiment == usamp, usamp, "")
 
@@ -331,7 +335,7 @@ plotEnrichment <- function(object,
     datalst <- input_data %>%
         dplyr::group_by(.data$db) %>%
         {
-            setNames(dplyr::group_split(.), dplyr::group_keys(.)[[1]])
+            stats::setNames(dplyr::group_split(.), dplyr::group_keys(.)[[1]])
         }
 
     # Return data if requested
@@ -343,7 +347,7 @@ plotEnrichment <- function(object,
         datalst,
         function(x) {
             db_now <- x$db[1]
-            col <- aux$db_cols$col[aux$db_cols$db == db_now]
+            col <- RLSeq::auxdata$db_cols$col[RLSeq::auxdata$db_cols$db == db_now]
 
             if (! usamp %in% x$experiment) {
                 return(NULL)
@@ -389,7 +393,7 @@ plotEnrichment <- function(object,
                     )
             } else {
                 # Get split cols
-                cols <- aux[[paste0(tolower(splitby[1]), "_cols")]]
+                cols <- RLSeq::auxdata[[paste0(tolower(splitby[1]), "_cols")]]
                 colvec <- cols %>% dplyr::pull(.data$col)
                 names(colvec) <- as.data.frame(cols)[,splitby[1]]
 
@@ -418,14 +422,10 @@ plotEnrichment <- function(object,
             }
 
             # Final additions to plot and themeing
+            # TODO: Want a more systematic ylab method
             plt +
                 ggplot2::ylab(
-                    stringr::str_to_title(
-                        gsub(yval,
-                            pattern = "_",
-                            replacement = " "
-                        )
-                    )
+                    "Fisher's test odds ratio"
                 ) +
                 ggplot2::xlab(NULL) +
                 ggplot2::labs(
@@ -493,7 +493,7 @@ plotEnrichment <- function(object,
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 plotRLRegionOverlap <- function(object, returnData = FALSE) {
 
@@ -502,7 +502,7 @@ plotRLRegionOverlap <- function(object, returnData = FALSE) {
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
     rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
     tmp <- tempfile()
-    download.file(rlregions_table, destfile = tmp, quiet = TRUE)
+    utils::download.file(rlregions_table, destfile = tmp, quiet = TRUE)
     load(tmp)
 
     # Retrieve results
@@ -540,7 +540,7 @@ plotRLRegionOverlap <- function(object, returnData = FALSE) {
         sites[c(rep(FALSE, pkonly), rep(TRUE, rlonly), rep(TRUE, shared))],
         sites[c(rep(TRUE, pkonly), rep(FALSE, rlonly), rep(TRUE, shared))]
     ) %>%
-        setNames(nm = c("RL-Regions", object@metadata$sampleName))
+        stats::setNames(nm = c("RL-Regions", object@metadata$sampleName))
     if (returnData) {
         return(pltdata)
     }
