@@ -4,10 +4,10 @@
 \alias{urlExists}
 \title{Check if URL exists}
 \usage{
-urlExists(url)
+urlExists(urlcon)
 }
 \arguments{
-\item{url}{URL to check}
+\item{urlcon}{URL to check}
 }
 \value{
 logical. TRUE if status code 200, FALSE if not

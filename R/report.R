@@ -1,29 +1,76 @@
-#' Generate report
+#' Generate an RLSeq Report
 #'
-#' Generates RLSeq Quality Report
-#'
-#' @param data A named list containing `annotated_peaks`, `feature_overlaps`,
-#' and `rlfs_results`
-#' @param outputFile A path indicating the report output HTML file. 
+#' @param object An RLRanges object.
+#' @param reportPath A path indicating the report output HTML file.
+#'  Default: "rlreport.html"
+#' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `rmarkdown::render()`
-#' @return NULL
+#' @return TRUE
 #' @examples
+#'
+#' # Example data with RLSeq() already run.
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
+#' # Get a TMP file (only for example usae)
+#' tmp <- tempfile()
 #' 
-#' RLSeq::makeReport(RLSeq::SRX1025890, outputFile = "report.html")
+#' # Generate the report
+#' report(rlr, reportPath = tmp)
 #' 
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
-report <- function(data, outputFile = "report.html", ...) {
-  template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
-  data <- data[names(data) %in% c(
-    "corr_data", "anno_data", "rlfs_data", "bam_stats", 
-    "read_qc_data", "configlist", "total_peaks"
-  )]
-  rmarkdown::render(template, 
-                    params = data, 
-                    output_format = "html_document",
-                    output_dir = normalizePath(dirname(outputFile)),
-                    output_file = outputFile, ...)
-  return(NULL)
+report <- function(object,
+    reportPath = "rlreport.html",
+    quiet = FALSE,
+    ...) {
+
+    # Check for missing packages and stop if found
+    pkgs <- vapply(
+        X = c("kableExtra", "DT", "rmarkdown"),
+        FUN = requireNamespace,
+        quietly = TRUE,
+        FUN.VALUE = logical(1)
+    )
+    if (any(!pkgs)) {
+        stop(
+            'Packages needed for report() but not installed: "',
+            paste0(names(pkgs)[which(!pkgs)], collapse = '", "'), '"'
+        )
+    }
+
+    # Get the template
+    template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
+
+    # Render template
+    # note: We use callr::r here because if you don't, then you get
+    # this issue:
+    # https://community.rstudio.com/t/
+    # rmarkdown-displays-a-plot-when-its-not-supposed-to/93757/2
+    callr::r(
+        function(template, object, reportPath, quiet, ...) {
+            rmarkdown::render(
+                template,
+                params = list(
+                    "object" = object
+                ),
+                output_format = "html_document",
+                output_dir = normalizePath(dirname(reportPath)),
+                output_file = reportPath,
+                quiet = quiet,
+                ...
+            )
+        },
+        args = list(
+            template = template,
+            object = object,
+            reportPath = reportPath,
+            quiet = quiet,
+            ...
+        ),
+        show = !quiet
+    )
+
+    # Return
+    return(TRUE)
 }

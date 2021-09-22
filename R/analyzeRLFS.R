@@ -1,89 +1,97 @@
 #' Analyze RLFS
 #'
-#' Analyzes the enrichment of peaks within R-loop forming sequences.
+#' Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
 #'
-#' @param peaks A GRanges object containing the R-loop ranges to check.
-#' @param genome UCSC genome which peaks were generated from. Ignored if "chrom_sizes" or "RLFS" is specified. 
-#' @param chrom_sizes A data.frame containing two columns with chromosome names
-#' and chromosome sizes. 
-#' @param mask A GRanges object containing the regions of the genome to mask. Can be generated from 
-#' regioneR::getMask().
-#' @param RLFS A GRanges object containing the R-loop forming sequences to 
-#' compare against. 
+#' @param object An RLRanges object.
+#' @param mask GRanges object containing masked genomic ranges.
+#'  Not needed unless masked genome unavailable (see genomeMasks).
+#'  Custom masks can be generated using regioneR::getMask().
+#' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
-#' @return A named list containing the results of RegioneR, 
-#' peaks annotated with the RLFS they overlap with, 
-#' and the Z score results within 3000 BP of an RLFS. 
+#' @return An RLRanges object with RLFS analysis results included.
 #' @examples
-#' 
-#' result <- RLSeq::analyzeRLFS(RLSeq::SRX1025890_peaks, genome="hg38")
-#' 
+#'
+#' # Example dataset
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
+#' # Perform RLFS analysis
+#' rlr <- analyzeRLFS(rlr)
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
-#' @importFrom utils capture.output
+#' @importFrom dplyr .data
 #' @export
-analyzeRLFS <- function(peaks, 
-                        genome="hg38", 
-                        chrom_sizes=NULL,
-                        mask=NULL,
-                        RLFS=NULL, 
-                        ...) {
-  
-  # TODO: Validate genome to avoid TRUE/FALSE Needed error from permTest
-  
-  # Check RLFS, chrom_sizes, and mask
-  message("+ [i] Evaluating Inputs.")
-  if (is.null(genome) & 
-      (is.null(RLFS) | is.null(chrom_sizes) | is.null(mask))) {
-    stop("Must provide genome UCSC org ID or chrom_sizes, mask, and RLFS")
-  }
-  if (is.null(RLFS)) {
-    n_ <- capture.output(RLFS <- getRLFSAnno(genome))
-  }
-  if (is.null(chrom_sizes)) {
-    n_ <- capture.output(chrom_sizes <- getChromSizes(genome))
-  }
-  if (is.null(mask)) {
-    available_masks <- gsub(names(RLSeq::genomeMasks), pattern = "\\.masked", 
-                            replacement = "")
-    if(! genome %in% available_masks) {
-      stop(genome, " is not available in mask list. You may generate it with ")
-    } else {
-      mask <- RLSeq::genomeMasks[[paste0(genome, ".masked")]]
+analyzeRLFS <- function(object,
+    mask = NULL,
+    quiet = FALSE,
+    ...) {
+    
+    if (!quiet) message(" - Evaluating Inputs...")
+
+    # Check RLFS, chrom_sizes, and mask
+    genome <- GenomeInfoDb::genome(object)[1]
+    RLFS <- getRLFSAnno(object)
+    chrom_sizes <- getChromSizes(object)
+    if (is.null(mask)) {
+        available_masks <- gsub(names(genomeMasks),
+                                pattern = "\\.masked",
+                                replacement = ""
+        )
+        if (!genome %in% available_masks) {
+            stop(
+                genome, " is not available in mask list. See 'mask' param."
+            )
+        } else {
+            mask <- genomeMasks[[paste0(genome, ".masked")]]
+        }
     }
-  }
-  
-  # Prevent stranded assignment
-  GenomicRanges::strand(RLFS) <- "*"
-  RLFS <- GenomicRanges::reduce(RLFS)
-  
-  # Final check
-  stopifnot("data.frame" %in% class(chrom_sizes) &
-              "GRanges" %in% class(mask) &
-              "GRanges" %in% class(RLFS))
-  
-  # Run RLFS perm test
-  genomeNow <- GenomicRanges::GRanges(chrom_sizes %>% dplyr::mutate(start = 1) %>% 
-                                        dplyr::select(seqnames = .data$X1, 
-                                                      .data$start, end = .data$X2))
-  GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
-  GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
-  
-  # Run RegioneR
-  message("+ [ii] Running permTest.")
-  pt <- regioneR::permTest(A=peaks, B=RLFS, 
-                           genome=genomeNow,
-                           mask=mask, 
-                           randomize.function=regioneR::circularRandomizeRegions, 
-                           evaluate.function=regioneR::numOverlaps,
-                           alternative = "greater", 
-                           ...)
-  
-  message("+ [iii] Extracting pileup.")
-  z <- regioneR::localZScore(A=peaks, B=RLFS, pt, window = 5000, step = 50)
-  
-  return(list(
-    "perTestResults" = pt,
-    "Z-scores" = z
-  ))
+
+    # Prevent stranded assignment
+    GenomicRanges::strand(RLFS) <- "*"
+    RLFS <- GenomicRanges::reduce(RLFS)
+
+    # Final check
+    stopifnot(
+        methods::is(chrom_sizes, "data.frame") &
+            methods::is(mask, "GRanges") &
+            methods::is(RLFS, "GRanges")
+    )
+
+    # Run RLFS perm test
+    genomeNow <- GenomicRanges::GRanges(
+        dplyr::mutate(chrom_sizes, start = 1, end = .data$size)
+    )
+    GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
+    GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
+
+    if (!quiet) message(" - Running permTest...")
+    
+    # Run RegioneR
+    gr <- GenomicRanges::GRanges(object)
+    pt <- suppressWarnings(
+        regioneR::permTest(
+            A = gr, B = RLFS,
+            genome = genomeNow,
+            mask = mask,
+            randomize.function = regioneR::circularRandomizeRegions,
+            evaluate.function = regioneR::numOverlaps,
+            alternative = "greater",
+            ...
+        )
+    )
+    
+    if (!quiet) message(" - Extracting pileup...")
+
+    # Return Z scores
+    z <- suppressWarnings(
+        regioneR::localZScore(A = gr, B = RLFS, pt, window = 5000, step = 50)
+    )
+
+    # Add results to object
+    methods::slot(object@metadata$results, "rlfsRes") <- list(
+        "perTestResults" = pt,
+        "Z-scores" = z
+    )
+
+    if (!quiet) message(" - Done.")
+
+    return(object)
 }
