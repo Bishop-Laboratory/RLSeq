@@ -1,7 +1,9 @@
-# RSeqR
+# RLSeq
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/Bishop-Laboratory/RSeqR/workflows/R-CMD-check/badge.svg)](https://github.com/Bishop-Laboratory/RSeqR/actions)
+[![R-CMD-check](https://github.com/Bishop-Laboratory/RLSeq/workflows/R-CMD-check/badge.svg)](https://github.com/Bishop-Laboratory/RLSeq/actions)
+[![Codecov test coverage](https://codecov.io/gh/Bishop-Laboratory/RLSeq/branch/main/graph/badge.svg)](https://codecov.io/gh/Bishop-Laboratory/RLSeq?branch=main)
+[![BioC status](http://www.bioconductor.org/shields/build/release/bioc/RLSeq.svg)](https://bioconductor.org/checkResults/release/bioc-LATEST/RLSeq)
 <!-- badges: end -->
 
 ## Development notes
@@ -14,13 +16,13 @@ To build this package, document, test, Document, and check, use the controls on 
 Once the repo is no longer private, the following will work:
 
 ```R
-devtools::install_github("Bishop-Laboratory/RSeqR")
+devtools::install_github("Bishop-Laboratory/RLSeq")
 ```
 
 Prior to publicizing the repo, you will need a personal access token. Follow [these instructions](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to create one. And then do the following:
 
 ```R
-remotes::install_github("Bishop-Laboratory/RSeqR", dependencies = "Imports", force = TRUE,
+remotes::install_github("Bishop-Laboratory/RLSeq", dependencies = "Imports", force = TRUE,
                          auth_token = "<your_access_token>")
 ```
 
