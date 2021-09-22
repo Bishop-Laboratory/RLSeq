@@ -65,7 +65,7 @@ getMask2 <- function(genome) {
 main <- function() {
     # Get the list of genome masks if not already available
     if (!file.exists("data-raw/maskLst.rda")) {
-        maskLst <- RSeqR:::buildGenomeMasks()
+        maskLst <- buildGenomeMasks()
         save(maskLst, file = "misc/maskLst.rda", compress = "xz")
     } else {
         load("data-raw/maskLst.rda")

@@ -1,6 +1,4 @@
 .onLoad <- function(libname, pkgname) {
-    ## Add constants ##
-
     # Links
     BASE_UCSC <- "http://hgdownload.soe.ucsc.edu/goldenPath"
     RLBASE_URL <- "https://rlbase-data.s3.amazonaws.com"

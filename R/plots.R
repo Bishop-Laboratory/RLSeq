@@ -3,6 +3,21 @@
 #' @param object An RLRanges with \code{analyzeRLFS()} already run.
 #' @param ... Additional parameters passed to \code{ggplot}.
 #' @return A ggplot object.
+#' @examples 
+#' \dontrun{
+#' 
+#' # Example dataset
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Run RLSeq
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' rlr <- RLSeq(rlr)
+#' 
+#' # Plot RLFS res
+#' plotRLFSRes(rlr)
+#' }
 #' @export
 plotRLFSRes <- function(object,
     ...) {
@@ -47,6 +62,22 @@ plotRLFSRes <- function(object,
 #' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @param ... For internal use.
 #' @return A Heatmap object.
+#' @examples 
+#' \dontrun{
+#' 
+#' # Example dataset
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Run RLSeq
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' rlr <- RLSeq(rlr)
+#' 
+#' # Corr heatmap
+#' corrHeatmap(rlr)
+#' corrHeatmap(rlr, returnData=TRUE)
+#' }
 #' @export
 corrHeatmap <- function(object,
     returnData = FALSE,
@@ -131,8 +162,11 @@ corrHeatmap <- function(object,
         "verdict" = verd_cols,
         "group" = group_cols
     )
-    cat_cols$mode <- cat_cols$mode[which(names(cat_cols$mode) %in% annoCorr$mode)]
-    continuous_pal <- circlize::colorRamp2(breaks = myBreaks[-1], colors = myColor)
+    cat_cols$mode <- cat_cols$mode[names(cat_cols$mode) %in% annoCorr$mode]
+    continuous_pal <- circlize::colorRamp2(
+        breaks = myBreaks[-1], 
+        colors = myColor
+    )
 
     # Return data if requested
     if (returnData) {
@@ -164,14 +198,39 @@ corrHeatmap <- function(object,
 
 #' Plot Enrichment Test Results
 #'
-#' @param object The tibble obejct obtained from running \code{featureEnrich}.
+#' @param object The tibble object obtained from running \code{featureEnrich}.
 #' @param modes Which modes to include in plot? If empty, all modes included.
 #' @param onlyCase If TRUE, only "case" predicted samples included. Default: TRUE.
 #' @param onlyPOS If TRUE, only "POS" labeled samples included. Default: FALSE.
 #' @param splitby Metadata by which to split plots. Can be "none", "verdict", or "condType".
 #' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @return A named list of ggplot objects.
+#' @examples 
+#' \dontrun{
 #' 
+#' # Example dataset
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Run RLSeq
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' rlr <- RLSeq(rlr)
+#' 
+#' # Plot enrichment
+#' plotEnrichment(rlr)
+#' 
+#' # split by verdict
+#' plotEnrichment(rlr, onlyCase=FALSE, splitby="verdict")
+#' 
+#' # split by "condType" and only return plotting data
+#' plotEnrichment(rlr, onlyCase=FALSE, splitby="condType", returnData=TRUE)
+#' 
+#' # Only include DRIP-family
+#' plotEnrichment(rlr, modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+#'                onlyCase=FALSE, splitby="verdict")
+#' 
+#' }
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
@@ -414,6 +473,25 @@ plotEnrichment <- function(object,
 #' @param object An RLRanges object with \code{rlRegionTest()} already run.
 #' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
 #' @return A venn diagram ggplot object.
+#' @examples 
+#' \dontrun{
+#' 
+#' # Example dataset
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
+#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Run RLSeq
+#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#' rlr <- RLSeq(rlr)
+#' 
+#' # Plot RL-Region overlap
+#' plotRLRegionOverlap(rlr)
+#' 
+#' # Return data only
+#' plotRLRegionOverlap(rlr, returnData=TRUE)
+#' 
+#' }
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export
@@ -483,9 +561,8 @@ plotRLRegionOverlap <- function(object, returnData = FALSE) {
                 signif(olres$Test_results$estimate)
             ),
             main.cex = 2,
-            cat.pos = c(200, 160),
-            cat.dist = c(0.05, 0.05),
-            margin = .05, sub.pos = c(0.5, 0.15)
+            cat.pos = c(-40, 40),
+            margin = .05
         ) %>%
         grid::grid.draw() %>%
         ggplotify::grid2grob() %>%

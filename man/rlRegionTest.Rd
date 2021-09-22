@@ -13,11 +13,19 @@ rlRegionTest(object)
 An RLRanges object with test results included.
 }
 \description{
-Tests the overlap of peaks within R-loop regions
+Tests the overlap of user-supplied ranges with R-loop regions.
 }
 \examples{
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP", quiet = TRUE)
+\dontrun{
 
-rlr <- rlRegionTest(rlr)
+# Get example data
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+# RL Region Test
+rlRegionTest(rlr)
+
+}
 }

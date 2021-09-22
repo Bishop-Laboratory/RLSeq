@@ -1,17 +1,24 @@
 #' Analyze Correlations
 #'
 #' Finds the pairwise correlation in signal around gold-standard R-Loop sites
-#' between the query sample and the RMapDB database.
+#' between the query sample and the RLBase database.
 #'
 #' @param object An RLRanges object.
 #' @return An RLRanges object with correlation results included.
 #' @examples
-#'
+#' \dontrun{
+#' 
+#' # Example dataset
+#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
 #' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
 #' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+#' 
+#' # Get RLRanges object
 #' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
 #'
+#' # run corrAnalyze
 #' rlr <- corrAnalyze(rlr)
+#' }
 #' @importFrom dplyr %>%
 #' @importFrom rlang .data
 #' @export

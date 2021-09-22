@@ -14,7 +14,7 @@ plotEnrichment(
 )
 }
 \arguments{
-\item{object}{The tibble obejct obtained from running \code{featureEnrich}.}
+\item{object}{The tibble object obtained from running \code{featureEnrich}.}
 
 \item{modes}{Which modes to include in plot? If empty, all modes included.}
 
@@ -31,4 +31,31 @@ A named list of ggplot objects.
 }
 \description{
 Plot Enrichment Test Results
+}
+\examples{
+\dontrun{
+
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Run RLSeq
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+rlr <- RLSeq(rlr)
+
+# Plot enrichment
+plotEnrichment(rlr)
+
+# split by verdict
+plotEnrichment(rlr, onlyCase=FALSE, splitby="verdict")
+
+# split by "condType" and only return plotting data
+plotEnrichment(rlr, onlyCase=FALSE, splitby="condType", returnData=TRUE)
+
+# Only include DRIP-family
+plotEnrichment(rlr, modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+               onlyCase=FALSE, splitby="verdict")
+
+}
 }

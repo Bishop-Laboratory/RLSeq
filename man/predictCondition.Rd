@@ -7,22 +7,33 @@
 predictCondition(object, ...)
 }
 \arguments{
-\item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
+\item{object}{An RLRanges object with \code{analyzeRLFS()} already run.}
 
 \item{...}{Internal use only.}
 }
 \value{
-A list containing the results of the fourier analysis and the model prediction.
+An RLRanges object with predictions included.
 }
 \description{
 Uses the results of analyzeRLFS() to predict whether a sample is "Case"
-(Normal) or "Control" (RNaseH1-like). This is a useful quality metric when
-interpreting R-loop mapping results.
+(robust R-loop mapping) or "Control" (poor R-loop mapping).
 }
 \examples{
+\dontrun{
 
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Get RLRanges object
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+# Get RLFS results
 rlr <- analyzeRLFS(rlr)
+
+# predict condition
 rlr <- predictCondition(rlr)
+
+}
 }
