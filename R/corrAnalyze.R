@@ -6,19 +6,12 @@
 #' @param object An RLRanges object.
 #' @return An RLRanges object with correlation results included.
 #' @examples
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Get RLRanges object
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+#'
+#' # Example RLRanges object
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # run corrAnalyze
 #' rlr <- corrAnalyze(rlr)
-#' }
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
@@ -89,10 +82,10 @@ corrAnalyze <- function(object) {
                 dplyr::select(.data$location, a_ = .data$value),
             by = "location"
         ) %>%
-        dplyr::distinct(.data$location, .keep_all = TRUE) 
+        dplyr::distinct(.data$location, .keep_all = TRUE)
     combinedMat <- as.data.frame(combinedMat)
     rownames(combinedMat) <- combinedMat$location
-    combinedMat <- combinedMat[,-which(colnames(combinedMat) == "location")]
+    combinedMat <- combinedMat[, -which(colnames(combinedMat) == "location")]
     combinedMat <- as.matrix(combinedMat)
 
     # Rename column

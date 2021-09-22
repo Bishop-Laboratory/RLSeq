@@ -13,41 +13,52 @@ RLRanges(
   mode = character(1),
   condType = character(1),
   sampleName = "User-selected sample",
+  qcol = NULL,
   quiet = FALSE
 )
 }
 \arguments{
 \item{peaks}{Path/URL to peak file or a GRanges object.}
 
-\item{coverage}{Path/URL to bigWig file. If not supplied, correlation tests will be skipped.}
+\item{coverage}{Path/URL to bigWig file. If not supplied, correlation tests
+will be skipped.}
 
-\item{genome}{UCSC genome ID. Acceptable types are listed in RLSeq::auxdata$available_genomes.}
+\item{genome}{UCSC genome ID. Acceptable types are listed in
+auxdata$available_genomes.}
 
 \item{mode}{Type of R-loop mapping from which peaks and coverage were
-derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode. Can
+derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode.
+Can
 be unspecified.}
 
 \item{condType}{One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),
 or "NULL" (e.g., Input control.). Can be unspecified.}
 
-\item{sampleName}{A unique name for identifying this sample. Can be unspecified.}
+\item{sampleName}{A unique name for identifying this sample.
+Can be unspecified.}
+
+\item{qcol}{The name of the metadata column which contains the adjusted p
+value.
+If not specified, the last column will be chosen (standard for .broadPeak
+files).
+If FALSE or if no metadata columns exist, it will be left blank and some
+operations in report() will not fully run.}
 
 \item{quiet}{If TRUE, messages and warnings are suppressed. Default: FALSE.}
+}
+\value{
+An object of class "RLRanges".
 }
 \description{
 \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
 and metadata about the R-loop-mapping experiment.
 }
 \examples{
-\dontrun{
 
 # Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
 
 # Get RLRanges object
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-
-}
 }

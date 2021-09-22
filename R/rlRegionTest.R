@@ -4,28 +4,24 @@
 #'
 #' @param object An RLRanges object with genome "hg38".
 #' @return An RLRanges object with test results included.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Get example data
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' 
+#' @examples
+#'
+#' # Example RLRanges data
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # RL Region Test
 #' rlRegionTest(rlr)
-#' 
-#' }
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
 rlRegionTest <- function(object) {
-    
+
     # Stop if not genome == hg38
-    if (! GenomeInfoDb::genome(object)[1] == "hg38") {
-        stop("Only 'hg38' ranges are allowed. Please convert to 'hg38' ",
-             "using a lift-over or skip this step.")
+    if (!GenomeInfoDb::genome(object)[1] == "hg38") {
+        stop(
+            "Only 'hg38' ranges are allowed. Please convert to 'hg38' ",
+            "using a lift-over or skip this step."
+        )
     }
 
     # Wrangle the peaks
@@ -36,7 +32,12 @@ rlRegionTest <- function(object) {
             seqnames = as.character(.data$seqnames),
             name = {{ pkName }}
         ) %>%
-        dplyr::select(chrom = .data$seqnames, .data$start, .data$end, .data$name)
+        dplyr::select(
+            chrom = .data$seqnames,
+            .data$start,
+            .data$end,
+            .data$name
+        )
 
     # Get RLRegions
     # TODO: NEEDS to be in RLHub
@@ -58,7 +59,11 @@ rlRegionTest <- function(object) {
     chromSizes <- getChromSizes(object)
 
     # Test on all annotations
-    olap <- valr::bed_intersect(toTest, rlReg, suffix = c("__peaks", "__rlregion"))
+    olap <- valr::bed_intersect(
+        toTest,
+        rlReg,
+        suffix = c("__peaks", "__rlregion")
+    )
     sig <- valr::bed_fisher(toTest, rlReg, genome = chromSizes)
 
     # Return to object

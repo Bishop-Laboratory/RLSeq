@@ -11,6 +11,9 @@ rlresult(object, resultName)
 
 \item{resultName}{Name of the result slot to access.}
 }
+\value{
+The contents of the requested slot.
+}
 \description{
 Result accessor function
 }

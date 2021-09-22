@@ -13,9 +13,13 @@ peak_stats(x, xshuff, y, chromSizeTbl, quiet = FALSE)
 
 \item{y}{The annotations against which to test x.}
 
-\item{chromSizeTbl}{A tibble containing the sizes of each chromosome in x and y.}
+\item{chromSizeTbl}{A tibble containing the sizes of each
+chromosome in x and y.}
 
 \item{quiet}{If TRUE, messages will be suppressed. Default: False}
+}
+\value{
+A tibble containing the test results.
 }
 \description{
 A helper function for building the peak statistics tibble

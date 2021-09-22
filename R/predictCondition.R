@@ -6,43 +6,35 @@
 #' @param object An RLRanges object with \code{analyzeRLFS()} already run.
 #' @param ... Internal use only.
 #' @return An RLRanges object with predictions included.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Get RLRanges object
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' 
-#' # Get RLFS results
-#' rlr <- analyzeRLFS(rlr)
-#' 
+#' @examples
+#'
+#' # Example data with analyzeRLFS already run
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # predict condition
 #' rlr <- predictCondition(rlr)
 #' 
-#' }
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @importFrom stats fft acf
+#' @import caretEnsemble
 #' @export
 predictCondition <- function(object, ...) {
 
     # Obtain RLFS-Res
     rlfsRes <- rlresult(object, resultName = "rlfsRes")
-    
+
     # Check for missing packages and stop if found
-    pkgs <- sapply(
-        c("kernlab", "randomForest", "rpart", "MASS"),
-        requireNamespace, 
-        quietly=TRUE
+    pkgs <- vapply(
+        X = c("kernlab", "randomForest", "rpart", "MASS"),
+        FUN = requireNamespace,
+        quietly = TRUE,
+        FUN.VALUE = logical(1)
     )
-    if (any(! pkgs)) {
+    if (any(!pkgs)) {
         stop(
             'Packages needed for predictCondition() but not installed: "',
-            paste0(names(pkgs)[which(! pkgs)], collapse = '", "'), '"'
+            paste0(names(pkgs)[which(!pkgs)], collapse = '", "'), '"'
         )
     }
 
@@ -55,7 +47,7 @@ predictCondition <- function(object, ...) {
         stop(
             "Inappropriate arguments supplied: ",
             paste0(
-                names(dots)[which(!names(dots) %in% c("prepFeatures", "fftModel"))],
+                names(dots)[! names(dots) %in% c("prepFeatures", "fftModel")],
                 collapse = ", "
             )
         )
@@ -63,15 +55,18 @@ predictCondition <- function(object, ...) {
         # TODO: These NEEDS to be updated when RLHub is online
         # Download model data (will be replaced by RLHub)
         tmp <- tempdir()
-        a_ <- sapply(
-            c("prepFeatures.rda", "fftModel.rda"), function(x) {
+        a_ <- vapply(
+            X = c("prepFeatures.rda", "fftModel.rda"),
+            FUN = function(x) {
                 utils::download.file(
                     url = file.path(RLBASE_URL, "RLHub", x),
                     quiet = TRUE,
                     destfile = file.path(tmp, x)
                 )
                 load(file.path(tmp, x), envir = globalenv())
-            }
+                return(TRUE)
+            },
+            FUN.VALUE = logical(1)
         )
     }
 
@@ -91,12 +86,17 @@ predictCondition <- function(object, ...) {
     W <- fft(Z)
 
     # compute autocorrelation on Z
-    Zacf <- drop(acf(Z, lag.max = length(Z) / 1, plot = FALSE, type = "covariance")$acf)
+    Zacf <- drop(
+        acf(
+            Z, lag.max = length(Z) / 1, plot = FALSE,
+            type = "covariance"
+        )$acf
+    )
 
     # compute Fourier transform of the autocorrelation
     Wacf <- fft(Zacf)
 
-    # compute first and second moments for Z, Zacf, Re(W), Im(W), Re(Wacf), Im(Wacf)
+    # compute 1st and 2nd moments for Z, Zacf, Re(W), Im(W), Re(Wacf), Im(Wacf)
     featuresRaw <- data.frame(
         Z1 = mean(Z),
         Z2 = sqrt(sum(Z^2)),
@@ -125,7 +125,7 @@ predictCondition <- function(object, ...) {
     criteriaTwo <- Zcenter > 0
     criteriaThree <- Zcenter > Zleft & Zcenter > Zright
     criteriaFour <- toupper(pred) == "CASE"
-    
+
     # Wrangle features raw
     finalFeatures <- dplyr::bind_rows(features, featuresRaw) %>%
         t() %>%
@@ -135,7 +135,7 @@ predictCondition <- function(object, ...) {
     finalFeatures <- finalFeatures %>%
         dplyr::as_tibble() %>%
         dplyr::relocate(.data$feature, .before = .data$raw_value)
-    
+
     # return results
     reslst <- list(
         Features = finalFeatures,
