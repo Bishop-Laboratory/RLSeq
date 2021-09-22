@@ -3,21 +3,13 @@
 #' @param object An RLRanges with \code{analyzeRLFS()} already run.
 #' @param ... Additional parameters passed to \code{ggplot}.
 #' @return A ggplot object.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Run RLSeq
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' rlr <- RLSeq(rlr)
-#' 
+#' @examples
+#'
+#' # Example RLRanges dataset with analyzeRLFS() already run.
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Plot RLFS res
 #' plotRLFSRes(rlr)
-#' }
 #' @export
 plotRLFSRes <- function(object,
     ...) {
@@ -58,26 +50,18 @@ plotRLFSRes <- function(object,
 
 #' Plot Correlation Results
 #'
-#' @param object An RLRanges with \code{analyzeRLFS()} already run.
-#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
+#' @param object An RLRanges with \code{corrAnalyze()} already run.
+#' @param returnData If TRUE, plot data is returned instead of plotting. 
+#' Default: FALSE
 #' @param ... For internal use.
 #' @return A Heatmap object.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Run RLSeq
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' rlr <- RLSeq(rlr)
-#' 
+#' @examples
+#'
+#' # Example RLRanges data with corrAnalyze() already run.
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Corr heatmap
 #' corrHeatmap(rlr)
-#' corrHeatmap(rlr, returnData=TRUE)
-#' }
 #' @export
 corrHeatmap <- function(object,
     returnData = FALSE,
@@ -123,7 +107,7 @@ corrHeatmap <- function(object,
         dplyr::distinct(.data$rlsample, .keep_all = TRUE)
     annoCorr <- as.data.frame(annoCorr)
     rownames(annoCorr) <- annoCorr$rlsample
-    annoCorr <- annoCorr[,-which(colnames(annoCorr) == "rlsample")]
+    annoCorr <- annoCorr[, -which(colnames(annoCorr) == "rlsample")]
 
     # Filter for available / desired samples
     toSelect <- colnames(corrRes)
@@ -148,15 +132,15 @@ corrHeatmap <- function(object,
     )
 
     # Wrangle colors
-    mode_cols <- RLSeq::auxdata$mode_cols$col
-    names(mode_cols) <- RLSeq::auxdata$mode_cols$mode
-    cond_cols <- RLSeq::auxdata$condtype_cols$col
-    names(cond_cols) <- RLSeq::auxdata$condtype_cols$condType
-    verd_cols <- RLSeq::auxdata$verdict_cols$col
-    names(verd_cols) <- RLSeq::auxdata$verdict_cols$verdict
+    mode_cols <- auxdata$mode_cols$col
+    names(mode_cols) <- auxdata$mode_cols$mode
+    cond_cols <- auxdata$condtype_cols$col
+    names(cond_cols) <- auxdata$condtype_cols$condType
+    verd_cols <- auxdata$verdict_cols$col
+    names(verd_cols) <- auxdata$verdict_cols$verdict
     group_cols <- stats::setNames(c(
-        RLSeq::auxdata$heat_cols$col[RLSeq::auxdata$heat_cols$selected == "user_selected"],
-        RLSeq::auxdata$heat_cols$col[RLSeq::auxdata$heat_cols$selected == "RLBase"]
+        auxdata$heat_cols$col[auxdata$heat_cols$selected == "user_selected"],
+        auxdata$heat_cols$col[auxdata$heat_cols$selected == "RLBase"]
     ), nm = c(object@metadata$sampleName, "RLBase"))
     cat_cols <- list(
         "mode" = mode_cols,
@@ -166,7 +150,7 @@ corrHeatmap <- function(object,
     )
     cat_cols$mode <- cat_cols$mode[names(cat_cols$mode) %in% annoCorr$mode]
     continuous_pal <- circlize::colorRamp2(
-        breaks = myBreaks[-1], 
+        breaks = myBreaks[-1],
         colors = myColor
     )
 
@@ -202,37 +186,38 @@ corrHeatmap <- function(object,
 #'
 #' @param object The tibble object obtained from running \code{featureEnrich}.
 #' @param modes Which modes to include in plot? If empty, all modes included.
-#' @param onlyCase If TRUE, only "case" predicted samples included. Default: TRUE.
+#' @param onlyCase If TRUE, only "case" predicted samples included. 
+#' Default: TRUE.
 #' @param onlyPOS If TRUE, only "POS" labeled samples included. Default: FALSE.
-#' @param splitby Metadata by which to split plots. Can be "none", "verdict", or "condType".
-#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
+#' @param splitby Metadata by which to split plots. Can be "none", "verdict",
+#'  or "condType".
+#' @param limits Specify limits on data. Useful for controlling infinite
+#' estimation of odds ratio
+#' resulting from fisher's exact test. To remove limits, set c(-Inf, Inf).
+#'  Default: c(-10, 15).
+#' @param returnData If TRUE, plot data is returned instead of plotting.
+#'  Default: FALSE
 #' @return A named list of ggplot objects.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Run RLSeq
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' rlr <- RLSeq(rlr)
-#' 
+#' @examples
+#'
+#' # Example dataset with featureEnrich() already run.
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Plot enrichment
 #' plotEnrichment(rlr)
-#' 
+#'
 #' # split by verdict
-#' plotEnrichment(rlr, onlyCase=FALSE, splitby="verdict")
-#' 
+#' plotEnrichment(rlr, onlyCase = FALSE, splitby = "verdict")
+#'
 #' # split by "condType" and only return plotting data
-#' plotEnrichment(rlr, onlyCase=FALSE, splitby="condType", returnData=TRUE)
-#' 
+#' plotEnrichment(rlr, onlyCase = FALSE, splitby = "condType",
+#'                returnData = TRUE)
+#'
 #' # Only include DRIP-family
-#' plotEnrichment(rlr, modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-#'                onlyCase=FALSE, splitby="verdict")
-#' 
-#' }
+#' plotEnrichment(rlr,
+#'     modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+#'     onlyCase = FALSE, splitby = "verdict"
+#' )
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
@@ -241,19 +226,20 @@ plotEnrichment <- function(object,
     onlyCase = TRUE,
     onlyPOS = FALSE,
     splitby = c("none", "verdict", "condType"),
+    limits = c(-10, 15),
     returnData = FALSE) {
 
     # TODO: Should there be an option to control this for the user?
     yval <- "stat_fisher_rl"
-    
+
     # Verify splitby
     stopifnot(splitby[1] %in% c("none", "verdict", "condType"))
-    
+
     # Verify modes
-    if (! is.null(modes)) {
-        stopifnot(all(modes %in% RLSeq::auxdata$mode_cols$mode)) 
+    if (!is.null(modes)) {
+        stopifnot(all(modes %in% auxdata$mode_cols$mode))
     }
-    
+
     # TODO: NEEDS to be replaced with RLHub
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
     feature_enrichment_per_sample <- file.path(
@@ -261,7 +247,8 @@ plotEnrichment <- function(object,
     )
     tmp <- tempfile()
     utils::download.file(
-        feature_enrichment_per_sample, destfile = tmp, quiet = TRUE
+        feature_enrichment_per_sample,
+        destfile = tmp, quiet = TRUE
     )
     load(tmp)
     rlbaseRes <- feature_enrichment_per_sample
@@ -283,9 +270,6 @@ plotEnrichment <- function(object,
     predres <- rlresult(object, resultName = "predictRes")
     sampleRes$verdict <- predres$Verdict
 
-    # Get min, max for plotting
-    limit <- ifelse(yval == "stat_fisher_rl", 15, Inf)
-
     # Filter RLBase
     if (!is.null(modes)) {
         rlsamples <- dplyr::filter(rlsamples, .data$mode %in% {{ modes }})
@@ -296,6 +280,7 @@ plotEnrichment <- function(object,
     if (onlyPOS) {
         rlsamples <- dplyr::filter(rlsamples, .data$condType == "POS")
     }
+    
 
     # Wrangle the RLBase data
     rlbaseResFull <- dplyr::bind_rows(
@@ -317,17 +302,27 @@ plotEnrichment <- function(object,
             dplyr::contains("stat_fisher_rl")
         ) %>%
         dplyr::mutate(
-            stat_fisher_rl = log2(.data$stat_fisher_rl)
+            # TODO: Find a better way to deal with Inf results.
+            stat_fisher_rl = log2(.data$stat_fisher_rl),
+            stat_fisher_rl = ifelse(
+                .data$stat_fisher_rl > limits[2], 
+                limits[2],
+                .data$stat_fisher_rl
+            ),
+            stat_fisher_rl = ifelse(
+                .data$stat_fisher_rl < limits[1], 
+                limits[1],
+                .data$stat_fisher_rl
+            )
         ) %>%
         dplyr::filter(
-            !is.na(.data$stat_fisher_rl),
-            is.finite(.data$stat_fisher_rl)
+            !is.na(.data$stat_fisher_rl)
         ) %>%
         dplyr::filter(.data$experiment %in% c(rlsamples$rlsample, usamp))
 
     # Wrap strings
     input_data$type <- gsub(input_data$type, pattern = "_", replacement = " ")
-    
+
     # Make selected explicit
     input_data$selected <- ifelse(input_data$experiment == usamp, usamp, "")
 
@@ -347,16 +342,16 @@ plotEnrichment <- function(object,
         datalst,
         function(x) {
             db_now <- x$db[1]
-            col <- RLSeq::auxdata$db_cols$col[RLSeq::auxdata$db_cols$db == db_now]
+            col <- auxdata$db_cols$col[auxdata$db_cols$db == db_now]
 
-            if (! usamp %in% x$experiment) {
+            if (!usamp %in% x$experiment) {
                 return(NULL)
             }
 
             # Define limits
             lmts <- c(
-                max(min(x[, yval]), -limit) - 1,
-                min(max(x[, yval]), limit) + 1
+                max(min(x[, yval]), limits[1]) - 1,
+                min(max(x[, yval]), limits[2]) + 1
             )
 
 
@@ -393,9 +388,9 @@ plotEnrichment <- function(object,
                     )
             } else {
                 # Get split cols
-                cols <- RLSeq::auxdata[[paste0(tolower(splitby[1]), "_cols")]]
+                cols <- auxdata[[paste0(tolower(splitby[1]), "_cols")]]
                 colvec <- cols %>% dplyr::pull(.data$col)
-                names(colvec) <- as.data.frame(cols)[,splitby[1]]
+                names(colvec) <- as.data.frame(cols)[, splitby[1]]
 
                 # Add box and jitter
                 plt <- pltbase +
@@ -435,7 +430,11 @@ plotEnrichment <- function(object,
                         replacement = " "
                     ),
                     subtitle = usamp,
-                    caption = "\u25C7 - User sample"
+                    caption = paste0(
+                        "y-axis data max, min: ", 
+                        paste0(limits, collapse = ", "),
+                        ". \u25C7 - User sample"
+                    )
                 ) +
                 ggprism::theme_prism(base_size = 14) +
                 ggplot2::theme(
@@ -448,7 +447,7 @@ plotEnrichment <- function(object,
                 ggplot2::theme(
                     legend.title = ggplot2::element_text(size = 18),
                     legend.text = ggplot2::element_text(size = 14),
-                    plot.caption = ggplot2::element_text(size = 12)
+                    plot.caption = ggplot2::element_text(size = 11)
                 ) +
                 ggplot2::guides(
                     fill = ggplot2::guide_legend(
@@ -460,7 +459,7 @@ plotEnrichment <- function(object,
     )
 
     # Remove empty
-    plts <- plts[!sapply(plts, is.null)]
+    plts <- plts[!vapply(plts, is.null, logical(1))]
 
     # Return
     return(plts)
@@ -471,27 +470,19 @@ plotEnrichment <- function(object,
 #' Plot RL-Region overlap with RLRanges
 #'
 #' @param object An RLRanges object with \code{rlRegionTest()} already run.
-#' @param returnData If TRUE, plot data is returned instead of plotting. Default: FALSE
+#' @param returnData If TRUE, plot data is returned instead of plotting.
+#'  Default: FALSE
 #' @return A venn diagram ggplot object.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Run RLSeq
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' rlr <- RLSeq(rlr)
-#' 
+#' @examples
+#'
+#' # Example dataset with rlRegionTest() already run.
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Plot RL-Region overlap
 #' plotRLRegionOverlap(rlr)
-#' 
+#'
 #' # Return data only
-#' plotRLRegionOverlap(rlr, returnData=TRUE)
-#' 
-#' }
+#' plotRLRegionOverlap(rlr, returnData = TRUE)
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
