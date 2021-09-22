@@ -18,7 +18,7 @@
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 rlRegionTest <- function(object) {
     
@@ -31,7 +31,7 @@ rlRegionTest <- function(object) {
     # Wrangle the peaks
     pkName <- names(object)
     toTest <- object %>%
-        tibble::as_tibble() %>%
+        dplyr::as_tibble() %>%
         dplyr::mutate(
             seqnames = as.character(.data$seqnames),
             name = {{ pkName }}
@@ -43,7 +43,7 @@ rlRegionTest <- function(object) {
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
     rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
     tmp <- tempfile()
-    download.file(rlregions_table, destfile = tmp, quiet = TRUE)
+    utils::download.file(rlregions_table, destfile = tmp, quiet = TRUE)
     load(tmp)
 
     # Get the RL Regions
@@ -62,7 +62,7 @@ rlRegionTest <- function(object) {
     sig <- valr::bed_fisher(toTest, rlReg, genome = chromSizes)
 
     # Return to object
-    slot(object@metadata$results, "rlRegionRes") <- list(
+    methods::slot(object@metadata$results, "rlRegionRes") <- list(
         "Overlap" = olap,
         "Test_results" = sig
     )

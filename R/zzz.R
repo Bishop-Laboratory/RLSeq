@@ -8,4 +8,7 @@
     assign("BASE_UCSC", BASE_UCSC, envir = parent.env(environment()))
     assign("RLBASE_URL", RLBASE_URL, envir = parent.env(environment()))
     assign("RLBASE_S3", RLBASE_S3, envir = parent.env(environment()))
+    
+    # Globals
+    utils::globalVariables(".")
 }

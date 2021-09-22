@@ -13,6 +13,11 @@ RLSeq(object, quiet = FALSE)
 }
 \value{
 An RLRanges object with all results available.
+}
+\description{
+Runs the full RLSeq pipeline.
+}
+\examples{
 \dontrun{
 
 # Example dataset
@@ -27,7 +32,4 @@ rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
 rlr <- RLSeq(rlr)
 
 }
-}
-\description{
-Runs the full RLSeq pipeline.
 }

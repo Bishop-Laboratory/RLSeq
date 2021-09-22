@@ -7,5 +7,5 @@
 "genomeMasks"
 
 #' Auxilliary data for use with RLSeq
-#' Generated via aux.R script in data-raw/
-"aux"
+#' Generated via auxdata.R script in data-raw/
+"auxdata"

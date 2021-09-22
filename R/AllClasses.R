@@ -19,14 +19,14 @@ setValidity(
         ## Verification of other options ##
 
         # Mode
-        if (!object@metadata$mode %in% aux$available_modes$mode &&
+        if (!object@metadata$mode %in% auxdata$available_modes$mode &&
             length(object@metadata$mode) > 1) {
-            stop("'mode' must be one of aux$available_modes$mode or empty.")
+            stop("'mode' must be one of auxdata$available_modes$mode or empty.")
         }
 
         # Genome
-        if (any(!GenomeInfoDb::genome(object) %in% aux$available_genomes)) {
-            stop("'genome' must be one of aux$available_genomes.")
+        if (any(!GenomeInfoDb::genome(object) %in% auxdata$available_genomes)) {
+            stop("'genome' must be one of auxdata$available_genomes.")
         }
 
         # Seqinfo
@@ -61,10 +61,10 @@ setMethod(
     definition = function(object) {
         # Which results are available?
         res <- object@metadata$results
-        sn <- slotNames(res)
+        sn <- methods::slotNames(res)
         fld <- sn[
             sapply(sn, function(x) {
-                length(slot(res, x)) > 1
+                length(methods::slot(res, x)) > 1
             })
         ]
         if (!length(fld)) fld <- "None"
@@ -99,9 +99,9 @@ setMethod(
 #'
 #' @param peaks Path/URL to peak file or a GRanges object.
 #' @param coverage Path/URL to bigWig file. If not supplied, correlation tests will be skipped.
-#' @param genome UCSC genome ID. Acceptable types are listed in RLSeq::aux$available_genomes.
+#' @param genome UCSC genome ID. Acceptable types are listed in RLSeq::auxdata$available_genomes.
 #' @param mode Type of R-loop mapping from which peaks and coverage were
-#' derived. Acceptable types are listed in RLSeq::aux$available_modes$mode. Can
+#' derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode. Can
 #' be unspecified.
 #' @param condType One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),
 #' or "NULL" (e.g., Input control.). Can be unspecified.
@@ -158,12 +158,12 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
             condType = condType,
             coverage = coverage,
             sampleName = sampleName,
-            results = new("RLResults")
+            results = methods::new("RLResults")
         )
     )
 
     # Build object
-    new(
+    methods::new(
         "RLRanges",
         peaks
     )
@@ -180,7 +180,7 @@ rlresult <- function(object, resultName) {
     stopifnot(class(object) == "RLRanges")
 
     # Obtain data from slot
-    lst <- slot(object@metadata$results, name = resultName)
+    lst <- methods::slot(object@metadata$results, name = resultName)
     if (!length(lst) > 1) {
         stop(resultName, " not found in object.")
     } else {
@@ -209,11 +209,11 @@ setClass(
         predictRes = "list",
         rlRegionRes = "list"
     ),
-    prototype = prototype(
-        featureEnrichment = tibble::tibble(),
+    prototype = methods::prototype(
+        featureEnrichment = dplyr::tibble(),
         correlationMat = matrix(),
         rlfsRes = list(),
-        geneAnnoRes = tibble::tibble(),
+        geneAnnoRes = dplyr::tibble(),
         predictRes = list(),
         rlRegionRes = list()
     )

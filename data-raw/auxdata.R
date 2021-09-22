@@ -1,4 +1,4 @@
-#' This script is used to generate auxiliary information used by RLSeq and RLBase.
+#' This script is used to generate auxdatailiary information used by RLSeq and RLBase.
 #' This includes color pallets, metadata, and other small items.
 #' The result is a named list which RLSeq depends upon.
 
@@ -126,7 +126,7 @@ heatcols <- tribble(
 )
 
 ## Save
-aux <- list(
+auxdata <- list(
     db_cols = db_cols,
     annotypes = annotypes,
     rlbps = rlbps,
@@ -138,4 +138,4 @@ aux <- list(
     available_modes = available_modes,
     available_genomes = genomes
 )
-usethis::use_data(aux, compress = "xz", overwrite = TRUE)
+usethis::use_data(auxdata, compress = "xz", overwrite = TRUE)
