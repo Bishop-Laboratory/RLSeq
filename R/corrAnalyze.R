@@ -20,7 +20,7 @@
 #' rlr <- corrAnalyze(rlr)
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 corrAnalyze <- function(object) {
 
@@ -39,9 +39,9 @@ corrAnalyze <- function(object) {
 
     # TODO: This MUST go through RLHub
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
-    gssig <- file.path(rlbase, "RLHub", "gsSignalRLBase.rda")
+    gsSignalRLBase <- file.path(rlbase, "RLHub", "gsSignalRLBase.rda")
     tmp <- tempfile()
-    download.file(gssig, destfile = tmp, quiet = TRUE)
+    utils::download.file(gsSignalRLBase, destfile = tmp, quiet = TRUE)
     load(tmp)
 
     # Get the signal around GS R-loop sites
@@ -50,7 +50,7 @@ corrAnalyze <- function(object) {
     # Wrangle BW into tibble
     bw <- bw %>%
         as.data.frame() %>%
-        tibble::as_tibble() %>%
+        dplyr::as_tibble() %>%
         dplyr::rename(chrom = .data$seqnames) %>%
         dplyr::mutate(chrom = as.character(.data$chrom))
 
@@ -75,7 +75,7 @@ corrAnalyze <- function(object) {
         dplyr::mutate(dplyr::across(c("start", "end"), as.integer))
 
     # Summarize across gs intervals with valr
-    bwMap <- valr::bed_map(x = positions, y = bw, value = sum(score))
+    bwMap <- valr::bed_map(x = positions, y = bw, value = sum(.data$score))
 
     # Combine with the original matrix
     combinedMat <- gsSignalRLBase %>%
@@ -89,9 +89,11 @@ corrAnalyze <- function(object) {
                 dplyr::select(.data$location, a_ = .data$value),
             by = "location"
         ) %>%
-        dplyr::distinct(.data$location, .keep_all = TRUE) %>%
-        tibble::column_to_rownames("location") %>%
-        as.matrix()
+        dplyr::distinct(.data$location, .keep_all = TRUE) 
+    combinedMat <- as.data.frame(combinedMat)
+    rownames(combinedMat) <- combinedMat$location
+    combinedMat <- combinedMat[,-which(colnames(combinedMat) == "location")]
+    combinedMat <- as.matrix(combinedMat)
 
     # Rename column
     colnames(combinedMat)[
@@ -99,10 +101,10 @@ corrAnalyze <- function(object) {
     ] <- object@metadata$sampleName
 
     # Find the correlation
-    corMat <- cor(combinedMat)
+    corMat <- stats::cor(combinedMat)
 
     # Add back to object
-    slot(object@metadata$results, "correlationMat") <- corMat
+    methods::slot(object@metadata$results, "correlationMat") <- corMat
 
     return(object)
 }

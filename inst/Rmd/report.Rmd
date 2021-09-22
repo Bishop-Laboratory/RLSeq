@@ -32,7 +32,7 @@ knitr::opts_chunk$set(
 
 # Libraries
 library(magrittr)
-library(rlang)
+library(dplyr)
 
 # Enable
 DT::datatable(matrix(), extensions="Buttons")
@@ -81,7 +81,7 @@ Time: <strong>`r date()`</strong>
 ### Results summary
 
 ```{r}
-tibble::tibble(
+dplyr::tibble(
   Result = paste0("<a href=\"#", res_order,"\">", names(res_order), "</a>"),
   Available = ! isnull
 ) %>%
@@ -97,8 +97,6 @@ tibble::tibble(
 # Results
 
 ```{r childRMD, results='asis'}
-env <- new.env()
-env$object <- object
 rmdlst <- lapply(
     seq(res_order),
     function(i) {
@@ -125,7 +123,7 @@ rmdlst <- lapply(
                     paste0(resAnchor, ".Rmd"),
                     package = "RLSeq"
                 ), 
-                envir = env(), 
+                envir = environment(), 
                 quiet = TRUE
             )
         }
