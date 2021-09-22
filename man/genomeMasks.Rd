@@ -4,7 +4,7 @@
 \name{genomeMasks}
 \alias{genomeMasks}
 \title{List of GRanges. Contains genomic masks for several commons species.
-See data-raw/masked_genomes.R for details.}
+Generated via genome_masks.R script in data-raw/}
 \format{
 An object of class \code{list} of length 8.
 }
@@ -13,6 +13,6 @@ genomeMasks
 }
 \description{
 List of GRanges. Contains genomic masks for several commons species.
-See data-raw/masked_genomes.R for details.
+Generated via genome_masks.R script in data-raw/
 }
 \keyword{datasets}

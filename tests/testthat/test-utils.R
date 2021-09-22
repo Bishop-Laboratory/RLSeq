@@ -19,10 +19,4 @@ test_that("Access functions work", {
         class = "tbl"
     )
     
-    # Test liftutil
-    expect_s4_class(
-        RLSeq:::liftUtil(ranges = rlr, "hg19", "hg38"),
-        "GRanges"
-    )
-    
 })

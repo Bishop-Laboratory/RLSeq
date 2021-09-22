@@ -39,16 +39,15 @@ or "NULL" (e.g., Input control.). Can be unspecified.}
 and metadata about the R-loop-mapping experiment.
 }
 \examples{
+\dontrun{
 
-pks <- "https://rlbase-data.s3.amazonaws.com/peaks/SRX1025890_hg38.broadPeak"
-cvg <- "https://rlbase-data.s3.amazonaws.com/coverage/SRX1025890_hg38.bw"
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
 
-rlrs <- RLRanges(
-    peaks = pks,
-    coverage = cvg,
-    mode = "DRIP",
-    genome = "hg38",
-    condType = "POS",
-    sampleName = "TC32 DRIP-Seq"
-)
+# Get RLRanges object
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+}
 }

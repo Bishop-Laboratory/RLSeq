@@ -97,6 +97,8 @@ tibble::tibble(
 # Results
 
 ```{r childRMD, results='asis'}
+env <- new.env()
+env$object <- object
 rmdlst <- lapply(
     seq(res_order),
     function(i) {
@@ -123,7 +125,7 @@ rmdlst <- lapply(
                     paste0(resAnchor, ".Rmd"),
                     package = "RLSeq"
                 ), 
-                envir = environment(), 
+                envir = env(), 
                 quiet = TRUE
             )
         }

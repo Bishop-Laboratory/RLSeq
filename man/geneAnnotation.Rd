@@ -21,9 +21,22 @@ An RLRanges object with annotations added.
 Annotates R-loop peaks as a GRanges object with gene-level information
 }
 \examples{
+\dontrun{
 
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rlr <- RLRanges(pks, genome = "hg38", mode = "DRIP")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
 
+# Get RLRanges object
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+# Perform gene annotation
 rlr <- geneAnnotation(rlr)
+
+# Supply custom TxDb if needed
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+rlr <- geneAnnotation(rlr, txdb=TxDb.Hsapiens.UCSC.hg19.knownGene)
+
+}
 }

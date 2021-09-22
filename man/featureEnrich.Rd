@@ -58,11 +58,28 @@ A list which can be generated from the RLHub package or via local sources.\prefo
 }
 }
 \examples{
-small_anno <- list(
-    "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-    "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
-)
+\dontrun{
+
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-rls <- RLRanges(pks, genome = "hg38", mode = "DRIP")
-featureEnrich(rls, annotations = small_anno)
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Run RLSeq
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+
+# RL Region Test
+featureEnrich(rlr)
+
+# Parallelization if multiple cores provided
+featureEnrich(rlr, cores=8)
+
+# With custom annotations
+small_anno <- list(
+    "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz", show_col_types = FALSE),
+    "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz", show_col_types = FALSE)
+)
+featureEnrich(rlr, annotations=small_anno)
+
+}
 }
