@@ -26,12 +26,15 @@ jobs:
       
     steps:
     
-      - uses: actions/checkout@v2
-      
+      - name: Checkout github repo (+ download lfs dependencies)
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+      - name: Checkout LFS objects
+        run: git lfs checkout
       - uses: r-lib/actions/setup-r@v1
         with:
           r-version: ${{ matrix.config.r }}
-          
       - name: Query dependencies
         run: |
           install.packages('remotes')
@@ -58,9 +61,12 @@ jobs:
           
       - name: Install dependencies
         run: |
+          remotes::install_cran("BiocManager")
+          BiocManager::install(c("EnsDb.Hsapiens.v86", "regioneR", "EnsDb.Mmusculus.v79", "GenomicFeatures"))
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_bioc(c("ChIPpeakAnno"))
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("lintr")
+          remotes::install_cran("covr")
         shell: Rscript {0}    
           
       - name: Session info
@@ -87,3 +93,11 @@ jobs:
         with:
           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
           path: check
+          
+      - name: Test coverage
+        run: covr::codecov()
+        shell: Rscript {0}
+        
+      - name: Lint
+        run: lintr::lint_package()
+        shell: Rscript {0}

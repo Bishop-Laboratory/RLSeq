@@ -1,0 +1,8 @@
+a, a:hover, a:focus {
+  color: #A45BA4;
+}
+
+.list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
+  background-color: #602D64;
+}
+

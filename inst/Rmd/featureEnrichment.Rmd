@@ -1,0 +1,74 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+### Enrichment plots {.tabset}
+
+The results were then visualized with the `plotEnrichment()` function:
+
+```{r childEnrich, results='asis'}
+plts_verdsplit <- plotEnrichment(object, onlyCase = FALSE, onlyPOS = FALSE, splitby = "verdict")
+resRmd <- lapply(
+  names(plts_verdsplit), 
+  function(db) {
+    knitr::knit_child(text = c(
+    '#### `r db`',
+    '',
+    '```{r fig.height=6, fig.width=10}',
+    'plts_verdsplit[[db]]',
+    '```',
+    ''
+  ), 
+  envir = environment(),  
+  quiet = TRUE)
+  }
+)
+cat(unlist(resRmd), sep = '\n')
+```
+
+### {-}
+
+### Summary table
+
+<details>
+<summary>Additional Details</summary>
+
+Annotations were derived from a variety of sources and accessed using *RLHub* (unless custom annotations were supplied by the user). Detailed explanations of each database and type can be found [here](https://github.com/Bishop-Laboratory/RLBase-data#preliminary). The `valr` package was implemented to test the enrichment of these features within the supplied ranges for **`r object@metadata$sampleName`**.
+
+</details>
+
+<br>
+
+```{r}
+featRes <- rlresult(object, resultName = "featureEnrichment")
+spec_now <- paste0(
+  "featureEnrichment_",
+  gsub(object@metadata$sampleName, pattern = " ", replacement = "_")
+)
+featRes %>%
+  DT::datatable(
+    options = list(
+          dom = "Bfrtip", 
+          scrollX = TRUE,
+          pageLength = 6,
+          buttons = list(
+            extend  = 'collection',
+            buttons = list(
+              list(extend='csv', filename=spec_now),
+              list(extend='excel', filename=spec_now)
+            ),
+            text    = 'Download'
+          )
+      ), colnames = c(
+        "Database", "Annotation", "# tested peaks", 
+        "# total peaks", "# tested annotation ranges", 
+        "# total annotation ranges",
+        "Mean relative distance to feature", 
+        "Mean relative distance to feature (shuffled)", 
+        "Pval of relative distance", "Fisher Statistic", 
+        "Fisher Statistic (shuffled)", "Fisher pval", 
+        "Fisher pval (shuffled)"
+      )
+  )
+```
+
+
+***
