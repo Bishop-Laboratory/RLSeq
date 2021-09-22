@@ -1,8 +1,12 @@
+test_that(desc = "RLSeq report", {
+    # Load
+    rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
-test_that(desc = "Test report", {
-  expect_null(
-    RLSeq::report(RLSeq::SRX1025890, outputFile = "report.html")
-  )
-  file.remove("report.html")
+    # Plot the enrich
+    expect_true(
+        RLSeq::report(
+            object = rlr,
+            quiet = TRUE
+        )
+    )
 })
-

@@ -1,10 +1,8 @@
-^RSeqR\.Rproj$
+^RLSeq\.Rproj$
 ^\.Rproj\.user$
 ^\.github$
 ^LICENSE\.md$
-.*\.html$
 ^codecov\.yml$
 ^data-raw$
-^.*\.bw$
 ^doc$
 ^Meta$
