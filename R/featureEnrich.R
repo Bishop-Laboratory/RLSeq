@@ -8,33 +8,37 @@
 #' This improves the speed of genomic shuffling and helps prevent p-value inflation.
 #' If FALSE, then downsampling will not be performed. Default: 10000.
 #' @param quiet If TRUE, messages will be suppressed. Default: False
-#' @param cores Cores for use in parallel operations. Default: 1
 #' the same format as RLSeq::annotationLst.
-#' @details
-#'   \strong{annotations}:
-#'     A list which can be generated from the RLHub package or via local sources.
+#' @details 
+#' 
+#' \strong{annotations}: A list which can be generated from the RLHub package or via local sources.
 #'
-#'     \emph{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of annotations
-#'       for the hg38 genome.
+#' \strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of annotations for the hg38 genome.
 #'
-#'     \emph{custom}: The only requirement is that \code{annotations} is a named
-#'       list of \code{tbl}s in which each \code{tbl} follows the structure:
+#' \strong{custom}: The only requirement is that \code{annotations} is a named list 
+#' of \code{tbl}s in which each \code{tbl} follows the structure:
 #'
-#'       \tabular{lllll}{
-#'         chrom \tab start \tab end \tab strand \tab name\cr
-#'         chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
-#'         chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
-#'         ...
-#'       }
+#' \tabular{lllll}{
+#'   chrom \tab start \tab end \tab strand \tab name\cr
+#'   chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
+#'   chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
+#'   ...
+#' }
 #'
-#'       Such a list can be generated directly from RLBase S3 bucket files:
+#' Such a list can be generated directly from RLBase S3 bucket files:
 #'
-#'       \preformatted{
-#'         small_anno <- list(
-#'           "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz"),
-#'           "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz")
-#'           )
-#'       }
+#' \preformatted{
+#'   small_anno <- list(
+#'     "Centromeres" = readr::read_csv(
+#'       paste0("https://rlbase-data.s3.amazonaws.com",
+#'              "/annotations/hg38/Centromeres.csv.gz")
+#'     ),
+#'     "SkewR" = readr::read_csv(
+#'       paste0("https://rlbase-data.s3.amazonaws.com/",
+#'              "annotations/hg38/SkewR.csv.gz")
+#'     )
+#'   )
+#' }
 #'
 #' @return A tibble containing the results of the enrichment test.
 #' @examples 
@@ -51,25 +55,29 @@
 #' # RL Region Test
 #' featureEnrich(rlr)
 #' 
-#' # Parallelization if multiple cores provided
-#' featureEnrich(rlr, cores=8)
-#' 
 #' # With custom annotations
 #' small_anno <- list(
-#'     "Centromeres" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz", show_col_types = FALSE),
-#'     "SkewR" = readr::read_csv("https://rlbase-data.s3.amazonaws.com/annotations/hg38/SkewR.csv.gz", show_col_types = FALSE)
+#'     "Centromeres" = readr::read_csv(
+#'       paste0("https://rlbase-data.s3.amazonaws.com/",
+#'              "annotations/hg38/Centromeres.csv.gz"),
+#'       show_col_types = FALSE
+#'     ),
+#'     "SkewR" = readr::read_csv(
+#'       paste0("https://rlbase-data.s3.amazonaws.com/",
+#'              "annotations/hg38/SkewR.csv.gz"),
+#'        show_col_types = FALSE
+#'     )
 #' )
 #' featureEnrich(rlr, annotations=small_anno)
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 featureEnrich <- function(object,
     annotations = NULL,
     downsample = 10000,
-    quiet = FALSE,
-    cores = 1) {
+    quiet = FALSE) {
 
     # Cutoff for stats tests
     MIN_ROWS <- 200
@@ -86,24 +94,14 @@ featureEnrich <- function(object,
         )
     } else if (is.null(annotations)) {
         # TODO: This MUST be replaced when RLHub is available
-        annot <- file.path(rlbase, "RLHub", paste0(
+        annotations_primary <- file.path(rlbase, "RLHub", paste0(
             "annotations_primary_",
             genome, ".rda"
         ))
         tmp <- tempfile()
-        download.file(annot, destfile = tmp, quiet = TRUE)
+        utils::download.file(annotations_primary, destfile = tmp, quiet = TRUE)
         load(tmp)
         annotations <- annotations_primary
-    }
-
-    # Choose apply function
-    applyFun <- pbapply::pblapply
-    if (quiet) {
-        applyFun <- lapply
-    }
-    if (cores > 1) {
-        applyFun <- parallel::mclapply
-        options(mc.cores = cores)
     }
 
     # Get annotations
@@ -116,7 +114,7 @@ featureEnrich <- function(object,
 
     # Wrangle the peaks
     toTest <- object %>%
-        tibble::as_tibble() %>%
+        dplyr::as_tibble() %>%
         dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
 
     # Downsample
@@ -151,7 +149,7 @@ featureEnrich <- function(object,
     if (!quiet) {
         message(" - Calculating enrichment...")
     }
-    annoRes <- applyFun(
+    annoRes <- lapply(
         seq(annots),
         function(j) {
             annoSubNow <- annots[[j]]
@@ -185,7 +183,7 @@ featureEnrich <- function(object,
             y <- valr::bed_merge(y)
             pkstats <- peak_stats(x, xshuff, y, chromSizesNow, quiet = quiet)
             dplyr::bind_cols(
-                tibble::tibble(
+                dplyr::tibble(
                     db = gsub(typeNow, pattern = pat, replacement = "\\1"),
                     type = gsub(typeNow, pattern = pat, replacement = "\\2"),
                     num_tested_peaks = nrow(y),
@@ -204,7 +202,8 @@ featureEnrich <- function(object,
     }
 
     # Add to object
-    slot(object@metadata$results, name = "featureEnrichment") <- annoRes
+    methods::slot(object@metadata$results,
+                  name = "featureEnrichment") <- annoRes
 
     return(object)
 }
@@ -218,8 +217,7 @@ featureEnrich <- function(object,
 #' @param xshuff x, but shuffled around the genome to build a control peakset.
 #' @param y The annotations against which to test x.
 #' @param chromSizeTbl A tibble containing the sizes of each chromosome in x and y.
-#'
-#' @export
+#' @param quiet If TRUE, messages will be suppressed. Default: False
 peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
 
     # Cutoff for stats tests
@@ -234,7 +232,7 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
         }
 
         # Return results
-        tibble::tibble(
+        dplyr::tibble(
             avg_reldist_rl = NA,
             avg_reldist_shuf = NA,
             pval_reldist = NA,
@@ -247,28 +245,29 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
         reldist_shuf <- valr::bed_reldist(xshuff, y, detail = TRUE)
         if (quiet) {
             ks <- suppressWarnings(
-                ks.test(reldist_rl$.reldist,
-                    reldist_shuf$.reldist,
+                stats::ks.test(
+                    x = reldist_rl$.reldist,
+                    y = reldist_shuf$.reldist,
                     exact = FALSE
                 )
             )
         } else {
-            ks <- ks.test(reldist_rl$.reldist,
-                reldist_shuf$.reldist,
+            ks <- stats::ks.test(
+                x = reldist_rl$.reldist,
+                y = reldist_shuf$.reldist,
                 exact = FALSE
             )
         }
 
-        pval_reldist <- ks %>%
-            broom::tidy() %>%
-            dplyr::pull("p.value")
+        
+        pval_reldist <- ks$p.value
 
         # Obtain fisher test results
         fshres_rl <- valr::bed_fisher(x, y, chromSizeTbl)
         fshres_shuf <- valr::bed_fisher(xshuff, y, chromSizeTbl)
 
         # Return results
-        tibble::tibble(
+        dplyr::tibble(
             avg_reldist_rl = mean(reldist_rl$.reldist),
             avg_reldist_shuf = mean(reldist_shuf$.reldist),
             pval_reldist = ifelse(pval_reldist == 0, 2.2E-16, pval_reldist),

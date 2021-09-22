@@ -1,29 +1,21 @@
 pkgVer <- function(pkg) {
     if (!exists("meta") || is.null(meta)) meta <- packageDescription(pkg)
     ver <- meta$Version
-    paste0('https://github.com/Bishop-Laboratory/RSeqR/', pkg, ' - R package version ', ver)
+    paste0('https://github.com/Bishop-Laboratory/RLSeq/', pkg, ' - R package version ', ver)
 }
 
 c(
-
     bibentry(bibtype="manual",
-        title = "",
+        title = "RLSeq: An analysis package for R-loop mapping data",
         author = personList(
-            as.person("Bishop-Laboratory")
+            as.person("Henry Miller"),
+            as.person("Daniel Montemayor"),
+            as.person("Simon Levy"),
+            as.person("Anna Vines")
         ),
         year = format(Sys.Date(), "%Y"),
         url = "http://www.bioconductor.org/packages/RLSeq",
         note = pkgVer('RLSeq'),
         doi = '10.18129/B9.bioc.RLSeq'
-    ),
-    bibentry(bibtype="article",
-        title = "",
-        author = personList(
-            as.person("Bishop-Laboratory")
-        ),
-        year = format(Sys.Date(), "%Y"),
-        journal = "bioRxiv",
-        doi = "10.1101/TODO",
-        url = "https://www.biorxiv.org/content/10.1101/TODO"
     )
 )

@@ -25,13 +25,26 @@
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @importFrom stats fft acf
 #' @export
 predictCondition <- function(object, ...) {
 
     # Obtain RLFS-Res
     rlfsRes <- rlresult(object, resultName = "rlfsRes")
+    
+    # Check for missing packages and stop if found
+    pkgs <- sapply(
+        c("kernlab", "randomForest", "rpart", "MASS"),
+        requireNamespace, 
+        quietly=TRUE
+    )
+    if (any(! pkgs)) {
+        stop(
+            'Packages needed for predictCondition() but not installed: "',
+            paste0(names(pkgs)[which(! pkgs)], collapse = '", "'), '"'
+        )
+    }
 
     # Dots are used to supply custom models for testing purposes only.
     dots <- list(...)
@@ -52,7 +65,8 @@ predictCondition <- function(object, ...) {
         tmp <- tempdir()
         a_ <- sapply(
             c("prepFeatures.rda", "fftModel.rda"), function(x) {
-                download.file(file.path(RLBASE_URL, "RLHub", x),
+                utils::download.file(
+                    url = file.path(RLBASE_URL, "RLHub", x),
                     quiet = TRUE,
                     destfile = file.path(tmp, x)
                 )
@@ -111,22 +125,20 @@ predictCondition <- function(object, ...) {
     criteriaTwo <- Zcenter > 0
     criteriaThree <- Zcenter > Zleft & Zcenter > Zright
     criteriaFour <- toupper(pred) == "CASE"
-
+    
+    # Wrangle features raw
+    finalFeatures <- dplyr::bind_rows(features, featuresRaw) %>%
+        t() %>%
+        as.data.frame()
+    colnames(finalFeatures) <- c("raw_value", "processed_value")
+    finalFeatures$feature <- rownames(finalFeatures)
+    finalFeatures <- finalFeatures %>%
+        dplyr::as_tibble() %>%
+        dplyr::relocate(.data$feature, .before = .data$raw_value)
+    
     # return results
     reslst <- list(
-        Features = featuresRaw %>%
-            tidyr::pivot_longer(dplyr::everything(),
-                names_to = "feature",
-                values_to = "raw_value"
-            ) %>%
-            dplyr::inner_join(
-                tidyr::pivot_longer(
-                    features, dplyr::everything(),
-                    names_to = "feature",
-                    values_to = "processed_value"
-                ),
-                by = "feature"
-            ),
+        Features = finalFeatures,
         Criteria = list(
             "PVal Significant" = criteriaOne,
             "ZApex > 0" = criteriaTwo,
@@ -140,7 +152,7 @@ predictCondition <- function(object, ...) {
     )
 
     # Add to RLRanges and result
-    slot(object@metadata$results, "predictRes") <- reslst
+    methods::slot(object@metadata$results, "predictRes") <- reslst
 
     return(object)
 }

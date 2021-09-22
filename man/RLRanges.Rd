@@ -21,10 +21,10 @@ RLRanges(
 
 \item{coverage}{Path/URL to bigWig file. If not supplied, correlation tests will be skipped.}
 
-\item{genome}{UCSC genome ID. Acceptable types are listed in RLSeq::aux$available_genomes.}
+\item{genome}{UCSC genome ID. Acceptable types are listed in RLSeq::auxdata$available_genomes.}
 
 \item{mode}{Type of R-loop mapping from which peaks and coverage were
-derived. Acceptable types are listed in RLSeq::aux$available_modes$mode. Can
+derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode. Can
 be unspecified.}
 
 \item{condType}{One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),

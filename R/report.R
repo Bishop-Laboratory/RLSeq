@@ -22,13 +22,26 @@
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
+#' @importFrom dplyr .data
 #' @export
 report <- function(object,
     reportPath = "rlreport.html",
     quiet = FALSE,
     ...) {
-
+    
+    # Check for missing packages and stop if found
+    pkgs <- sapply(
+        c("kableExtra", "DT", "rmarkdown"),
+        requireNamespace, 
+        quietly=TRUE
+    )
+    if (any(! pkgs)) {
+        stop(
+            'Packages needed for report() but not installed: "',
+            paste0(names(pkgs)[which(! pkgs)], collapse = '", "'), '"'
+        )
+    }
+    
     # Get the template
     template <- system.file("Rmd", "report.Rmd", package = "RLSeq")
     

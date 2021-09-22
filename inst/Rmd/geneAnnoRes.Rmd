@@ -10,9 +10,10 @@ spec_now <- paste0(
   "geneAnno_",
   gsub(object@metadata$sampleName, pattern = " ", replacement = "_")
 )
-object %>%
-  as.data.frame() %>%
-  tibble::rownames_to_column(var = "peak_name") %>%
+odf <- object %>%
+  as.data.frame()
+odf$peak_name <- rownames(odf)
+ odf %>%
   dplyr::slice_max(V9, n = 2000) %>%
   dplyr::inner_join(geneRes, by = "peak_name") %>%
   dplyr::relocate(gene_id, .after = peak_name) %>%

@@ -25,8 +25,7 @@
 #' 
 #' }
 #' @importFrom dplyr %>%
-#' @importFrom rlang .data
-#' @importFrom utils capture.output
+#' @importFrom dplyr .data
 #' @export
 analyzeRLFS <- function(object,
     mask = NULL,
@@ -72,9 +71,10 @@ analyzeRLFS <- function(object,
     if (!quiet) {
         message(" - Running permTest...")
     }
+    gr <- GenomicRanges::GRanges(object)
     pt <- suppressWarnings(
         regioneR::permTest(
-            A = object, B = RLFS,
+            A = gr, B = RLFS,
             genome = genomeNow,
             mask = mask,
             randomize.function = regioneR::circularRandomizeRegions,
@@ -89,11 +89,11 @@ analyzeRLFS <- function(object,
         message(" - Extracting pileup...")
     }
     z <- suppressWarnings(
-        regioneR::localZScore(A = object, B = RLFS, pt, window = 5000, step = 50)
+        regioneR::localZScore(A = gr, B = RLFS, pt, window = 5000, step = 50)
     )
 
     # Add results to object
-    slot(object@metadata$results, "rlfsRes") <- list(
+    methods::slot(object@metadata$results, "rlfsRes") <- list(
         "perTestResults" = pt,
         "Z-scores" = z
     )

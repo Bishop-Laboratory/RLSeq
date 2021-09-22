@@ -5,7 +5,7 @@ test_that("Access functions work", {
     
     # Get RLFS anno
     expect_s4_class(
-        RLSeq::getRLFSAnno(
+        RLSeq:::getRLFSAnno(
             object = rlr
         ),
         "GRanges"
