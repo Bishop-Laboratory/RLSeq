@@ -10,6 +10,7 @@ plotEnrichment(
   onlyCase = TRUE,
   onlyPOS = FALSE,
   splitby = c("none", "verdict", "condType"),
+  limits = c(-10, 15),
   returnData = FALSE
 )
 }
@@ -18,13 +19,21 @@ plotEnrichment(
 
 \item{modes}{Which modes to include in plot? If empty, all modes included.}
 
-\item{onlyCase}{If TRUE, only "case" predicted samples included. Default: TRUE.}
+\item{onlyCase}{If TRUE, only "case" predicted samples included.
+Default: TRUE.}
 
 \item{onlyPOS}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
 
-\item{splitby}{Metadata by which to split plots. Can be "none", "verdict", or "condType".}
+\item{splitby}{Metadata by which to split plots. Can be "none", "verdict",
+or "condType".}
 
-\item{returnData}{If TRUE, plot data is returned instead of plotting. Default: FALSE}
+\item{limits}{Specify limits on data. Useful for controlling infinite
+estimation of odds ratio
+resulting from fisher's exact test. To remove limits, set c(-Inf, Inf).
+Default: c(-10, 15).}
+
+\item{returnData}{If TRUE, plot data is returned instead of plotting.
+Default: FALSE}
 }
 \value{
 A named list of ggplot objects.
@@ -33,29 +42,23 @@ A named list of ggplot objects.
 Plot Enrichment Test Results
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Run RLSeq
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-rlr <- RLSeq(rlr)
+# Example dataset with featureEnrich() already run.
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Plot enrichment
 plotEnrichment(rlr)
 
 # split by verdict
-plotEnrichment(rlr, onlyCase=FALSE, splitby="verdict")
+plotEnrichment(rlr, onlyCase = FALSE, splitby = "verdict")
 
 # split by "condType" and only return plotting data
-plotEnrichment(rlr, onlyCase=FALSE, splitby="condType", returnData=TRUE)
+plotEnrichment(rlr, onlyCase = FALSE, splitby = "condType",
+               returnData = TRUE)
 
 # Only include DRIP-family
-plotEnrichment(rlr, modes=c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-               onlyCase=FALSE, splitby="verdict")
-
-}
+plotEnrichment(rlr,
+    modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
+    onlyCase = FALSE, splitby = "verdict"
+)
 }

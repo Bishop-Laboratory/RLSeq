@@ -33,6 +33,7 @@ knitr::opts_chunk$set(
 # Libraries
 library(magrittr)
 library(dplyr)
+library(RLSeq)
 
 # Enable
 DT::datatable(matrix(), extensions="Buttons")
@@ -61,7 +62,7 @@ names(res_order) <- c(
   "RL-Regions Test"
 )
 rlreslst <- rlreslst[res_order]
-isnull <- sapply(rlreslst, is.null)
+isnull <- vapply(rlreslst, is.null, FUN.VALUE = logical(1))
 ```
 
 # Summary
@@ -87,6 +88,10 @@ dplyr::tibble(
 ) %>%
   kableExtra::kbl(escape = FALSE) %>%
   kableExtra::kable_material(c("striped", "hover")) %>%
+  kableExtra::column_spec(
+    column = 1,
+    bold = TRUE
+  ) %>%
   kableExtra::column_spec(
     column = 2,
     color = ifelse(! isnull, "black", "grey"),

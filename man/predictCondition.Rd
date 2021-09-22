@@ -19,21 +19,11 @@ Uses the results of analyzeRLFS() to predict whether a sample is "Case"
 (robust R-loop mapping) or "Control" (poor R-loop mapping).
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Get RLRanges object
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-
-# Get RLFS results
-rlr <- analyzeRLFS(rlr)
+# Example data with analyzeRLFS already run
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # predict condition
 rlr <- predictCondition(rlr)
 
-}
 }

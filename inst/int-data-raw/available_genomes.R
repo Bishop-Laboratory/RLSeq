@@ -13,7 +13,8 @@ buildCondaEnv <- function(envName, ...) {
     # Get Env Path
     envPath <- reticulate::conda_list() %>%
         dplyr::filter(name == envName) %>%
-        dplyr::mutate(python = gsub(python, pattern = "/bin/python", replacement = "")) %>%
+        dplyr::mutate(python = gsub(python, pattern = "/bin/python",
+                                    replacement = "")) %>%
         dplyr::pull(python)
 
     return(envPath)
@@ -60,7 +61,8 @@ getEffectiveGenomeSizes <- function(genome,
 #' @param len The read length for which to obtain genome sizes
 #' @param faFile The genome fasta file to analyze
 #' @param envPath The path to the conda env with khmer installed
-#' @param condaPath The path to the conda binary. Default = reticulate::conda_binary()
+#' @param condaPath The path to the conda binary. 
+#' Default = reticulate::conda_binary()
 #' @return A data frame containing the effective genome sizes.
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
@@ -71,7 +73,8 @@ getEffGenSize <- function(len,
     # Get back to binary
     condaPath <- reticulate::conda_binary()
 
-    # This line sources the conda shell script, activates the khmerenv, and runs unique-kmers.py
+    # This line sources the conda shell script, activates the khmerenv,
+    # and runs unique-kmers.py
     cmd <- paste0(
         ". ", gsub(condaPath,
             pattern = "/bin/conda",
@@ -112,7 +115,6 @@ buildAvailableGenomes <- function(test = FALSE, ...) {
         channel = c("bioconda", "conda-forge")
     )
 
-    # from http://rstudio-pubs-static.s3.amazonaws.com/562103_092b7264f392482e827440cf1521363c.html
     api_genome <- restfulr::RestUri("http://api.genome.ucsc.edu/list")
     response <- restfulr::read(api_genome$ucscGenomes)[["ucscGenomes"]]
 
@@ -132,7 +134,8 @@ buildAvailableGenomes <- function(test = FALSE, ...) {
     # If testing, only use small genomes
     smallgen <- c("eboVir3", "wuhCor1")
     if (test) {
-        available_genomes <- dplyr::filter(available_genomes, .data$UCSC_orgID %in% smallgen)
+        available_genomes <- dplyr::filter(available_genomes,
+                                           .data$UCSC_orgID %in% smallgen)
     }
 
     # Get the effective genome sizes

@@ -9,7 +9,8 @@ plotRLRegionOverlap(object, returnData = FALSE)
 \arguments{
 \item{object}{An RLRanges object with \code{rlRegionTest()} already run.}
 
-\item{returnData}{If TRUE, plot data is returned instead of plotting. Default: FALSE}
+\item{returnData}{If TRUE, plot data is returned instead of plotting.
+Default: FALSE}
 }
 \value{
 A venn diagram ggplot object.
@@ -18,22 +19,13 @@ A venn diagram ggplot object.
 Plot RL-Region overlap with RLRanges
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Run RLSeq
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-rlr <- RLSeq(rlr)
+# Example dataset with rlRegionTest() already run.
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Plot RL-Region overlap
 plotRLRegionOverlap(rlr)
 
 # Return data only
-plotRLRegionOverlap(rlr, returnData=TRUE)
-
-}
+plotRLRegionOverlap(rlr, returnData = TRUE)
 }

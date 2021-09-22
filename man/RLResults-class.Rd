@@ -5,22 +5,29 @@
 \alias{RLResults-class}
 \title{Construct RLResults Object}
 \description{
-\code{RLResults} is a class used internally for storing the results of running
+\code{RLResults} is a class used internally for storing the
+results of running
 \code{RLSeq} operations on an \code{RLRanges} object.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{featureEnrichment}}{The \code{tbl} generated from running the \code{featureEnrich()} function.}
+\item{\code{featureEnrichment}}{The \code{tbl} generated from running the
+\code{featureEnrich()} function.}
 
-\item{\code{correlationMat}}{The \code{matrix} generated from running the \code{corrAnalyze()} function.}
+\item{\code{correlationMat}}{The \code{matrix} generated from running the
+\code{corrAnalyze()} function.}
 
-\item{\code{rlfsRes}}{The \code{list} generated from running the \code{analyzeRLFS()} function.}
+\item{\code{rlfsRes}}{The \code{list} generated from running the
+\code{analyzeRLFS()} function.}
 
-\item{\code{geneAnnoRes}}{The \code{tbl} generated from running the \code{geneAnnotation()} function.}
+\item{\code{geneAnnoRes}}{The \code{tbl} generated from running the
+\code{geneAnnotation()} function.}
 
-\item{\code{predictRes}}{The \code{list} generated from running the \code{predictCondition()} function.}
+\item{\code{predictRes}}{The \code{list} generated from running the
+\code{predictCondition()} function.}
 
-\item{\code{rlRegionRes}}{The \code{list} generated from running the \code{rlRegionTest()} function.}
+\item{\code{rlRegionRes}}{The \code{list} generated from running the
+\code{rlRegionTest()} function.}
 }}
 

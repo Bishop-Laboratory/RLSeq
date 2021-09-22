@@ -18,18 +18,11 @@ An RLRanges object with all results available.
 Runs the full RLSeq pipeline.
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Build RLRanges object
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+# Example RLRanges
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Run RLSeq
 rlr <- RLSeq(rlr)
 
-}
 }

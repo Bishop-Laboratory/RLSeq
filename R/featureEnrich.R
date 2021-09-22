@@ -1,22 +1,26 @@
 #' Tests Genomic Feature Enrichment
 #'
-#' @description Tests the enrichment of genomic features in supplied R-loop peaks.
+#' @description Tests the enrichment of genomic features in supplied peaks.
 #'
 #' @param object An RLRanges object.
 #' @param annotations Annotation list. See details.
-#' @param downsample If a numeric, data will be down sampled to the requested number of peaks.
-#' This improves the speed of genomic shuffling and helps prevent p-value inflation.
+#' @param downsample If a numeric, data will be down sampled to the requested
+#'  number of peaks.
+#' This improves the speed of genomic shuffling and 
+#' helps prevent p-value inflation.
 #' If FALSE, then downsampling will not be performed. Default: 10000.
 #' @param quiet If TRUE, messages will be suppressed. Default: False
 #' the same format as RLSeq::annotationLst.
-#' @details 
-#' 
-#' \strong{annotations}: A list which can be generated from the RLHub package or via local sources.
+#' @details
 #'
-#' \strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of annotations for the hg38 genome.
+#' \strong{annotations}: A list which can be generated from the RLHub package 
+#' or via local sources.
 #'
-#' \strong{custom}: The only requirement is that \code{annotations} is a named list 
-#' of \code{tbl}s in which each \code{tbl} follows the structure:
+#' \strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of 
+#' annotations for the hg38 genome.
+#'
+#' \strong{custom}: The only requirement is that \code{annotations} is a
+#' named list of \code{tbl}s in which each \code{tbl} follows the structure:
 #'
 #' \tabular{lllll}{
 #'   chrom \tab start \tab end \tab strand \tab name\cr
@@ -30,47 +34,46 @@
 #' \preformatted{
 #'   small_anno <- list(
 #'     "Centromeres" = readr::read_csv(
-#'       paste0("https://rlbase-data.s3.amazonaws.com",
-#'              "/annotations/hg38/Centromeres.csv.gz")
+#'       paste0(
+#'           "https://rlbase-data.s3.amazonaws.com",
+#'           "/annotations/hg38/Centromeres.csv.gz"
+#'       )
 #'     ),
 #'     "SkewR" = readr::read_csv(
-#'       paste0("https://rlbase-data.s3.amazonaws.com/",
-#'              "annotations/hg38/SkewR.csv.gz")
+#'       paste0(
+#'           "https://rlbase-data.s3.amazonaws.com/",
+#'           "annotations/hg38/SkewR.csv.gz")
 #'     )
 #'   )
 #' }
 #'
 #' @return A tibble containing the results of the enrichment test.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Run RLSeq
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' 
+#' @examples
+#'
+#' # Example RLRanges dataset
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # RL Region Test
 #' featureEnrich(rlr)
-#' 
+#'
 #' # With custom annotations
 #' small_anno <- list(
 #'     "Centromeres" = readr::read_csv(
-#'       paste0("https://rlbase-data.s3.amazonaws.com/",
-#'              "annotations/hg38/Centromeres.csv.gz"),
-#'       show_col_types = FALSE
+#'         paste0(
+#'             "https://rlbase-data.s3.amazonaws.com/",
+#'             "annotations/hg38/Centromeres.csv.gz"
+#'         ),
+#'         show_col_types = FALSE
 #'     ),
 #'     "SkewR" = readr::read_csv(
-#'       paste0("https://rlbase-data.s3.amazonaws.com/",
-#'              "annotations/hg38/SkewR.csv.gz"),
-#'        show_col_types = FALSE
+#'         paste0(
+#'             "https://rlbase-data.s3.amazonaws.com/",
+#'             "annotations/hg38/SkewR.csv.gz"
+#'         ),
+#'         show_col_types = FALSE
 #'     )
 #' )
-#' featureEnrich(rlr, annotations=small_anno)
-#' 
-#' }
+#' featureEnrich(rlr, annotations = small_anno)
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
@@ -81,7 +84,7 @@ featureEnrich <- function(object,
 
     # Cutoff for stats tests
     MIN_ROWS <- 200
-    
+
     # RLbase path
     rlbase <- "https://rlbase-data.s3.amazonaws.com"
 
@@ -127,7 +130,7 @@ featureEnrich <- function(object,
     # Returns "maximum iterations exceeded in bed_shuffle" error
     # However, increasing number of attempts does nothing to fix this.
     # Only changing the seed seems to provide any workaround.
-    seeds <- 1:1000
+    seeds <- seq(1000)
     while (TRUE) {
         seed <- seeds[1]
         toTestShuff <- try(
@@ -138,12 +141,12 @@ featureEnrich <- function(object,
             ),
             silent = TRUE
         )
-        if (class(toTestShuff)[1] != "try-error") break
+        if (!methods::is(toTestShuff, "try-error")) break
         seeds <- seeds[-1]
     }
 
     # Only keep annotations above cutoff
-    annots <- annotations[sapply(annotations, nrow) > MIN_ROWS]
+    annots <- annotations[vapply(annotations, nrow, numeric(1)) > MIN_ROWS]
 
     # Test on all annotations
     if (!quiet) {
@@ -203,7 +206,8 @@ featureEnrich <- function(object,
 
     # Add to object
     methods::slot(object@metadata$results,
-                  name = "featureEnrichment") <- annoRes
+        name = "featureEnrichment"
+    ) <- annoRes
 
     return(object)
 }
@@ -216,8 +220,10 @@ featureEnrich <- function(object,
 #' @param x The R-loop peaks to test.
 #' @param xshuff x, but shuffled around the genome to build a control peakset.
 #' @param y The annotations against which to test x.
-#' @param chromSizeTbl A tibble containing the sizes of each chromosome in x and y.
+#' @param chromSizeTbl A tibble containing the sizes of each 
+#' chromosome in x and y.
 #' @param quiet If TRUE, messages will be suppressed. Default: False
+#' @return A tibble containing the test results.
 peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
 
     # Cutoff for stats tests
@@ -259,7 +265,7 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
             )
         }
 
-        
+
         pval_reldist <- ks$p.value
 
         # Obtain fisher test results

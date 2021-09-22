@@ -1,4 +1,5 @@
-#' This script is used to generate auxdatailiary information used by RLSeq and RLBase.
+#' This script is used to generate auxdatailiary information used by 
+#' RLSeq and RLBase.
 #' This includes color pallets, metadata, and other small items.
 #' The result is a named list which RLSeq depends upon.
 
@@ -43,7 +44,8 @@ genomes <- available_genomes %>%
 
 # Get the available modes (no bisulfite currently supported)
 available_modes <- rlsamples %>%
-    dplyr::select(mode, family, ip_type, strand_specific, moeity, bisulfite_seq) %>%
+    dplyr::select(mode, family, ip_type, strand_specific, moeity,
+                  bisulfite_seq) %>%
     distinct()
 
 
@@ -87,7 +89,6 @@ ip_cols <- tribble(
     )
 
 ## Modes within each
-# From https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette
 gg_color_hue <- function(n) {
     hues <- seq(15, 375, length = n + 1)
     hcl(h = hues, l = 65, c = 110)[1:n]

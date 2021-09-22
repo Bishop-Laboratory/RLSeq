@@ -11,8 +11,10 @@ featureEnrich(object, annotations = NULL, downsample = 10000, quiet = FALSE)
 
 \item{annotations}{Annotation list. See details.}
 
-\item{downsample}{If a numeric, data will be down sampled to the requested number of peaks.
-This improves the speed of genomic shuffling and helps prevent p-value inflation.
+\item{downsample}{If a numeric, data will be down sampled to the requested
+number of peaks.
+This improves the speed of genomic shuffling and
+helps prevent p-value inflation.
 If FALSE, then downsampling will not be performed. Default: 10000.}
 
 \item{quiet}{If TRUE, messages will be suppressed. Default: False
@@ -22,15 +24,17 @@ the same format as RLSeq::annotationLst.}
 A tibble containing the results of the enrichment test.
 }
 \description{
-Tests the enrichment of genomic features in supplied R-loop peaks.
+Tests the enrichment of genomic features in supplied peaks.
 }
 \details{
-\strong{annotations}: A list which can be generated from the RLHub package or via local sources.
+\strong{annotations}: A list which can be generated from the RLHub package
+or via local sources.
 
-\strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of annotations for the hg38 genome.
+\strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of
+annotations for the hg38 genome.
 
-\strong{custom}: The only requirement is that \code{annotations} is a named list
-of \code{tbl}s in which each \code{tbl} follows the structure:
+\strong{custom}: The only requirement is that \code{annotations} is a
+named list of \code{tbl}s in which each \code{tbl} follows the structure:
 
 \tabular{lllll}{
 chrom \tab start \tab end \tab strand \tab name\cr
@@ -44,26 +48,23 @@ Such a list can be generated directly from RLBase S3 bucket files:
 \preformatted{
   small_anno <- list(
     "Centromeres" = readr::read_csv(
-      paste0("https://rlbase-data.s3.amazonaws.com",
-             "/annotations/hg38/Centromeres.csv.gz")
+      paste0(
+          "https://rlbase-data.s3.amazonaws.com",
+          "/annotations/hg38/Centromeres.csv.gz"
+      )
     ),
     "SkewR" = readr::read_csv(
-      paste0("https://rlbase-data.s3.amazonaws.com/",
-             "annotations/hg38/SkewR.csv.gz")
+      paste0(
+          "https://rlbase-data.s3.amazonaws.com/",
+          "annotations/hg38/SkewR.csv.gz")
     )
   )
 }
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Run RLSeq
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+# Example RLRanges dataset
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # RL Region Test
 featureEnrich(rlr)
@@ -71,17 +72,19 @@ featureEnrich(rlr)
 # With custom annotations
 small_anno <- list(
     "Centromeres" = readr::read_csv(
-      paste0("https://rlbase-data.s3.amazonaws.com/",
-             "annotations/hg38/Centromeres.csv.gz"),
-      show_col_types = FALSE
+        paste0(
+            "https://rlbase-data.s3.amazonaws.com/",
+            "annotations/hg38/Centromeres.csv.gz"
+        ),
+        show_col_types = FALSE
     ),
     "SkewR" = readr::read_csv(
-      paste0("https://rlbase-data.s3.amazonaws.com/",
-             "annotations/hg38/SkewR.csv.gz"),
-       show_col_types = FALSE
+        paste0(
+            "https://rlbase-data.s3.amazonaws.com/",
+            "annotations/hg38/SkewR.csv.gz"
+        ),
+        show_col_types = FALSE
     )
 )
-featureEnrich(rlr, annotations=small_anno)
-
-}
+featureEnrich(rlr, annotations = small_anno)
 }
