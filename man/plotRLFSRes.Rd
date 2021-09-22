@@ -17,3 +17,19 @@ A ggplot object.
 \description{
 Plot Perm Test results
 }
+\examples{
+\dontrun{
+
+# Example dataset
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
+pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
+cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+
+# Run RLSeq
+rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+rlr <- RLSeq(rlr)
+
+# Plot RLFS res
+plotRLFSRes(rlr)
+}
+}

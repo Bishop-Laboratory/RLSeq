@@ -13,9 +13,7 @@ peak_stats(x, xshuff, y, chromSizeTbl, quiet = FALSE)
 
 \item{y}{The annotations against which to test x.}
 
-\item{chromSizeTbl}{A tibble containing the sizes of each chromosome in x and y.
-
-Columns should be "chrom" (chromosome names) and "size" (number of base pairs).}
+\item{chromSizeTbl}{A tibble containing the sizes of each chromosome in x and y.}
 }
 \description{
 A helper function for building the peak statistics tibble

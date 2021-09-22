@@ -4,7 +4,7 @@
 \name{available_genomes}
 \alias{available_genomes}
 \title{data.frame. Contains information about the genes available in UCSC database.
-Result of running RLSeq:::buildAvailableGenomes()}
+Generated via available_genomes.R script in data-raw/}
 \format{
 An object of class \code{data.frame} with 199 rows and 27 columns.
 }
@@ -13,6 +13,6 @@ available_genomes
 }
 \description{
 data.frame. Contains information about the genes available in UCSC database.
-Result of running RLSeq:::buildAvailableGenomes()
+Generated via available_genomes.R script in data-raw/
 }
 \keyword{datasets}
