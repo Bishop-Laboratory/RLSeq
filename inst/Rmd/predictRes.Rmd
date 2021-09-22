@@ -1,0 +1,84 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+```{r}
+pred <- rlresult(object, resultName = "predictRes")
+verd <- ifelse(
+  pred$Verdict == "Case", 
+  "<strong style='color: #602D64'>\"Case\"</strong> (i.e., robust R-loop mapping)", 
+  "<strong style='color: red'>\"Control\"</strong> (i.e., poor R-loop mapping)"
+)
+```
+<span style="font-size: 1.5em">Predicted label for `r object@metadata$sampleName` is `r verd`.</span>
+
+### Details
+
+<details>
+
+<summary>Additional Details</summary>
+
+To evaluate sample quality, a binary classifier was developed via the online-learning approach described in the RLSuite manuscript. The classifier evaluates features engineered from the RLFS Z score distribution, specifically, the following features:
+
+```{r}
+feature_key <- dplyr::tribble(
+  ~feature, ~description,
+  "Z1", "mean of Z",
+  "Z2", "variance of Z",
+  "Zacf1", "mean of Z ACF",
+  "Zacf2", "variance of Z ACF",
+  "ReW1", "mean of FT of Z (real part)",
+  "ReW2", "variance of FT of Z (real part)",
+  "ImW1", "mean of FT of Z (imaginary part)",
+  "ImW2", "variance of FT of Z (imaginary part)",
+  "ReWacf1", "mean of FT of Z ACF (real part)",
+  "ReWacf2", "variance of FT of Z ACF (real part)",
+  "ImWacf1", "mean of FT of Z ACF (imaginary part)",
+  "ImWacf2", "variance of FT of Z ACF (imaginary part)"
+) 
+
+dplyr::tibble(
+  pred$Features
+) %>% 
+  dplyr::right_join(feature_key, by = "feature") %>%
+  dplyr::relocate(description, .after = feature) %>%
+  kableExtra::kable(caption = paste0(
+    "Abbrevitations: Z, Z-score",
+    " distribution; ACF, autocorrelation function; FT, Fourier Transform."
+  )) %>% 
+  kableExtra::kable_material(c("striped", "hover"), 
+                             position = "left", full_width=FALSE)
+```
+
+From these features, classification was performed to derive a *verdict* (predicted label) regarding whether the sample mapped R-loops or not. In short, "Case" indicates any sample for which all the following are true:
+
+1. **Criteria 1**: The RLFS Permutation test P value is significant (p < .05)
+2. **Criteria 2**: The Z-score distribution middle is > 0.
+3. **Criteria 3**: The Z-score distribution middle is > the start and the end.
+4. **Criteria 4**: The model predicts a label of "Case". 
+
+The criteria for **`r object@metadata$sampleName`** are shown below:
+
+```{r}
+dplyr::tibble(
+    Criteria = paste0(seq(4),". ", names(pred$Criteria)),
+    Result = unlist(pred$Criteria)
+) %>%
+    kableExtra::kable(caption = paste0(
+        "Results from quality analysis of <strong>",
+        object@metadata$sampleName, "</strong>")
+    ) %>%
+    kableExtra::kable_material(c("striped", "hover"),
+                               full_width=FALSE,
+                               position="float_right") %>%
+    kableExtra::column_spec(
+        column = 2, 
+        color = ifelse(unlist(pred$Criteria), "#A45BA4", "red"),
+        bold = TRUE
+    ) 
+```
+
+These results led to the final prediction: `r verd`.
+
+</details>
+
+
+***

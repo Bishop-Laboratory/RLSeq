@@ -1,0 +1,48 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+**`r GenomeInfoDb::genome(object)[1]`** Gene annotations were downloaded from *AnnotationHub* and overlapped with R-loop ranges in **`r object@metadata$sampleName`**. The resulting gene table was then filtered for the top 2000 peaks and is observed here:
+
+```{r}
+geneRes <- rlresult(object, resultName = "geneAnnoRes")
+
+# Display
+spec_now <- paste0(
+  "geneAnno_",
+  gsub(object@metadata$sampleName, pattern = " ", replacement = "_")
+)
+odf <- object %>%
+  as.data.frame()
+
+# If V9 is available (means narrow/broadPeak) show top results
+if ("qval" %in% colnames(odf)) {
+ odf$peak_name <- rownames(odf)
+ numrow <- nrow(odf)
+ odf %>%
+  dplyr::slice_max(qval, n = min(numrow, 2000)) %>%
+  dplyr::inner_join(geneRes, by = "peak_name") %>%
+  dplyr::relocate(gene_id, .after = peak_name) %>%
+  DT::datatable(
+    options = list(
+          dom = "Bfrtip", 
+          scrollX = TRUE,
+          buttons = list(
+            extend  = 'collection',
+            buttons = list(
+              list(extend='csv', filename=spec_now),
+              list(extend='excel', filename=spec_now)
+            ),
+            text    = 'Download'
+          )
+      )
+  )
+} else {
+  cat("\nNo padjusted column was provided. Top results gene annotations will",
+      " not be shown. Please see RLRanges() for more details.")
+}
+
+
+```
+
+
+
+***

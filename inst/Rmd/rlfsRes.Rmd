@@ -1,0 +1,47 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+### Z-Score distribution
+
+R-loop forming sequences (RLFS) were compared to the ranges in **`r object@metadata$sampleName`** to measure enrichment. The resulting Z-score distribution is visualized below:
+
+```{r fig.height=6, fig.width=10}
+plotRLFSRes(object)
+```
+
+**Note**: for samples which map R-loop successfully, enrichment is expected. See representative examples for *POS*, *NEG*, and *NULL* sample types [here](https://rlbase-data.s3.amazonaws.com/misc/examples_for_select_samples.png){target="_blank"}.
+
+### Details
+<details>
+<summary>Additional details</summary>
+
+RLFS were derived across the genome using [`QmRLFS-finder.py`](https://github.com/piroonj/QmRLFS-finder){target="_blank"}. R-loop broad peaks were called with `macs` and then compared with RLFS using `permTest` from the `RegioneR` R package. An empirical distribution of RLFS was generated using the `circularRandomizeRegions` method and compared to the peaks in order to calculate enrichment p value and zscore (effect size of enrichment). 
+
+
+```{r}
+# Wrangle data
+rlfs_data <- rlresult(object, resultName = "rlfsRes")
+pt <- rlfs_data$perTestResults
+pval <- pt[[1]]$pval
+ntimes <- pt[[1]]$ntimes
+zscore <- pt[[1]]$zscore
+lz <- rlfs_data$`Z-scores`
+
+# Set display colors
+rlfs_pval_color <- ifelse(pval > .05, 'red', ifelse(pval > .01, 'orange', 'green'))
+rlfs_zs_color <- ifelse(zscore < 5, 'red', ifelse(zscore < 15, 'orange', 'green'))
+```
+
+
+From this analysis, the empirically-determined p value was <strong style="color: `r rlfs_pval_color`">`r pval`</strong> (with `r ntimes` permutations, the minimum possible p value was `r 1/(1 + ntimes)`).
+The enrichment z-score was <strong style="color: `r rlfs_zs_color`">`r zscore`</strong>.
+
+
+```{r fig.height=6, fig.width=10}
+plot(pt)
+```
+
+
+</details>
+
+
+***
