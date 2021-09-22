@@ -9,7 +9,8 @@ report(object, reportPath = "rlreport.html", quiet = FALSE, ...)
 \arguments{
 \item{object}{An RLRanges object.}
 
-\item{reportPath}{A path indicating the report output HTML file. Default: "rlreport.html"}
+\item{reportPath}{A path indicating the report output HTML file.
+Default: "rlreport.html"}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
@@ -22,19 +23,14 @@ TRUE
 Generate an RLSeq Report
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
+# Example data with RLSeq() already run.
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
-# Run RLSeq
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-rlr <- RLSeq(rlr)
+# Get a TMP file (only for example usae)
+tmp <- tempfile()
 
-# Generate HTML report
-report(rlr, reportPath="report.html")
+# Generate the report
+report(rlr, reportPath = tmp)
 
-}
 }

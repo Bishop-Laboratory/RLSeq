@@ -4,26 +4,18 @@
 #'
 #' @param object An RLRanges object.
 #' @param mask GRanges object containing masked genomic ranges.
-#'  Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
+#'  Not needed unless masked genome unavailable (see genomeMasks).
 #'  Custom masks can be generated using regioneR::getMask().
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
 #' @return An RLRanges object with RLFS analysis results included.
-#' @examples 
-#' \dontrun{
-#' 
+#' @examples
+#'
 #' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Get RLRanges object
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' 
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Perform RLFS analysis
 #' rlr <- analyzeRLFS(rlr)
-#' 
-#' }
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
@@ -31,23 +23,24 @@ analyzeRLFS <- function(object,
     mask = NULL,
     quiet = FALSE,
     ...) {
+    
+    if (!quiet) message(" - Evaluating Inputs...")
 
     # Check RLFS, chrom_sizes, and mask
-    if (!quiet) {
-        message(" - Evaluating Inputs...")
-    }
     genome <- GenomeInfoDb::genome(object)[1]
     RLFS <- getRLFSAnno(object)
     chrom_sizes <- getChromSizes(object)
     if (is.null(mask)) {
-        available_masks <- gsub(names(RLSeq::genomeMasks),
-            pattern = "\\.masked",
-            replacement = ""
+        available_masks <- gsub(names(genomeMasks),
+                                pattern = "\\.masked",
+                                replacement = ""
         )
         if (!genome %in% available_masks) {
-            stop(genome, " is not available in mask list. You may generate it with ")
+            stop(
+                genome, " is not available in mask list. See 'mask' param."
+            )
         } else {
-            mask <- RLSeq::genomeMasks[[paste0(genome, ".masked")]]
+            mask <- genomeMasks[[paste0(genome, ".masked")]]
         }
     }
 
@@ -56,9 +49,11 @@ analyzeRLFS <- function(object,
     RLFS <- GenomicRanges::reduce(RLFS)
 
     # Final check
-    stopifnot("data.frame" %in% class(chrom_sizes) &
-        "GRanges" %in% class(mask) &
-        "GRanges" %in% class(RLFS))
+    stopifnot(
+        methods::is(chrom_sizes, "data.frame") &
+            methods::is(mask, "GRanges") &
+            methods::is(RLFS, "GRanges")
+    )
 
     # Run RLFS perm test
     genomeNow <- GenomicRanges::GRanges(
@@ -67,10 +62,9 @@ analyzeRLFS <- function(object,
     GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
     GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
 
+    if (!quiet) message(" - Running permTest...")
+    
     # Run RegioneR
-    if (!quiet) {
-        message(" - Running permTest...")
-    }
     gr <- GenomicRanges::GRanges(object)
     pt <- suppressWarnings(
         regioneR::permTest(
@@ -83,11 +77,10 @@ analyzeRLFS <- function(object,
             ...
         )
     )
+    
+    if (!quiet) message(" - Extracting pileup...")
 
     # Return Z scores
-    if (!quiet) {
-        message(" - Extracting pileup...")
-    }
     z <- suppressWarnings(
         regioneR::localZScore(A = gr, B = RLFS, pt, window = 5000, step = 50)
     )
@@ -98,9 +91,7 @@ analyzeRLFS <- function(object,
         "Z-scores" = z
     )
 
-    if (!quiet) {
-        message(" - Done.")
-    }
+    if (!quiet) message(" - Done.")
 
     return(object)
 }

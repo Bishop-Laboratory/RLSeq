@@ -7,24 +7,18 @@
 #' supplied, annotations will be automatically downloaded from AnnotationHub.
 #' @param quiet If TRUE, messages and warnings are suppressed.
 #' @return An RLRanges object with annotations added.
-#' @examples 
-#' \dontrun{
-#' 
-#' # Example dataset
-#' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-#' cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-#' 
-#' # Get RLRanges object
-#' rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-#' 
+#' @examples
+#'
+#' # Example RLRanges data
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#'
 #' # Perform gene annotation
 #' rlr <- geneAnnotation(rlr)
-#' 
+#'
 #' # Supply custom TxDb if needed
-#' library(TxDb.Hsapiens.UCSC.hg19.knownGene)
-#' rlr <- geneAnnotation(rlr, txdb=TxDb.Hsapiens.UCSC.hg19.knownGene)
-#' 
+#' if (GenomeInfoDb::genome(rlr)[1] == "hg19") {
+#'     library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+#'     rlr <- geneAnnotation(rlr, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene)
 #' }
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data

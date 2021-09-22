@@ -17,17 +17,10 @@ Finds the pairwise correlation in signal around gold-standard R-Loop sites
 between the query sample and the RLBase database.
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Get RLRanges object
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+# Example RLRanges object
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # run corrAnalyze
 rlr <- corrAnalyze(rlr)
-}
 }

@@ -13,7 +13,7 @@ urlExists <- function(urlcon) {
             return(NULL)
         }
     )
-    return(! is.null(res))
+    return(!is.null(res))
 }
 
 
@@ -26,13 +26,13 @@ urlExists <- function(urlcon) {
 getChromSizes <- function(object) {
     cs <- GenomeInfoDb::seqinfo(object) %>%
         as.data.frame()
-    cs$chrom <- rownames(cs) 
+    cs$chrom <- rownames(cs)
     dplyr::as_tibble(cs) %>%
-        dplyr::select(.data$chrom, size = .data$seqlengths)  
+        dplyr::select(.data$chrom, size = .data$seqlengths)
 }
 
 
-#' Check RLFS 
+#' Check RLFS
 #' Helper function that checks whether a genome has RLFS available
 #' @param genome the UCSC genome name to check
 #' @return A logical, TRUE if available, FALSE if not
@@ -52,7 +52,7 @@ checkRLFSAnno <- function(genome) {
 }
 
 
-#' Get RLFS 
+#' Get RLFS
 #' Helper function that retrieves RLFS ranges
 #' @param object An RLRanges object.
 #' @return A GRanges object with RLFS for that species.
@@ -126,6 +126,7 @@ getGSSignal <- function(coverage, gssignal) {
 #' @return A tibble in "regions" format.
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
+#' @export
 tableToRegions <- function(table) {
     locpat <- "(.+):(.+)\\-(.+):(.+)"
     table %>%

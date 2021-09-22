@@ -10,7 +10,7 @@ analyzeRLFS(object, mask = NULL, quiet = FALSE, ...)
 \item{object}{An RLRanges object.}
 
 \item{mask}{GRanges object containing masked genomic ranges.
-Not needed unless masked genome unavailable (see RLSeq::genomeMasks).
+Not needed unless masked genome unavailable (see genomeMasks).
 Custom masks can be generated using regioneR::getMask().}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
@@ -24,18 +24,10 @@ An RLRanges object with RLFS analysis results included.
 Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
 }
 \examples{
-\dontrun{
 
 # Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Get RLRanges object
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Perform RLFS analysis
 rlr <- analyzeRLFS(rlr)
-
-}
 }

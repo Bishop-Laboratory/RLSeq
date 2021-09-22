@@ -7,9 +7,10 @@
 corrHeatmap(object, returnData = FALSE, ...)
 }
 \arguments{
-\item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
+\item{object}{An RLRanges with \code{corrAnalyze()} already run.}
 
-\item{returnData}{If TRUE, plot data is returned instead of plotting. Default: FALSE}
+\item{returnData}{If TRUE, plot data is returned instead of plotting.
+Default: FALSE}
 
 \item{...}{For internal use.}
 }
@@ -20,19 +21,10 @@ A Heatmap object.
 Plot Correlation Results
 }
 \examples{
-\dontrun{
 
-# Example dataset
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX1025890_hg38.broadPeak")
-cvg <- file.path(rlbase, "coverage", "SRX1025890_hg38.bw")
-
-# Run RLSeq
-rlr <- RLRanges(pks, coverage = cvg, genome = "hg38", mode = "DRIP")
-rlr <- RLSeq(rlr)
+# Example RLRanges data with corrAnalyze() already run.
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Corr heatmap
 corrHeatmap(rlr)
-corrHeatmap(rlr, returnData=TRUE)
-}
 }

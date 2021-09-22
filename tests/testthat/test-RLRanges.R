@@ -1,14 +1,15 @@
 test_that(desc = "Test that RLRanges() works", {
-    pks <- "https://rlbase-data.s3.amazonaws.com/peaks/SRX1025890_hg38.broadPeak"
-    cvg <- "https://rlbase-data.s3.amazonaws.com/coverage/SRX1025890_hg38.bw"
+    rlbase <- "https://rlbase-data.s3.amazonaws.com"
+    pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
+    cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
     expect_s4_class(
         RLSeq::RLRanges(
             peaks = pks,
             coverage = cvg,
-            mode = "DRIP",
+            mode = "RDIP",
             genome = "hg38",
-            condType = "POS",
-            sampleName = "TC32 DRIP-Seq",
+            condType = "NEG",
+            sampleName = "RDIP +RNH",
             quiet = TRUE
         ),
         "RLRanges"

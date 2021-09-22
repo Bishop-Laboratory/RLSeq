@@ -31,7 +31,9 @@ buildGenomeMasks <- function() {
 #' @return A GRanges object with the masked chrom sizes.
 getMask2 <- function(genome) {
     gn <- regioneR::characterToBSGenome(genome)
-    chrs <- as.character(GenomicRanges::seqnames(GRanges(GenomeInfoDb::seqinfo(gn))))
+    chrs <- as.character(
+        GenomicRanges::seqnames(GRanges(GenomeInfoDb::seqinfo(gn)))
+    )
     bsgenome <- gn
     chr.masks <- sapply(chrs, function(chr) {
         mm <- Biostrings::masks(bsgenome[[chr]])
@@ -47,7 +49,13 @@ getMask2 <- function(genome) {
         if (is.null(chr.masks[[chr]])) {
             return(NULL)
         } else {
-            return(GenomicRanges::GRanges(seqnames = S4Vectors::Rle(rep(chr, length(chr.masks[[chr]]))), ranges = chr.masks[[chr]]))
+            return(
+                GenomicRanges::GRanges(
+                    seqnames = S4Vectors::Rle(
+                        rep(chr, length(chr.masks[[chr]]))
+                    ), ranges = chr.masks[[chr]]
+                )
+            )
         }
     })
     # Combine the mask for each chromosome into a single mask
