@@ -31,6 +31,8 @@ Suggests:
     AnnotationDbi,
     BiocStyle,
     covr,
+    lintr,
+    rcmdcheck,
     DT,
     httr,
     jsonlite,
