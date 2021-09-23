@@ -2,8 +2,11 @@
 #'
 #' Finds the pairwise correlation in signal around gold-standard R-Loop sites
 #' between the query sample and the RLBase database.
+#' 
+#' Currently, this does not work on windows. 
 #'
 #' @param object An RLRanges object.
+#' @param force Force corrAnalyze() to run, even if on Windows. Default: False.
 #' @return An RLRanges object with correlation results included.
 #' @examples
 #'
@@ -15,7 +18,15 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
-corrAnalyze <- function(object) {
+corrAnalyze <- function(object, force=FALSE) {
+    
+    # Check os
+    if (.Platform$OS.type == "windows" & ! force) {
+        stop(
+            "corrAnalyze() does not work on Windows.",
+            " Override this message with `force=TRUE`."
+        )
+    }
 
     # Get genome
     genome <- GenomeInfoDb::genome(object)[1]
