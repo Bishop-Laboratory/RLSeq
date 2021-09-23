@@ -4,10 +4,12 @@
 \alias{corrAnalyze}
 \title{Analyze Correlations}
 \usage{
-corrAnalyze(object)
+corrAnalyze(object, force = FALSE)
 }
 \arguments{
 \item{object}{An RLRanges object.}
+
+\item{force}{Force corrAnalyze() to run, even if on Windows. Default: False.}
 }
 \value{
 An RLRanges object with correlation results included.
@@ -15,6 +17,9 @@ An RLRanges object with correlation results included.
 \description{
 Finds the pairwise correlation in signal around gold-standard R-Loop sites
 between the query sample and the RLBase database.
+}
+\details{
+Currently, this does not work on windows.
 }
 \examples{
 
