@@ -13,8 +13,14 @@
 #' # Example RLRanges object
 #' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 #'
-#' # run corrAnalyze
-#' rlr <- corrAnalyze(rlr)
+#' # corrAnalyze does not work on Windows OS
+#' if (.Platform$OS.type != "windows") {
+#' 
+#'     # run corrAnalyze
+#'     rlr <- corrAnalyze(rlr)
+#'     
+#' }
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
