@@ -37,7 +37,14 @@ RLSeq <- function(object, quiet = FALSE) {
     if (!quiet) message("[4/6] Correlation Analysis")
     if (object@metadata$coverage != "") {
         if (GenomeInfoDb::genome(object)[1] == "hg38") {
-            object <- corrAnalyze(object)
+            if (.Platform$OS.type != "windows") {
+                object <- corrAnalyze(object)
+            } else {
+                if (! quiet) {
+                    warning("corrAnalyze does not work on windows OS. Please",
+                            " run corrAnalyze() directly with `force=TRUE` to override.")
+                }
+            }
         } else {
             warning(
                 "Only 'hg38' genome ranges are available",
