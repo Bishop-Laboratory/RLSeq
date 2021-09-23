@@ -9,7 +9,6 @@ urlExists <- function(urlcon) {
             return(TRUE)
         },
         error = function(e) {
-            close(con)
             return(NULL)
         }
     )
@@ -37,16 +36,11 @@ getChromSizes <- function(object) {
 #' @param genome the UCSC genome name to check
 #' @return A logical, TRUE if available, FALSE if not
 checkRLFSAnno <- function(genome) {
-    return(
-        urlExists(
-            paste0(
-                file.path(
-                    RLBASE_URL,
-                    "rlfs-beds/"
-                ),
-                genome,
-                ".rlfs.bed"
-            )
+    urlExists(
+        file.path(
+            RLBASE_URL,
+            "rlfs-beds",
+            paste0(genome, ".rlfs.bed")
         )
     )
 }
@@ -68,12 +62,10 @@ getRLFSAnno <- function(object) {
 
     # Read in RLFS
     rlfs <- rtracklayer::import.bed(
-        paste0(
-            file.path(
-                RLBASE_URL, "rlfs-beds/"
-            ),
-            genome,
-            ".rlfs.bed"
+        file.path(
+            RLBASE_URL,
+            "rlfs-beds",
+            paste0(genome, ".rlfs.bed")
         )
     )
 
