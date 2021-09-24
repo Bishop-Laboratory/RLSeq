@@ -4,13 +4,15 @@
 \alias{plotRLRegionOverlap}
 \title{Plot RL-Region overlap with RLRanges}
 \usage{
-plotRLRegionOverlap(object, returnData = FALSE)
+plotRLRegionOverlap(object, returnData = FALSE, ...)
 }
 \arguments{
 \item{object}{An RLRanges object with \code{rlRegionTest()} already run.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
+
+\item{...}{Additional arguments passed to \code{VennDiagram::venn.diagram()}}
 }
 \value{
 A venn diagram ggplot object.

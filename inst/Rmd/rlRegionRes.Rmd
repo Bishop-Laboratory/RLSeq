@@ -3,7 +3,12 @@
 RL-Regions are consensus R-loop sites derived from RLBase as described in the RLSuite manuscript. The ranges supplied for **`r object@metadata$sampleName`** were compared to the RL-Regions to determine the degree and signficiance of overlap.
 
 ```{r}
-plotRLRegionOverlap(object)
+plotRLRegionOverlap(object,
+                    fill = c("#9ad9ab", "#9aa0d9"),
+                    main.cex = 2,
+                    cat.pos = c(-80, 80),
+                    cat.dist=.05,
+                    margin = .05)
 ```
 
 ***
