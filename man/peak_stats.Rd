@@ -16,7 +16,7 @@ peak_stats(x, xshuff, y, chromSizeTbl, quiet = FALSE)
 \item{chromSizeTbl}{A tibble containing the sizes of each
 chromosome in x and y.}
 
-\item{quiet}{If TRUE, messages will be suppressed. Default: False}
+\item{quiet}{If TRUE, messages will be suppressed. Default: FALSE}
 }
 \value{
 A tibble containing the test results.

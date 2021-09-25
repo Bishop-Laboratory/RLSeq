@@ -40,13 +40,8 @@ rlRegionTest <- function(object) {
         )
 
     # Get RLRegions
-    # TODO: NEEDS to be in RLHub
-    rlbase <- "https://rlbase-data.s3.amazonaws.com"
-    rlregions_table <- file.path(rlbase, "RLHub", "rlregions_table.rda")
-    tmp <- tempfile()
-    utils::download.file(rlregions_table, destfile = tmp, quiet = TRUE)
-    load(tmp)
-
+    rlregions_table <- suppressMessages(RLHub::rlregions_meta())
+    
     # Get the RL Regions
     rlReg <- tableToRegions(rlregions_table)
 
