@@ -3,13 +3,15 @@
 #' @description Tests the enrichment of genomic features in supplied peaks.
 #'
 #' @param object An RLRanges object.
+#' @param annotype The type of annotations to use. Options include "primary"
+#'  (missing ChIP and eCLiP data) and "full" (all annotations). Default: "primary".
 #' @param annotations Annotation list. See details.
 #' @param downsample If a numeric, data will be down sampled to the requested
 #'  number of peaks.
 #' This improves the speed of genomic shuffling and 
 #' helps prevent p-value inflation.
 #' If FALSE, then downsampling will not be performed. Default: 10000.
-#' @param quiet If TRUE, messages will be suppressed. Default: False
+#' @param quiet If TRUE, messages will be suppressed. Default: FALSE
 #' the same format as RLSeq::annotationLst.
 #' @details
 #'
@@ -78,15 +80,13 @@
 #' @importFrom dplyr .data
 #' @export
 featureEnrich <- function(object,
-    annotations = NULL,
-    downsample = 10000,
-    quiet = FALSE) {
+                          annotype = c("primary", "full"),
+                          annotations = NULL,
+                          downsample = 10000,
+                          quiet = FALSE) {
 
     # Cutoff for stats tests
     MIN_ROWS <- 200
-
-    # RLbase path
-    rlbase <- "https://rlbase-data.s3.amazonaws.com"
 
     # Check genome
     genome <- GenomeInfoDb::genome(object)[1]
@@ -96,15 +96,15 @@ featureEnrich <- function(object,
             "Please supply custom ones of use one of hg38, mm10"
         )
     } else if (is.null(annotations)) {
-        # TODO: This MUST be replaced when RLHub is available
-        annotations_primary <- file.path(rlbase, "RLHub", paste0(
-            "annotations_primary_",
-            genome, ".rda"
-        ))
-        tmp <- tempfile()
-        utils::download.file(annotations_primary, destfile = tmp, quiet = TRUE)
-        load(tmp)
-        annotations <- annotations_primary
+        if (! quiet) {
+            annotations <- utils::getFromNamespace(
+                paste0("annots_", annotype[1], "_", genome), "RLHub"
+            )() 
+        } else {
+            annotations <- suppressMessages(utils::getFromNamespace(
+                paste0("annots_", annotype[1], "_", genome), "RLHub"
+            )())
+        }
     }
 
     # Get annotations
@@ -222,7 +222,7 @@ featureEnrich <- function(object,
 #' @param y The annotations against which to test x.
 #' @param chromSizeTbl A tibble containing the sizes of each 
 #' chromosome in x and y.
-#' @param quiet If TRUE, messages will be suppressed. Default: False
+#' @param quiet If TRUE, messages will be suppressed. Default: FALSE
 #' @return A tibble containing the test results.
 peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
 

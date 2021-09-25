@@ -47,12 +47,8 @@ corrAnalyze <- function(object, force=FALSE) {
         )
     }
 
-    # TODO: This MUST go through RLHub
-    rlbase <- "https://rlbase-data.s3.amazonaws.com"
-    gsSignalRLBase <- file.path(rlbase, "RLHub", "gsSignalRLBase.rda")
-    tmp <- tempfile()
-    utils::download.file(gsSignalRLBase, destfile = tmp, quiet = TRUE)
-    load(tmp)
+    # Load GS signal
+    gsSignalRLBase <- suppressMessages(RLHub::gs_signal())
 
     # Get the signal around GS R-loop sites
     bw <- getGSSignal(coverage, gssignal = gsSignalRLBase)

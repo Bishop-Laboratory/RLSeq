@@ -9,27 +9,19 @@ library(tidyverse)
 
 ## RLBase samples ##
 
-rlbase <- "https://rlbase-data.s3.amazonaws.com"
-
 # Load the RLBase samples
-rlbase_enrich <- file.path(rlbase, "RLHub", "rlsamples.rda")
-tmp <- tempfile()
-download.file(rlbase_enrich, destfile = tmp, quiet = TRUE)
-load(tmp)
+rlsamples <- RLHub::rlbase_samples()
 
 ## Annotations ##
 
 # Load the annotations -- add family info
-rlbase_anno <- file.path(rlbase, "RLHub", "annotations_all_hg38.rda")
-tmp <- tempfile()
-download.file(rlbase_anno, destfile = tmp, quiet = TRUE)
-load(tmp)
+library(RLSeq)
+library(RLHub)
+
+rlbase_anno <- RLHub::annots_full_hg38()
 
 # Load RLBP info
-rlbps <- file.path(rlbase, "RLHub", "rlbps.rda")
-tmp <- tempfile()
-download.file(rlbps, destfile = tmp, quiet = TRUE)
-load(tmp)
+rlbps <- RLHub::rlbps()
 
 # Get the available genomes
 avgs <- file.path(rlbase, "misc", "available_genomes.rda")

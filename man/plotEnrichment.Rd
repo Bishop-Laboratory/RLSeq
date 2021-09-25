@@ -11,7 +11,8 @@ plotEnrichment(
   onlyPOS = FALSE,
   splitby = c("none", "verdict", "condType"),
   limits = c(-10, 15),
-  returnData = FALSE
+  returnData = FALSE,
+  ...
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ Default: c(-10, 15).}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
+
+\item{...}{For internal use.}
 }
 \value{
 A named list of ggplot objects.

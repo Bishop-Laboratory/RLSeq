@@ -43,31 +43,9 @@ predictCondition <- function(object, ...) {
     if (length(dots) == 2) {
         prepFeatures <- dots$prepFeatures
         fftModel <- dots$fftModel
-    } else if (length(dots) != 0) {
-        stop(
-            "Inappropriate arguments supplied: ",
-            paste0(
-                names(dots)[! names(dots) %in% c("prepFeatures", "fftModel")],
-                collapse = ", "
-            )
-        )
     } else {
-        # TODO: These NEEDS to be updated when RLHub is online
-        # Download model data (will be replaced by RLHub)
-        tmp <- tempdir()
-        a_ <- vapply(
-            X = c("prepFeatures.rda", "fftModel.rda"),
-            FUN = function(x) {
-                utils::download.file(
-                    url = file.path(RLBASE_URL, "RLHub", x),
-                    quiet = TRUE,
-                    destfile = file.path(tmp, x)
-                )
-                load(file.path(tmp, x), envir = globalenv())
-                return(TRUE)
-            },
-            FUN.VALUE = logical(1)
-        )
+        prepFeatures <- suppressMessages(RLHub::prep_features())
+        fftModel <- suppressMessages(RLHub::fft_model())
     }
 
     # Get pval

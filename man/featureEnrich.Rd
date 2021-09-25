@@ -4,10 +4,19 @@
 \alias{featureEnrich}
 \title{Tests Genomic Feature Enrichment}
 \usage{
-featureEnrich(object, annotations = NULL, downsample = 10000, quiet = FALSE)
+featureEnrich(
+  object,
+  annotype = c("primary", "full"),
+  annotations = NULL,
+  downsample = 10000,
+  quiet = FALSE
+)
 }
 \arguments{
 \item{object}{An RLRanges object.}
+
+\item{annotype}{The type of annotations to use. Options include "primary"
+(missing ChIP and eCLiP data) and "full" (all annotations). Default: "primary".}
 
 \item{annotations}{Annotation list. See details.}
 
@@ -17,7 +26,7 @@ This improves the speed of genomic shuffling and
 helps prevent p-value inflation.
 If FALSE, then downsampling will not be performed. Default: 10000.}
 
-\item{quiet}{If TRUE, messages will be suppressed. Default: False
+\item{quiet}{If TRUE, messages will be suppressed. Default: FALSE
 the same format as RLSeq::annotationLst.}
 }
 \value{
