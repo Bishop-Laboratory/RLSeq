@@ -232,7 +232,7 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
     # Obtain distance test results (rel and abs). Based upon:
     # https://rnabioco.github.io/valr/articles/interval-stats.html
     reldist_rl <- valr::bed_reldist(x, y, detail = TRUE)
-    if (!length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
+    if (! length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
         if (!quiet) {
             warning("Not enough observations for interval tests...")
         }
