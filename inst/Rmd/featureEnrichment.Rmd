@@ -5,7 +5,8 @@
 The results were then visualized with the `plotEnrichment()` function:
 
 ```{r childEnrich, results='asis'}
-plts_verdsplit <- plotEnrichment(object, onlyCase = FALSE, onlyPOS = FALSE, splitby = "verdict")
+plts_verdsplit <- plotEnrichment(object, onlyCase = FALSE,
+                                 onlyPOS = FALSE, splitby = "verdict")
 resRmd <- lapply(
   names(plts_verdsplit), 
   function(db) {
