@@ -83,6 +83,11 @@ corrAnalyze <- function(object, force=FALSE) {
     # Summarize across gs intervals with valr
     bwMap <- valr::bed_map(x = positions, y = bw, value = sum(.data$score))
 
+    # Remove any colnames that are shared with object sampleName
+    gsSignalRLBase <- gsSignalRLBase[
+        , which(colnames(gsSignalRLBase) != object@metadata$sampleName)
+    ]
+    
     # Combine with the original matrix
     combinedMat <- gsSignalRLBase %>%
         dplyr::inner_join(

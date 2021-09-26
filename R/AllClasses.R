@@ -185,6 +185,18 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
         # Trim out-of-bounds ranges
         peaks <- GenomicRanges::trim(peaks)
     }
+    
+    # Normalize coverage path
+    if (coverage != "") {
+        if (! urlExists(coverage) && file.exists(coverage)) {
+            # CASE: It is a file, which exists. Absolute path.
+            coverage <- file.path(normalizePath(dirname(coverage)), 
+                                  basename(coverage))
+        } else if (! urlExists(coverage)) {
+            stop("Coverage could not be found. Content of 'coverage': ",
+                coverage)
+        }
+    }
 
     # Add new data to the metadata
     peaks@metadata <- c(
