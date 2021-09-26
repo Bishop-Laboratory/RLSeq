@@ -4,29 +4,37 @@ test_that(desc = "Test plotEnrichment", {
     rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
     # Test conditions
-    expect_type(
-        RLSeq::plotEnrichment(
+    warns <- capture_warnings({
+        res <- RLSeq::plotEnrichment(
             object = rlr,
             modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
             onlyCase = TRUE,
             splitby = "condType"
-        ),
-        "list"
-    )
-    expect_type(
-        RLSeq::plotEnrichment(
+        )
+        res2 <- RLSeq::plotEnrichment(
             object = rlr,
             modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
             onlyCase = FALSE,
             splitby = "verdict",
             returnData = TRUE
-        ),
-        "list"
-    )
+        )
+    })
+    expect_match(warns[1], regexp = "User-supplied sample test value is NA for .*")
     expect_error(
         RLSeq::plotEnrichment(
             object = rlr,
             splitby = "ASDASD"
         )
+    )
+    expect_type(
+        res,
+        "list"
+    )
+    expect_true(
+        length(res) > 0
+    )
+    expect_type(
+        res2,
+        "list"
     )
 })
