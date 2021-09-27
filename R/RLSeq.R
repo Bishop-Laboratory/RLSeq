@@ -4,6 +4,7 @@
 #'
 #' @param object An RLRanges object.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
+#' @param ... Arguments passed to analyzeRLFS.
 #' @return An RLRanges object with all results available.
 #' @examples
 #'
@@ -14,9 +15,9 @@
 #' rlr <- RLSeq(rlr)
 #' 
 #' @export
-RLSeq <- function(object, quiet = FALSE) {
+RLSeq <- function(object, quiet = FALSE, ...) {
     if (!quiet) message("[1/6] RLFS Perm Test")
-    object <- analyzeRLFS(object, quiet = TRUE)
+    object <- analyzeRLFS(object, quiet = TRUE, ...)
 
     if (!quiet) message("[2/6] Predict Condition")
     object <- predictCondition(object)
@@ -58,7 +59,12 @@ RLSeq <- function(object, quiet = FALSE) {
     }
 
     if (!quiet) message("[5/6] Gene Annotation")
-    object <- geneAnnotation(object, quiet = TRUE)
+    objectanno <- try(geneAnnotation(object, quiet = TRUE), silent = TRUE)
+    if ("try-error" %in% class(objectanno)) {
+        warning(objectanno)
+    } else {
+        object <- objectanno
+    }
 
     if (!quiet) message("[6/6] R-loop Region Analysis")
     if (GenomeInfoDb::genome(object)[1] == "hg38") {
