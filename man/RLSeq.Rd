@@ -4,12 +4,14 @@
 \alias{RLSeq}
 \title{Run RLSeq}
 \usage{
-RLSeq(object, quiet = FALSE)
+RLSeq(object, quiet = FALSE, ...)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
+
+\item{...}{Arguments passed to analyzeRLFS.}
 }
 \value{
 An RLRanges object with all results available.

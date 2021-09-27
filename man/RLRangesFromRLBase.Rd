@@ -4,15 +4,16 @@
 \alias{RLRangesFromRLBase}
 \title{Access RLBase samples as RLRanges}
 \usage{
-RLRangesFromRLBase(acc, quiet = FALSE)
+RLRangesFromRLBase(acc, rlsamples = NULL)
 }
 \arguments{
 \item{acc}{The sample ID of the RLBase object. \code{rlsample} column in \code{RLHub::rlbase_samples()}.}
 
-\item{quiet}{If TRUE, messages will be suppressed. Default: FALSE}
+\item{rlsamples}{The tibble provided by \code{RLHub::rlbase_samples()}.
+Providing these data ahead of time speeds up this operation. Default: NULL.}
 }
 \value{
-An RLRanges object.
+An RLRanges object with all results available.
 }
 \description{
 Accessor function which returns any sample in RLBase as an RLRanges object for

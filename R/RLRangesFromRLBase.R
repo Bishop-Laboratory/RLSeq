@@ -4,8 +4,9 @@
 #' use with RLSeq.
 #' 
 #' @param acc The sample ID of the RLBase object. \code{rlsample} column in \code{RLHub::rlbase_samples()}.
-#' @param quiet If TRUE, messages will be suppressed. Default: FALSE
-#' @return An RLRanges object. 
+#' @param rlsamples The tibble provided by \code{RLHub::rlbase_samples()}.
+#' Providing these data ahead of time speeds up this operation. Default: NULL.
+#' @return An RLRanges object with all results available.
 #' @examples
 #'
 #' rlr <- RLRangesFromRLBase("SRX1070676")
@@ -13,21 +14,9 @@
 #' @export
 RLRangesFromRLBase <- function(
   acc,
-  quiet=FALSE
+  rlsamples=NULL
 ) {
-  rlsamples <- suppressMessages(RLHub::rlbase_samples())
-  cvg <- file.path(RLBASE_URL, rlsamples$coverage_s3[rlsamples$rlsample == acc])
-  pks <- file.path(RLBASE_URL, rlsamples$peaks_s3[rlsamples$rlsample == acc])
-  gen <- rlsamples$genome[rlsamples$rlsample == acc]
-  md <- rlsamples$mode[rlsamples$rlsample == acc]
-  
-  RLRanges(
-    peaks = pks,
-    coverage = cvg,
-    genome = rlsamples$genome[rlsamples$rlsample == acc],
-    mode = rlsamples$mode[rlsamples$rlsample == acc],
-    condType = rlsamples$condType[rlsamples$rlsample == acc],
-    sampleName = rlsamples$name[rlsamples$rlsample == acc],
-    quiet = quiet
-  )
+  if (is.null(rlsamples)) rlsamples <- suppressMessages(RLHub::rlbase_samples())
+  i <- which(rlsamples$rlsample == acc)[1]
+  aws.s3::s3readRDS(object = rlsamples$rlranges_rds_s3[i], bucket = RLBASE_S3)
 }

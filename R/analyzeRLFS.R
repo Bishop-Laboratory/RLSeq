@@ -6,7 +6,11 @@
 #' @param mask GRanges object containing masked genomic ranges.
 #'  Not needed unless masked genome unavailable (see genomeMasks).
 #'  Custom masks can be generated using regioneR::getMask().
+#' @param useMask If FALSE, mask requirement is not used This is 
+#' not recommended unless a mask is unavailable as it can lead to spurious
+#' results. Default: TRUE.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
+#' @param noZ If TRUE, Z-score is not calculated. Default: FALSE.
 #' @param ... Arguments passed to `regioneR::permTest()`
 #' @return An RLRanges object with RLFS analysis results included.
 #' @examples
@@ -19,9 +23,12 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
-analyzeRLFS <- function(object,
+analyzeRLFS <- function(
+    object,
     mask = NULL,
     quiet = FALSE,
+    useMask = TRUE,
+    noZ=FALSE,
     ...) {
     
     if (!quiet) message(" - Evaluating Inputs...")
@@ -30,7 +37,7 @@ analyzeRLFS <- function(object,
     genome <- GenomeInfoDb::genome(object)[1]
     RLFS <- getRLFSAnno(object)
     chrom_sizes <- getChromSizes(object)
-    if (is.null(mask)) {
+    if (is.null(mask) & useMask) {
         available_masks <- gsub(names(genomeMasks),
                                 pattern = "\\.masked",
                                 replacement = ""
@@ -42,6 +49,8 @@ analyzeRLFS <- function(object,
         } else {
             mask <- genomeMasks[[paste0(genome, ".masked")]]
         }
+    } else if (useMask) {
+        stopifnot(methods::is(mask, "GRanges"))
     }
 
     # Prevent stranded assignment
@@ -50,47 +59,69 @@ analyzeRLFS <- function(object,
 
     # Final check
     stopifnot(
-        methods::is(chrom_sizes, "data.frame") &
-            methods::is(mask, "GRanges") &
-            methods::is(RLFS, "GRanges")
+        methods::is(chrom_sizes, "data.frame") & methods::is(RLFS, "GRanges")
     )
 
     # Run RLFS perm test
     genomeNow <- GenomicRanges::GRanges(
         dplyr::mutate(chrom_sizes, start = 1, end = .data$size)
     )
-    GenomeInfoDb::seqlevels(genomeNow) <- GenomeInfoDb::seqlevels(mask)
-    GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
+    
+    if (! is.null(mask) & useMask) {
+        GenomeInfoDb::seqlevels(
+            genomeNow, pruning.mode="coarse"
+        ) <- GenomeInfoDb::seqlevels(mask)
+        GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
+    }
 
     if (!quiet) message(" - Running permTest...")
     
     # Run RegioneR
     gr <- GenomicRanges::GRanges(object)
-    pt <- suppressWarnings(
-        regioneR::permTest(
-            A = gr, B = RLFS,
-            genome = genomeNow,
-            mask = mask,
-            randomize.function = regioneR::circularRandomizeRegions,
-            evaluate.function = regioneR::numOverlaps,
-            alternative = "greater",
-            ...
+    if (useMask) {
+        pt <- suppressWarnings(
+            regioneR::permTest(
+                A = gr, B = RLFS,
+                genome = genomeNow,
+                mask = mask,
+                randomize.function = regioneR::circularRandomizeRegions,
+                evaluate.function = regioneR::numOverlaps,
+                alternative = "greater",
+                ...
+            )
         )
-    )
+    } else {
+        pt <- suppressWarnings(
+            regioneR::permTest(
+                A = gr, B = RLFS,
+                genome = genomeNow,
+                randomize.function = regioneR::circularRandomizeRegions,
+                evaluate.function = regioneR::numOverlaps,
+                alternative = "greater",
+                ...
+            )
+        )
+    }
+    
     
     if (!quiet) message(" - Extracting pileup...")
 
-    # Return Z scores
-    z <- suppressWarnings(
-        regioneR::localZScore(A = gr, B = RLFS, pt, window = 5000, step = 50)
-    )
-
+    if (! noZ) {
+        # Return Z scores
+        z <- suppressWarnings(
+            regioneR::localZScore(
+                A = gr, B = RLFS, pt, window = 5000, step = 50
+            )
+        )
+    } else {
+        z <- NA
+    }
     # Add results to object
     methods::slot(object@metadata$results, "rlfsRes") <- list(
         "perTestResults" = pt,
         "Z-scores" = z
     )
-
+    
     if (!quiet) message(" - Done.")
 
     return(object)

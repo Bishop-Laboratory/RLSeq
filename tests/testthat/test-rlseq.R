@@ -7,7 +7,8 @@ test_that(desc = "Test that RLSeq works", {
     expect_s4_class(
         RLSeq::RLSeq(
             object = rlr,
-            quiet = TRUE
+            quiet = TRUE,
+            useMask=FALSE
         ),
         "RLRanges"
     )
