@@ -8,7 +8,16 @@
 
 ## Installation
 
+1. Update to the `devel` version of bioconductor. 
+
+```r
+BiocManager::install(version = "devel")
+```
+
+2. Install **RLHub** and **RLSeq** with remotes.
+
 ``` r
+remotes::install_github("Bishop-Laboratory/RLHub")
 remotes::install_github("Bishop-Laboratory/RLSeq")
 ```
 

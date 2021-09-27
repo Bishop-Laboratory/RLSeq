@@ -4,7 +4,14 @@
 \alias{analyzeRLFS}
 \title{Analyze RLFS}
 \usage{
-analyzeRLFS(object, mask = NULL, quiet = FALSE, ...)
+analyzeRLFS(
+  object,
+  mask = NULL,
+  quiet = FALSE,
+  useMask = TRUE,
+  noZ = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{An RLRanges object.}
@@ -14,6 +21,12 @@ Not needed unless masked genome unavailable (see genomeMasks).
 Custom masks can be generated using regioneR::getMask().}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
+
+\item{useMask}{If FALSE, mask requirement is not used This is
+not recommended unless a mask is unavailable as it can lead to spurious
+results. Default: TRUE.}
+
+\item{noZ}{If TRUE, Z-score is not calculated. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
 }

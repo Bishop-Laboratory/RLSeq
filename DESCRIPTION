@@ -76,7 +76,8 @@ Imports:
     ggprism,
     methods,
     stats,
-    RLHub
+    RLHub,
+    aws.s3
 VignetteBuilder: knitr
 biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics, Classification
 URL: https://github.com/Bishop-Laboratory/RLSeq
