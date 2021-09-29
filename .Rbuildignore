@@ -6,6 +6,5 @@
 ^data-raw$
 ^doc$
 ^Meta$
-<<<<<<< HEAD
 ^.*\.bw$
 ^.*rlreport\.html$
