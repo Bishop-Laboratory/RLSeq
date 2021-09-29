@@ -15,13 +15,12 @@
 #' the same format as RLSeq::annotationLst.
 #' @details
 #'
-#' \strong{annotations}: A list which can be generated from the RLHub package 
-#' or via local sources.
-#'
-#' \strong{RLHub}: \code{RLHub['annots_hg38']} will return the full suite of 
-#' annotations for the hg38 genome.
-#'
-#' \strong{custom}: The only requirement is that \code{annotations} is a
+#' ## annotations 
+#' 
+#' \strong{RLHub}: \code{RLHub::annots_full_hg38()}, 
+#' for example, will return the full suite of annotations for the hg38 genome.
+#' 
+#' \strong{Custom}: For custom annotations, the only requirement is that \code{annotations} is a
 #' named list of \code{tbl}s in which each \code{tbl} follows the structure:
 #'
 #' \tabular{lllll}{
@@ -49,7 +48,7 @@
 #'   )
 #' }
 #'
-#' @return A tibble containing the results of the enrichment test.
+#' @return An RLRanges object containing the results of the enrichment test.
 #' @examples
 #'
 #' # Example RLRanges dataset

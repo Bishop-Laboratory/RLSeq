@@ -15,10 +15,10 @@ supplied, annotations will be automatically downloaded from AnnotationHub.}
 \item{quiet}{If TRUE, messages and warnings are suppressed.}
 }
 \value{
-An RLRanges object with annotations added.
+An RLRanges object with genes overlaps included.
 }
 \description{
-Annotates R-loop peaks as a GRanges object with gene-level information
+Annotates RLRanges with entrez ids for overlapping genes.
 }
 \examples{
 

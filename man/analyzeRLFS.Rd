@@ -17,16 +17,16 @@ analyzeRLFS(
 \item{object}{An RLRanges object.}
 
 \item{mask}{GRanges object containing masked genomic ranges.
-Not needed unless masked genome unavailable (see genomeMasks).
+Not needed unless masked genome unavailable (see \code{RLSeq:::genomeMasks}).
 Custom masks can be generated using regioneR::getMask().}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
-\item{useMask}{If FALSE, mask requirement is not used This is
+\item{useMask}{If FALSE, masked genome is not used. This is
 not recommended unless a mask is unavailable as it can lead to spurious
 results. Default: TRUE.}
 
-\item{noZ}{If TRUE, Z-score is not calculated. Default: FALSE.}
+\item{noZ}{If TRUE, Z-score distribution is not calculated. Default: FALSE.}
 
 \item{...}{Arguments passed to \code{regioneR::permTest()}}
 }

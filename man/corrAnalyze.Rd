@@ -9,7 +9,7 @@ corrAnalyze(object, force = FALSE)
 \arguments{
 \item{object}{An RLRanges object.}
 
-\item{force}{Force corrAnalyze() to run, even if on Windows. Default: False.}
+\item{force}{Force corrAnalyze() to run, even if on Windows. Default: FALSE.}
 }
 \value{
 An RLRanges object with correlation results included.

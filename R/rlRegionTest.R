@@ -1,6 +1,7 @@
 #' R-Loop region test
 #'
-#' Tests the overlap of user-supplied ranges with R-loop regions.
+#' Tests the overlap of user-supplied ranges with R-loop regions (R-loop consensus
+#' sites derived from meta-analysis of RLBase)
 #'
 #' @param object An RLRanges object with genome "hg38".
 #' @return An RLRanges object with test results included.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{getChromSizes}
 \alias{getChromSizes}
-\title{Get Chrom Sizes
-Helper function which extracts chrom sizes from an RLRanges object.}
+\title{Get Chrom Sizes}
 \usage{
 getChromSizes(object)
 }
@@ -14,6 +13,5 @@ getChromSizes(object)
 A tibble containing chrom sizes
 }
 \description{
-Get Chrom Sizes
 Helper function which extracts chrom sizes from an RLRanges object.
 }

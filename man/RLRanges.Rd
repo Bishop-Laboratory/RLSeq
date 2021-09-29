@@ -24,14 +24,14 @@ RLRanges(
 will be skipped.}
 
 \item{genome}{UCSC genome ID. Acceptable types are listed in
-auxdata$available_genomes.}
+\code{RLSeq:::auxdata$available_genomes}.}
 
 \item{mode}{Type of R-loop mapping from which peaks and coverage were
-derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode.
-Can
-be unspecified.}
+derived. Acceptable types are listed in
+\code{RLSeq:::auxdata$available_modes$mode}. Can be unspecified.}
 
-\item{label}{"POS" (e.g., S9.6 -RNH1) or "NEG" (e.g., S9.6 +RNH1 or Input).
+\item{label}{"POS" (positive R-loop-mapping sample; e.g., DRIP-Seq S9.6 -RNH1)
+or "NEG" (negative control sample; e.g., DRIP-Seq S9.6 +RNH1 or Input).
 Can be unspecified.}
 
 \item{sampleName}{A unique name for identifying this sample.
@@ -42,7 +42,7 @@ value.
 If not specified, the last column will be chosen (standard for .broadPeak
 files).
 If FALSE or if no metadata columns exist, it will be left blank and some
-operations in report() will not fully run.}
+operations in \code{report()} will not fully run.}
 
 \item{quiet}{If TRUE, messages and warnings are suppressed. Default: FALSE.}
 }
@@ -51,7 +51,8 @@ An object of class "RLRanges".
 }
 \description{
 \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
-and metadata about the R-loop-mapping experiment.
+and metadata about the R-loop-mapping experiment, along with results from
+the analyses in \code{RLSeq}.
 }
 \examples{
 

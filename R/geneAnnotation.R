@@ -1,12 +1,12 @@
 #' Annotate R-Loops with Genes
 #'
-#' Annotates R-loop peaks as a GRanges object with gene-level information
+#' Annotates RLRanges with entrez ids for overlapping genes.
 #'
 #' @param object An RLRanges object.
 #' @param txdb The TxDb or EnsDb object containing gene annotations. If not
 #' supplied, annotations will be automatically downloaded from AnnotationHub.
 #' @param quiet If TRUE, messages and warnings are suppressed.
-#' @return An RLRanges object with annotations added.
+#' @return An RLRanges object with genes overlaps included.
 #' @examples
 #'
 #' # Example RLRanges data

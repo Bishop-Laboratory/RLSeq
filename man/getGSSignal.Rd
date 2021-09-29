@@ -15,5 +15,5 @@ getGSSignal(coverage, gssignal)
 A named list containing the results of correlation analysis.
 }
 \description{
-Extract signal around GS R-loop sites
+Extract signal around "gold-standard" R-loop sites
 }

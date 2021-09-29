@@ -42,7 +42,9 @@ Default: FALSE}
 A named list of ggplot objects.
 }
 \description{
-Plot Enrichment Test Results
+Creates a list of plots, one for each annotation database which display the
+user-supplied sample in comparison to the samples in RLBase. This
+will only work if using non-custom annotations.
 }
 \examples{
 

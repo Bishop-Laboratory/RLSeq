@@ -17,6 +17,7 @@ urlExists <- function(urlcon) {
 
 
 #' Get Chrom Sizes
+#' 
 #' Helper function which extracts chrom sizes from an RLRanges object.
 #' @param object An RLRanges object.
 #' @return A tibble containing chrom sizes
@@ -32,7 +33,8 @@ getChromSizes <- function(object) {
 
 
 #' Check RLFS
-#' Helper function that checks whether a genome has RLFS available
+#' 
+#' Helper function that checks whether a genome has RLFS available.
 #' @param genome the UCSC genome name to check
 #' @return A logical, TRUE if available, FALSE if not
 checkRLFSAnno <- function(genome) {
@@ -47,7 +49,8 @@ checkRLFSAnno <- function(genome) {
 
 
 #' Get RLFS
-#' Helper function that retrieves RLFS ranges
+#' 
+#' Helper function that retrieves R-loop-forming sequences as GRanges
 #' @param object An RLRanges object.
 #' @return A GRanges object with RLFS for that species.
 getRLFSAnno <- function(object) {
@@ -76,7 +79,7 @@ getRLFSAnno <- function(object) {
 
 #' Get GS Signal
 #'
-#' Extract signal around GS R-loop sites
+#' Extract signal around "gold-standard" R-loop sites
 #' @param coverage The path to a .bigWig file (can be a URL)
 #' @param gssignal The GS signal obtained from RLHub.
 #' @return A named list containing the results of correlation analysis.
