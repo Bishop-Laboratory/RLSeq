@@ -25,7 +25,7 @@ The \code{RLSeq()} function does all of the following:
 \enumerate{
 \item RLFS Perm Test. Runs the \code{analyzeRLFS()} function to test the
 enrichment of user-supplied ranges within R-loop-forming sequences.
-\item Predict Condition. Runs the \code{predictCondition()} functio to
+\item Predict Condition. Runs the \code{predictCondition()} function to
 predict whether the user-supplied sample robustly maps R-loops or not.
 \item Feature enrichment test. Runs the \code{featureEnrich()} function to
 test the enrichment of user-supplied ranges within R-loop-relevant genomic features.

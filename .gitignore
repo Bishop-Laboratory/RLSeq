@@ -19,3 +19,4 @@ rlrRNH.rda
 tests/testthat/rlreport.html
 .gitattributes
 ..bfg*
+tests/testthat/rlreport_files
