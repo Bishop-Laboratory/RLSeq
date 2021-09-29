@@ -1,6 +1,7 @@
 .Rproj.user
 *.Rproj
 .Rhistory
+RLSeq.Rproj
 .Rdata
 tests/**/*.html
 misc/**/*.rda
