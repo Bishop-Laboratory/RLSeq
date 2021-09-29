@@ -8,6 +8,7 @@ misc/**/*.rda
 data-raw/**/*.rda
 *.bw
 data-raw/RMapDB_generate
+..Rcheck
 inst/doc
 /doc/
 /Meta/

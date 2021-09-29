@@ -6,6 +6,26 @@
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to analyzeRLFS.
 #' @return An RLRanges object with all results available.
+#' @details 
+#' 
+#' The \code{RLSeq()} function does all of the following:
+#' 
+#' \enumerate{
+#'   \item RLFS Perm Test. Runs the \code{analyzeRLFS()} function to test the 
+#'   enrichment of user-supplied ranges within R-loop-forming sequences. 
+#'   \item Predict Condition. Runs the \code{predictCondition()} function to 
+#'   predict whether the user-supplied sample robustly maps R-loops or not.
+#'   \item Feature enrichment test. Runs the \code{featureEnrich()} function to
+#'   test the enrichment of user-supplied ranges within R-loop-relevant genomic features.
+#'   \item Correlation Analysis. Runs the \code{corrAnalyze()} function to test
+#'   the correlation of user-supplied R-loop signal with other samples in RLBase around
+#'   "gold-standard" R-loop regions. 
+#'   \item Gene annotation. Runs the \code{geneAnnotation()} function to find the overlap
+#'   of genes with the user-supplied ranges. 
+#'   \item R-loop Region Analysis. Runs the \code{rlRegionTest()} function to find
+#'   the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).
+#' }
+#' 
 #' @examples
 #'
 #' # Example RLRanges

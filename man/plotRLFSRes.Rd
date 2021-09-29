@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots.R
 \name{plotRLFSRes}
 \alias{plotRLFSRes}
-\title{Plot Perm Test results}
+\title{Plot RLFS analysis results}
 \usage{
 plotRLFSRes(object, plotName = NULL, fft = FALSE, ...)
 }
@@ -22,7 +22,7 @@ Default: FALSE.}
 A ggplot object.
 }
 \description{
-Plot Perm Test results
+Plots the results of the R-loop-forming sequences analysis.
 }
 \examples{
 

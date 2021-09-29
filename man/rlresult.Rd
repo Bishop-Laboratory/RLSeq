@@ -18,6 +18,8 @@ The contents of the requested slot.
 Result accessor function
 }
 \details{
+\subsection{Slots available}{
+
 \strong{"featureEnrichment"} The \code{tbl} generated from running the
 \code{featureEnrich()} function.
 
@@ -35,6 +37,7 @@ Result accessor function
 
 \strong{"rlRegionRes"}. The \code{list} generated from running the
 \code{rlRegionTest()} function.
+}
 }
 \examples{
 

@@ -101,19 +101,20 @@ setMethod(
 #' Construct RLRanges Dataset
 #'
 #' \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
-#' and metadata about the R-loop-mapping experiment.
+#' and metadata about the R-loop-mapping experiment, along with results from 
+#' the analyses in \code{RLSeq}.
 #'
 #' @param peaks Path/URL to peak file or a GRanges object.
 #' @param coverage Path/URL to bigWig file. If not supplied, correlation tests
 #'  will be skipped.
 #' @param genome UCSC genome ID. Acceptable types are listed in 
-#' auxdata$available_genomes.
+#' \code{RLSeq:::auxdata$available_genomes}.
 #' @param mode Type of R-loop mapping from which peaks and coverage were
-#' derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode.
-#'  Can
-#' be unspecified.
-#' @param label "POS" (e.g., S9.6 -RNH1) or "NEG" (e.g., S9.6 +RNH1 or Input).
-#'  Can be unspecified.
+#' derived. Acceptable types are listed in 
+#' \code{RLSeq:::auxdata$available_modes$mode}. Can be unspecified.
+#' @param label "POS" (positive R-loop-mapping sample; e.g., DRIP-Seq S9.6 -RNH1)
+#' or "NEG" (negative control sample; e.g., DRIP-Seq S9.6 +RNH1 or Input).
+#' Can be unspecified.
 #' @param sampleName A unique name for identifying this sample. 
 #' Can be unspecified.
 #' @param qcol The name of the metadata column which contains the adjusted p
@@ -121,7 +122,7 @@ setMethod(
 #' If not specified, the last column will be chosen (standard for .broadPeak 
 #' files).
 #' If FALSE or if no metadata columns exist, it will be left blank and some 
-#' operations in report() will not fully run.
+#' operations in \code{report()} will not fully run.
 #' @param quiet If TRUE, messages and warnings are suppressed. Default: FALSE.
 #' @return An object of class "RLRanges".
 #' @examples
@@ -224,6 +225,8 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 #' @param resultName Name of the result slot to access. See details.
 #' @return The contents of the requested slot.
 #' @details 
+#' 
+#' ## Slots available
 #' 
 #' \strong{"featureEnrichment"} The \code{tbl} generated from running the 
 #' \code{featureEnrich()} function.

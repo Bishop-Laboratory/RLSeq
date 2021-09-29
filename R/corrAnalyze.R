@@ -6,7 +6,7 @@
 #' Currently, this does not work on windows. 
 #'
 #' @param object An RLRanges object.
-#' @param force Force corrAnalyze() to run, even if on Windows. Default: False.
+#' @param force Force corrAnalyze() to run, even if on Windows. Default: FALSE.
 #' @return An RLRanges object with correlation results included.
 #' @examples
 #'

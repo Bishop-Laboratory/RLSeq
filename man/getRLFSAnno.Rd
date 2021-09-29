@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{getRLFSAnno}
 \alias{getRLFSAnno}
-\title{Get RLFS
-Helper function that retrieves RLFS ranges}
+\title{Get RLFS}
 \usage{
 getRLFSAnno(object)
 }
@@ -14,6 +13,5 @@ getRLFSAnno(object)
 A GRanges object with RLFS for that species.
 }
 \description{
-Get RLFS
-Helper function that retrieves RLFS ranges
+Helper function that retrieves R-loop-forming sequences as GRanges
 }
