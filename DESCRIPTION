@@ -27,58 +27,21 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Suggests: 
-    AnnotationDbi,
-    BiocStyle,
-    covr,
-    lintr,
-    rcmdcheck,
-    DT,
-    httr,
-    jsonlite,
-    kableExtra,
-    kernlab,
-    knitr,
-    magick,
-    MASS,
-    org.Hs.eg.db,
-    R.utils,
-    randomForest,
-    readr,
-    rmarkdown,
-    rpart,
-    testthat (>= 3.0.0),
-    tibble,
-    tidyr,
-    TxDb.Hsapiens.UCSC.hg19.knownGene
+Suggests: AnnotationDbi, BiocStyle, covr, lintr, rcmdcheck, DT, httr,
+        jsonlite, kableExtra, kernlab, knitr, magick, MASS,
+        org.Hs.eg.db, R.utils, randomForest, readr, rmarkdown, rpart,
+        testthat (>= 3.0.0), tibble, tidyr,
+        TxDb.Hsapiens.UCSC.hg19.knownGene
 Config/testthat/edition: 3
-Depends: 
-    R (>= 4.1.0)
-Imports: 
-    dplyr,
-    ggplot2,
-    RColorBrewer,
-    grid,
-    regioneR,
-    valr,
-    caretEnsemble,
-    GenomicFeatures,
-    rtracklayer,
-    GenomicRanges,
-    GenomeInfoDb,
-    ComplexHeatmap,
-    AnnotationHub,
-    VennDiagram,
-    futile.logger,
-    callr,
-    circlize,
-    ggplotify,
-    ggprism,
-    methods,
-    stats,
-    RLHub,
-    aws.s3,
-    pheatmap
+Depends: R (>= 4.1.0)
+Imports: dplyr, ggplot2, RColorBrewer, grid, regioneR, valr,
+        caretEnsemble, GenomicFeatures, rtracklayer, GenomicRanges,
+        GenomeInfoDb, ComplexHeatmap, AnnotationHub, VennDiagram,
+        futile.logger, callr, circlize, ggplotify, ggprism, methods,
+        stats, RLHub, aws.s3, pheatmap
 VignetteBuilder: knitr
-biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics, Classification
+biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics,
+        Classification
 URL: https://github.com/Bishop-Laboratory/RLSeq
+NeedsCompilation: no
+Packaged: 2021-09-29 04:30:33 UTC; millerh1
