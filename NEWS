@@ -1,5 +1,5 @@
 CHANGES IN VERSION 0.99.0
-------------------------
+-------------------------
 
     o Base class: RLRanges stores R-loop data and RLSeq results.
 

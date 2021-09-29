@@ -8,4 +8,4 @@
 ^Meta$
 ^.*\.bw$
 ^.*rlreport\.html$
-^tests/testthat/rlreport_files.*$
+^.*rlreport_files.*$
