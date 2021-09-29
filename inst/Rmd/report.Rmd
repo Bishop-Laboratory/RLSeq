@@ -75,6 +75,8 @@ Sample name: <strong>`r object@metadata$sampleName`</strong>
 
 Sample type: <strong>`r object@metadata$mode`</strong>
 
+Label: <strong>`r object@metadata$label`</strong>
+
 Genome: <strong>`r GenomeInfoDb::genome(object)[1]`</strong>
 
 Time: <strong>`r date()`</strong>

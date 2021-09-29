@@ -4,10 +4,14 @@
 \alias{predictCondition}
 \title{Predict Condition}
 \usage{
-predictCondition(object, ...)
+predictCondition(object, rlfsRes = NULL, ...)
 }
 \arguments{
-\item{object}{An RLRanges object with \code{analyzeRLFS()} already run.}
+\item{object}{An RLRanges object with \code{analyzeRLFS()} already run.
+Ignored if rlfsRes provided.}
+
+\item{rlfsRes}{If object not supplied, provide the rlfsRes list which is
+obtained from \code{rlresult(object, "rlfsRes")}.}
 
 \item{...}{Internal use only.}
 }
@@ -15,8 +19,8 @@ predictCondition(object, ...)
 An RLRanges object with predictions included.
 }
 \description{
-Uses the results of analyzeRLFS() to predict whether a sample is "Case"
-(robust R-loop mapping) or "Control" (poor R-loop mapping).
+Uses the results of analyzeRLFS() to predict whether a sample is "POS"
+(robust R-loop mapping) or "NEG" (poor R-loop mapping).
 }
 \examples{
 
@@ -25,5 +29,8 @@ rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # predict condition
 rlr <- predictCondition(rlr)
+
+# With rlfsRes
+predRes <- predictCondition(rlfsRes=rlresult(rlr, "rlfsRes"))
 
 }

@@ -8,4 +8,6 @@ In the resulting heatmap, **`r object@metadata$sampleName`** is identified via t
 corrHeatmap(object)
 ```
 
+**Note**: In the plot legend (*mode* panel), **misc** includes the modes with < 12 samples: `r paste0(RLSeq:::auxdata$misc_modes, collapse = ", ")`.
+
 ***
