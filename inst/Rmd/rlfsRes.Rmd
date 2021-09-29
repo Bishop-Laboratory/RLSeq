@@ -14,7 +14,7 @@ plotRLFSRes(object)
 <details>
 <summary>Additional details</summary>
 
-RLFS were derived across the genome using [`QmRLFS-finder.py`](https://github.com/piroonj/QmRLFS-finder){target="_blank"}. R-loop broad peaks were called with `macs` and then compared with RLFS using `permTest` from the `RegioneR` R package. An empirical distribution of RLFS was generated using the `circularRandomizeRegions` method and compared to the peaks in order to calculate enrichment p value and zscore (effect size of enrichment). 
+RLFS were derived across the genome using [`QmRLFS-finder.py`](https://github.com/piroonj/QmRLFS-finder){target="_blank"}. R-loop broad peaks were called with `macs` and then compared with RLFS using `permTest` from the [`regioneR`](https://bioconductor.org/packages/release/bioc/html/regioneR.html){target="_blank"} R package. An empirical distribution of RLFS was generated using the `circularRandomizeRegions` method and compared to the peaks in order to calculate enrichment p value and zscore (effect size of enrichment). 
 
 
 ```{r}

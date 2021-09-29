@@ -8,7 +8,7 @@ verd <- ifelse(
   "<strong style='color: red'>\"NEG\"</strong> (i.e., poor R-loop mapping)"
 )
 ```
-<span style="font-size: 1.5em">Predicted label for `r object@metadata$sampleName` is `r verd`.</span>
+<span style="font-size: 1.4em">Predicted label for sample *`r object@metadata$sampleName`* is `r verd`.</span>
 
 ### Details
 
@@ -41,7 +41,7 @@ dplyr::tibble(
   dplyr::right_join(feature_key, by = "feature") %>%
   dplyr::relocate(description, .after = feature) %>%
   kableExtra::kable(caption = paste0(
-    "Abbrevitations: Z, Z-score",
+    "Abbreviations: Z, Z-score",
     " distribution; ACF, autocorrelation function; FT, Fourier Transform."
   )) %>% 
   kableExtra::kable_material(c("striped", "hover"), 

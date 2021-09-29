@@ -27,14 +27,14 @@ cat(unlist(resRmd), sep = '\n')
 
 ### {-}
 
-**Note**: If < 200 peaks in user-supplied sample, \u25C7 will be missing from plots.
+**Note**: If < 200 peaks in user-supplied sample, `r knitr::asis_output("\u25C7")` will be missing from plots.
 
 ### Summary table
 
 <details>
 <summary>Additional Details</summary>
 
-Annotations were derived from a variety of sources and accessed using *RLHub* (unless custom annotations were supplied by the user). Detailed explanations of each database and type can be found [here](https://github.com/Bishop-Laboratory/RLBase-data#preliminary). The `valr` package was implemented to test the enrichment of these features within the supplied ranges for **`r object@metadata$sampleName`**.
+Annotations were derived from a variety of sources and accessed using *RLHub* (unless custom annotations were supplied by the user). Detailed explanations of each database and type can be found [here](https://github.com/Bishop-Laboratory/RLBase-data#preliminary){target="_blank"}. The [`valr`](https://cran.r-project.org/web/packages/valr/index.html){target="_blank"} R package was implemented to test the enrichment of these features within the supplied ranges for **`r object@metadata$sampleName`**.
 
 </details>
 
