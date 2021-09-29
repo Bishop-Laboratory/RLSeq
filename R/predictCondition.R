@@ -1,9 +1,12 @@
 #' Predict Condition
 #'
-#' Uses the results of analyzeRLFS() to predict whether a sample is "Case"
-#' (robust R-loop mapping) or "Control" (poor R-loop mapping).
+#' Uses the results of analyzeRLFS() to predict whether a sample is "POS"
+#' (robust R-loop mapping) or "NEG" (poor R-loop mapping).
 #'
-#' @param object An RLRanges object with \code{analyzeRLFS()} already run.
+#' @param object An RLRanges object with \code{analyzeRLFS()} already run. 
+#' Ignored if rlfsRes provided.
+#' @param rlfsRes If object not supplied, provide the rlfsRes list which is
+#' obtained from \code{rlresult(object, "rlfsRes")}. 
 #' @param ... Internal use only.
 #' @return An RLRanges object with predictions included.
 #' @examples
@@ -14,15 +17,24 @@
 #' # predict condition
 #' rlr <- predictCondition(rlr)
 #' 
+#' # With rlfsRes
+#' predRes <- predictCondition(rlfsRes=rlresult(rlr, "rlfsRes"))
+#' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @importFrom stats fft acf
 #' @import caretEnsemble
 #' @export
-predictCondition <- function(object, ...) {
+predictCondition <- function(object, rlfsRes=NULL, ...) {
 
-    # Obtain RLFS-Res
-    rlfsRes <- rlresult(object, resultName = "rlfsRes")
+    # Obtain RLFS-Res if not supplied
+    if (is.null(rlfsRes)) {
+        rlfsRes <- rlresult(object, resultName = "rlfsRes")
+        rlfsGiven <- FALSE
+    } else {
+        rlfsGiven <- TRUE
+    }
+    
 
     # Check for missing packages and stop if found
     pkgs <- vapply(
@@ -98,11 +110,11 @@ predictCondition <- function(object, ...) {
     predict.cs <- utils::getFromNamespace("predict.caretStack", "caretEnsemble")
     pred <- predict.cs(fftModel, features)
 
-    # Test each criteria for labeling "Control"
+    # Test each criteria for labeling "POS"
     criteriaOne <- pval < .05
     criteriaTwo <- Zcenter > 0
     criteriaThree <- Zcenter > Zleft & Zcenter > Zright
-    criteriaFour <- toupper(pred) == "CASE"
+    criteriaFour <- toupper(pred) == "POS" || toupper(pred) == "CASE"
 
     # Wrangle features raw
     finalFeatures <- dplyr::bind_rows(features, featuresRaw) %>%
@@ -121,16 +133,19 @@ predictCondition <- function(object, ...) {
             "PVal Significant" = criteriaOne,
             "ZApex > 0" = criteriaTwo,
             "ZApex > ZEdges" = criteriaThree,
-            "Predicted 'Case'" = criteriaFour
+            "Predicted 'POS'" = criteriaFour
         ),
-        Verdict = ifelse(criteriaOne & criteriaTwo &
+        prediction = ifelse(criteriaOne & criteriaTwo &
             criteriaThree & criteriaFour,
-        "Case", "Control"
+        "POS", "NEG"
         )
     )
 
     # Add to RLRanges and result
-    methods::slot(object@metadata$results, "predictRes") <- reslst
-
-    return(object)
+    if (! rlfsGiven) {
+        methods::slot(object@metadata$results, "predictRes") <- reslst
+        return(object)
+    } else {
+        return(reslst)
+    }
 }

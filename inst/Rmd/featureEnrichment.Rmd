@@ -5,8 +5,8 @@
 The results were then visualized with the `plotEnrichment()` function:
 
 ```{r childEnrich, results='asis'}
-plts_verdsplit <- plotEnrichment(object, onlyCase = FALSE,
-                                 onlyPOS = FALSE, splitby = "verdict")
+plts_verdsplit <- plotEnrichment(object, pred_POS_only = FALSE,
+                                 label_POS_only = FALSE, splitby = "prediction")
 resRmd <- lapply(
   names(plts_verdsplit), 
   function(db) {
@@ -26,6 +26,8 @@ cat(unlist(resRmd), sep = '\n')
 ```
 
 ### {-}
+
+**Note**: If < 200 peaks in user-supplied sample, \u25C7 will be missing from plots.
 
 ### Summary table
 

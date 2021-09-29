@@ -11,7 +11,7 @@ RLRanges(
   coverage = character(1),
   genome = character(1),
   mode = character(1),
-  condType = character(1),
+  label = character(1),
   sampleName = "User-selected sample",
   qcol = NULL,
   quiet = FALSE
@@ -31,8 +31,8 @@ derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode.
 Can
 be unspecified.}
 
-\item{condType}{One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),
-or "NULL" (e.g., Input control.). Can be unspecified.}
+\item{label}{"POS" (e.g., S9.6 -RNH1) or "NEG" (e.g., S9.6 +RNH1 or Input).
+Can be unspecified.}
 
 \item{sampleName}{A unique name for identifying this sample.
 Can be unspecified.}
@@ -61,4 +61,8 @@ pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
 
 # Get RLRanges object
+rlr <- RLRanges(pks,
+    coverage = cvg, genome = "hg38", label="NEG",
+    mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
+)
 }

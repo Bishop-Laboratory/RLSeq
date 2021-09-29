@@ -4,13 +4,16 @@
 \alias{corrHeatmap}
 \title{Plot Correlation Results}
 \usage{
-corrHeatmap(object, returnData = FALSE, ...)
+corrHeatmap(object, returnData = FALSE, complex = TRUE, ...)
 }
 \arguments{
 \item{object}{An RLRanges with \code{corrAnalyze()} already run.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
+
+\item{complex}{If TRUE, ComplexHeatmap will be used for plotting.
+Otherwise, pheatmap. Default: TRUE}
 
 \item{...}{For internal use.}
 }

@@ -7,9 +7,9 @@
 plotEnrichment(
   object,
   modes = NULL,
-  onlyCase = TRUE,
-  onlyPOS = FALSE,
-  splitby = c("none", "verdict", "condType"),
+  pred_POS_only = TRUE,
+  label_POS_only = FALSE,
+  splitby = c("none", "prediction", "label"),
   limits = c(-10, 15),
   returnData = FALSE,
   ...
@@ -20,13 +20,13 @@ plotEnrichment(
 
 \item{modes}{Which modes to include in plot? If empty, all modes included.}
 
-\item{onlyCase}{If TRUE, only "case" predicted samples included.
+\item{pred_POS_only}{If TRUE, only "POS" predicted samples included.
 Default: TRUE.}
 
-\item{onlyPOS}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
+\item{label_POS_only}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
 
-\item{splitby}{Metadata by which to split plots. Can be "none", "verdict",
-or "condType".}
+\item{splitby}{Metadata by which to split plots. Can be "none", "prediction",
+or "label".}
 
 \item{limits}{Specify limits on data. Useful for controlling infinite
 estimation of odds ratio
@@ -52,16 +52,16 @@ rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 # Plot enrichment
 plotEnrichment(rlr)
 
-# split by verdict
-plotEnrichment(rlr, onlyCase = FALSE, splitby = "verdict")
+# split by prediction
+plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
 
-# split by "condType" and only return plotting data
-plotEnrichment(rlr, onlyCase = FALSE, splitby = "condType",
+# split by "label" and only return plotting data
+plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "label",
                returnData = TRUE)
 
 # Only include DRIP-family
 plotEnrichment(rlr,
     modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-    onlyCase = FALSE, splitby = "verdict"
+    pred_POS_only = FALSE, splitby = "prediction"
 )
 }

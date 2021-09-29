@@ -4,10 +4,17 @@
 \alias{plotRLFSRes}
 \title{Plot Perm Test results}
 \usage{
-plotRLFSRes(object, ...)
+plotRLFSRes(object, plotName = NULL, fft = FALSE, ...)
 }
 \arguments{
-\item{object}{An RLRanges with \code{analyzeRLFS()} already run.}
+\item{object}{An RLRanges with \code{analyzeRLFS()} already run. Alternatively,
+can be the RLFS results object from an RLRanges.}
+
+\item{plotName}{A Sample name used for plotting.
+If blank, the RLRanges name is used.}
+
+\item{fft}{If TRUE, the fourier transform of Z-score is plotted instead.
+Default: FALSE.}
 
 \item{...}{Additional parameters passed to \code{ggplot}.}
 }
@@ -24,4 +31,8 @@ rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Plot RLFS res
 plotRLFSRes(rlr)
+
+# Plot the Fourier transform instead
+plotRLFSRes(rlr, fft=TRUE)
+
 }
