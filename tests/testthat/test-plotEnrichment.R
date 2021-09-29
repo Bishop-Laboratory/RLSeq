@@ -8,14 +8,14 @@ test_that(desc = "Test plotEnrichment", {
         res <- RLSeq::plotEnrichment(
             object = rlr,
             modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-            onlyCase = TRUE,
-            splitby = "condType"
+            pred_POS_only = TRUE,
+            splitby = "label"
         )
         res2 <- RLSeq::plotEnrichment(
             object = rlr,
             modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-            onlyCase = FALSE,
-            splitby = "verdict",
+            pred_POS_only = FALSE,
+            splitby = "prediction",
             returnData = TRUE
         )
     })

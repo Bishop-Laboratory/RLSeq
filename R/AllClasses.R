@@ -36,12 +36,12 @@ setValidity(
             )
         }
 
-        # condType
-        if (!object@metadata$condType %in% c("POS", "NEG", "NULL") &&
-            object@metadata$condType != "") {
+        # label
+        if (!object@metadata$label %in% c("POS", "NEG") &&
+            object@metadata$label != "") {
             stop(
-                "'condType' must be one of 'POS', ",
-                "'NEG', or 'NULL -- or be unspecified."
+                "'label' must be one of 'POS'",
+                " or 'NEG'-- or be unspecified."
             )
         }
 
@@ -81,7 +81,7 @@ setMethod(
             paste0("\n", object@metadata$sampleName, ":"),
             "\n  Mode:", object@metadata$mode,
             "\n  Genome:", GenomeInfoDb::genome(object)[1],
-            "\n  condType:", object@metadata$condType
+            "\n  Label:", object@metadata$label
         )
         cat(
             "\n\nRLSeq Results Available:",
@@ -90,7 +90,7 @@ setMethod(
         cat(
             ifelse(
                 "predictRes" %in% fld,
-                paste0("\nverdict: ", res@predictRes$Verdict, "\n\n"),
+                paste0("\nprediction: ", res@predictRes$prediction, "\n\n"),
                 "\n"
             )
         )
@@ -112,8 +112,8 @@ setMethod(
 #' derived. Acceptable types are listed in RLSeq::auxdata$available_modes$mode.
 #'  Can
 #' be unspecified.
-#' @param condType One of "POS" (e.g., S9.6 -RNH1), "NEG" (e.g., S9.6 +RNH1),
-#' or "NULL" (e.g., Input control.). Can be unspecified.
+#' @param label "POS" (e.g., S9.6 -RNH1) or "NEG" (e.g., S9.6 +RNH1 or Input).
+#'  Can be unspecified.
 #' @param sampleName A unique name for identifying this sample. 
 #' Can be unspecified.
 #' @param qcol The name of the metadata column which contains the adjusted p
@@ -132,16 +132,16 @@ setMethod(
 #' cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
 #'
 #' # Get RLRanges object
-# rlr <- RLRanges(pks,
-#     coverage = cvg, genome = "hg38", condType="NEG",
-#     mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
-# )
+#' rlr <- RLRanges(pks,
+#'     coverage = cvg, genome = "hg38", label="NEG",
+#'     mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
+#' )
 #' @export
 RLRanges <- function(peaks = GenomicRanges::GRanges(),
     coverage = character(1),
     genome = character(1),
     mode = character(1),
-    condType = character(1),
+    label = character(1),
     sampleName = "User-selected sample",
     qcol = NULL,
     quiet = FALSE) {
@@ -189,7 +189,7 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
     # Normalize coverage path
     if (coverage != "") {
         if (! urlExists(coverage) && file.exists(coverage)) {
-            # CASE: It is a file, which exists. Absolute path.
+            # POS: It is a file, which exists. Absolute path.
             coverage <- file.path(normalizePath(dirname(coverage)), 
                                   basename(coverage))
         } else if (! urlExists(coverage)) {
@@ -203,7 +203,7 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
         peaks@metadata,
         list(
             mode = mode,
-            condType = condType,
+            label = label,
             coverage = coverage,
             sampleName = sampleName,
             results = methods::new("RLResults")
@@ -217,11 +217,38 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
     )
 }
 
+
 #' Result accessor function
 #'
 #' @param object RLRanges object.
-#' @param resultName Name of the result slot to access.
+#' @param resultName Name of the result slot to access. See details.
 #' @return The contents of the requested slot.
+#' @details 
+#' 
+#' \strong{"featureEnrichment"} The \code{tbl} generated from running the 
+#' \code{featureEnrich()} function.
+#' 
+#' \strong{"correlationMat"}. The \code{matrix} generated from running the 
+#' \code{corrAnalyze()} function.
+#' 
+#' \strong{"rlfsRes"}. The \code{list} generated from running the 
+#' \code{analyzeRLFS()} function.
+#' 
+#' \strong{"geneAnnoRes"}. The \code{tbl} generated from running the 
+#' \code{geneAnnotation()} function.
+#' 
+#' \strong{"predictRes"}. The \code{list} generated from running the 
+#' \code{predictCondition()} function.
+#' 
+#' \strong{"rlRegionRes"}. The \code{list} generated from running the 
+#' \code{rlRegionTest()} function.
+#' 
+#' @examples 
+#' 
+#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' 
+#' rlresult(rlr, "predictRes")
+#' 
 #' @export
 rlresult <- function(object, resultName) {
 

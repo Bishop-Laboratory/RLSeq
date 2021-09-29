@@ -24,6 +24,7 @@ rlbase_anno <- RLHub::annots_full_hg38()
 rlbps <- RLHub::rlbps()
 
 # Get the available genomes
+rlbase <- "https://rlbase-data.s3.amazonaws.com"
 avgs <- file.path(rlbase, "misc", "available_genomes.rda")
 tmp <- tempfile()
 download.file(avgs, destfile = tmp, quiet = TRUE)
@@ -44,8 +45,8 @@ available_modes <- rlsamples %>%
 # Get the databases and add order/group information
 pat <- "(.+)__(.+)"
 annotypes <- tibble(
-    db = gsub(names(annotations_all), pattern = pat, replacement = "\\1"),
-    type = gsub(names(annotations_all), pattern = pat, replacement = "\\2")
+    db = gsub(names(rlbase_anno), pattern = pat, replacement = "\\1"),
+    type = gsub(names(rlbase_anno), pattern = pat, replacement = "\\2")
 )
 
 ### Color Palettes ###
@@ -72,12 +73,7 @@ ip_cols <- tribble(
     "Other", "#F3B700"
 ) %>%
     mutate(
-        "NEG" = colorspace::desaturate(POS, amount = .6),
-        "NULL" = colorspace::desaturate(POS, amount = 1),
-        "NULL" = case_when(
-            is.na(`NULL`) ~ colorspace::desaturate(POS, amount = 0.75),
-            TRUE ~ `NULL`
-        )
+        "NEG" = colorspace::desaturate(POS, amount = .6)
     )
 
 ## Modes within each
@@ -86,29 +82,34 @@ gg_color_hue <- function(n) {
     hcl(h = hues, l = 65, c = 110)[1:n]
 }
 modes <- unique(rlsamples$mode)
-set.seed(5)
+misc <- names(which(table(rlsamples$mode) <= 12))
+set.seed(6)
 mode_cols <- tibble(
-    mode = sample(modes, size = length(modes)),
+    mode = sample(modes[! modes %in% misc], size = length(modes[! modes %in% misc])),
     col = gg_color_hue(
         length(
-            modes
+            modes[! modes %in% misc]
         )
     )
 )
+misc_cols <- tibble(
+    mode = "misc",
+    col = "#8f8f8f"
+)
+mode_cols <- bind_rows(mode_cols, misc_cols)
 
-## CondType
-condtype_cols <- tribble(
-    ~condType, ~col,
-    "POS", "#dedee0",
-    "NEG", "#2e2e63",
-    "NULL", "#05052b"
+## label
+label_cols <- tribble(
+    ~label, ~col,
+    "POS", "#e0dede",
+    "NEG", "#8a2c2c"
 )
 
-## Verdict
-verdict_cols <- tribble(
-    ~verdict, ~col,
-    "Case", "#e0dede",
-    "Control", "#8a2c2c"
+## prediction
+prediction_cols <- tribble(
+    ~prediction, ~col,
+    "POS", "#e0dede",
+    "NEG", "#8a2c2c"
 )
 
 ## Heatcols
@@ -126,9 +127,12 @@ auxdata <- list(
     ip_cols = ip_cols,
     mode_cols = mode_cols,
     heat_cols = heatcols,
-    condtype_cols = condtype_cols,
-    verdict_cols = verdict_cols,
+    label_cols = label_cols,
+    prediction_cols = prediction_cols,
     available_modes = available_modes,
-    available_genomes = genomes
+    available_genomes = genomes,
+    misc_modes = misc
 )
-usethis::use_data(auxdata, compress = "xz", overwrite = TRUE)
+saveRDS(auxdata, file = "inst/int-data/auxdata.rds", compress = "xz")
+
+

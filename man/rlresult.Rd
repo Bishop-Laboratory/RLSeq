@@ -9,11 +9,37 @@ rlresult(object, resultName)
 \arguments{
 \item{object}{RLRanges object.}
 
-\item{resultName}{Name of the result slot to access.}
+\item{resultName}{Name of the result slot to access. See details.}
 }
 \value{
 The contents of the requested slot.
 }
 \description{
 Result accessor function
+}
+\details{
+\strong{"featureEnrichment"} The \code{tbl} generated from running the
+\code{featureEnrich()} function.
+
+\strong{"correlationMat"}. The \code{matrix} generated from running the
+\code{corrAnalyze()} function.
+
+\strong{"rlfsRes"}. The \code{list} generated from running the
+\code{analyzeRLFS()} function.
+
+\strong{"geneAnnoRes"}. The \code{tbl} generated from running the
+\code{geneAnnotation()} function.
+
+\strong{"predictRes"}. The \code{list} generated from running the
+\code{predictCondition()} function.
+
+\strong{"rlRegionRes"}. The \code{list} generated from running the
+\code{rlRegionTest()} function.
+}
+\examples{
+
+rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+
+rlresult(rlr, "predictRes")
+
 }

@@ -8,7 +8,7 @@ test_that(desc = "Test that RLRanges() works", {
             coverage = cvg,
             mode = "RDIP",
             genome = "hg38",
-            condType = "NEG",
+            label = "NEG",
             sampleName = "RDIP +RNH",
             quiet = TRUE
         ),

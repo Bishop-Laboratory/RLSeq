@@ -8,7 +8,7 @@ R-loop forming sequences (RLFS) were compared to the ranges in **`r object@metad
 plotRLFSRes(object)
 ```
 
-**Note**: for samples which map R-loop successfully, enrichment is expected. See representative examples for *POS*, *NEG*, and *NULL* sample types [here](https://rlbase-data.s3.amazonaws.com/misc/examples_for_select_samples.png){target="_blank"}.
+**Note**: for samples which map R-loop successfully, enrichment is expected. See representative examples for *POS* and *NEG* sample types [here](https://rlbase-data.s3.amazonaws.com/misc/examples_for_select_samples.png){target="_blank"}.
 
 ### Details
 <details>
