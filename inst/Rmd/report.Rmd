@@ -145,7 +145,7 @@ cat(unlist(rmdlst), sep = "\n")
 
 **Note**: if you use *RLSeq* in published research, please reference:
 
-> Miller et al., RLSeq, (2021), GitHub repository, [Bishop-Laboratory/RLSeq](https://github.com/Bishop-Laboratory/RLSeq)
+> Miller et al., RLSeq, (2021), GitHub repository, [Bishop-Laboratory/RLSeq](https://github.com/Bishop-Laboratory/RLSeq){target="_blank"}
 
 ## Session info
 

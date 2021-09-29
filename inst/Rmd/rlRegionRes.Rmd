@@ -1,6 +1,6 @@
 ## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
-RL-Regions are consensus R-loop sites derived from RLBase as described in the RLSuite manuscript. The ranges supplied for **`r object@metadata$sampleName`** were compared to the RL-Regions to determine the degree and signficiance of overlap.
+RL-Regions are consensus R-loop sites derived from a meta-analysis of all high-confidence R-loop mapping samples in RLBase (see the RLSuite manuscript for a full description). The ranges supplied for **`r object@metadata$sampleName`** were compared to the RL-Regions to determine the degree and significance of overlap.
 
 <br>
 
@@ -8,9 +8,9 @@ RL-Regions are consensus R-loop sites derived from RLBase as described in the RL
 plotRLRegionOverlap(object,
                     fill = c("#9ad9ab", "#9aa0d9"),
                     main.cex = 2,
-                    cat.pos = c(-80, 80),
-                    cat.dist=.015,
-                    margin = .1)
+                    cat.pos = c(-60, 60),
+                    cat.dist=.01,
+                    margin = .15)
 ```
 
 ***
