@@ -1,4 +1,4 @@
-# RLSeq 0.99.1
+# RLSeq 0.99.2
 
 ## Package
 
