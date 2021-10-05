@@ -8,10 +8,11 @@ c(
     bibentry(bibtype="manual",
         title = "RLSeq: An analysis package for R-loop mapping data",
         author = personList(
-            as.person("Henry Miller"),
+            as.person("Henry E. Miller"),
             as.person("Daniel Montemayor"),
             as.person("Simon Levy"),
-            as.person("Anna Vines")
+            as.person("Anna Vines"),
+            as.person("Alexander J. R. Bishop")
         ),
         year = format(Sys.Date(), "%Y"),
         url = "http://www.bioconductor.org/packages/RLSeq",

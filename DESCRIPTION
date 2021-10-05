@@ -1,7 +1,7 @@
 Package: RLSeq
 Type: Package
 Title: RLSeq: An analysis package for R-loop mapping data
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person(given = "Henry",
            family = "Miller",
@@ -10,10 +10,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-3756-3918")),
     person(given = "Daniel",
            family = "Montemayor",
-           role = c("ctb")),
+           role = c("ctb"),
+           comment = c(ORCID = "0000-0001-8702-5646")),
     person(given = "Simon",
            family = "Levy",
-           role = c("ctb")),
+           role = c("ctb"),
+           comment = c(ORCID = "0000-0002-4623-5716")),
     person(given = "Anna",
            family = "Vines",
            role = c("ctb")),
@@ -23,7 +25,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-5742-4387"),
            role = c("ths", "cph")))
 Description: RLSeq is a toolkit for analyzing and evaluating R-loop mapping datasets.
-    It serves two primary purposes: (1) to facilitate the evaluation of dataset quality, and
+    RLSeq serves two primary purposes: (1) to facilitate the evaluation of dataset quality, and
     (2) to enable R-loop analysis in the context of publicly-available data sets from RLBase.
     The package is intended to provide a simple pipeline, called with the `RLSeq()` function, 
     which performs all main analyses. Individual functions are also accessible and provide custom
@@ -86,6 +88,6 @@ Imports:
     pheatmap
 VignetteBuilder: knitr
 biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics, Classification
-URL: https://github.com/Bishop-Laboratory/RLSeq
+URL: https://github.com/Bishop-Laboratory/RLSeq, https://bishop-laboratory.github.io/RLSeq/
 BugReports: https://github.com/Bishop-Laboratory/RLSeq/issues
 BiocType: Software
