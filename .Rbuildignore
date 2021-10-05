@@ -9,3 +9,6 @@
 ^.*\.bw$
 ^.*rlreport\.html$
 ^.*rlreport_files.*$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
