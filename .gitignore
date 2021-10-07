@@ -1,7 +1,5 @@
 .Rproj.user
-*.Rproj
 .Rhistory
-RLSeq.Rproj
 .Rdata
 VennDiagram*
 tests/**/*.html
@@ -21,3 +19,7 @@ tests/testthat/rlreport.html
 .gitattributes
 ..bfg*
 tests/testthat/rlreport_files
+*report.html
+*annotated_peaks.csv
+*broadPeak
+*.bed
