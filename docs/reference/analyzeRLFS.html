@@ -138,6 +138,8 @@
   quiet <span class='op'>=</span> <span class='cn'>FALSE</span>,
   useMask <span class='op'>=</span> <span class='cn'>TRUE</span>,
   noZ <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  ntimes <span class='op'>=</span> <span class='fl'>100</span>,
+  stepsize <span class='op'>=</span> <span class='fl'>50</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -169,8 +171,17 @@ results. Default: TRUE.</p></td>
       <td><p>If TRUE, Z-score distribution is not calculated. Default: FALSE.</p></td>
     </tr>
     <tr>
+      <th>ntimes</th>
+      <td><p>Number of permutations to perform (default: 100).</p></td>
+    </tr>
+    <tr>
+      <th>stepsize</th>
+      <td><p>The step size for calculating the Z score distribution.
+Default: 50. See also <code><a href='https://rdrr.io/pkg/regioneR/man/localZScore.html'>regioneR::localZScore()</a></code>.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
-      <td><p>Arguments passed to <code><a href='https://rdrr.io/pkg/regioneR/man/permTest.html'>regioneR::permTest()</a></code></p></td>
+      <td><p>Arguments passed to <code><a href='https://rdrr.io/pkg/regioneR/man/permTest.html'>regioneR::permTest()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -179,13 +190,13 @@ results. Default: TRUE.</p></td>
     <p>An RLRanges object with RLFS analysis results included.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples">
 <span class='co'># Example dataset</span>
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ext-data"</span>, <span class='st'>"rlrsmall.rds"</span>, package <span class='op'>=</span> <span class='st'>"RLSeq"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># Perform RLFS analysis</span>
-<span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'>analyzeRLFS</span><span class='op'>(</span><span class='va'>rlr</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'> - Evaluating Inputs...</span></div><div class='output co'>#&gt; <span class='message'> - Running permTest...</span></div><div class='output co'>#&gt; <span class='message'> - Extracting pileup...</span></div><div class='output co'>#&gt; <span class='message'> - Done.</span></div></pre>
+<span class='co'># Perform RLFS analysis (remove ntimes=2 and noZ=TRUE for a typical analysis)</span>
+<span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'>analyzeRLFS</span><span class='op'>(</span><span class='va'>rlr</span>, ntimes <span class='op'>=</span> <span class='fl'>2</span>, noZ <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

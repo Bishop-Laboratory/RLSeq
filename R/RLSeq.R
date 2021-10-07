@@ -4,36 +4,37 @@
 #'
 #' @param object An RLRanges object.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
-#' @param ... Arguments passed to analyzeRLFS.
+#' @param ... Arguments passed to analyzeRLFS. See [analyzeRLFS].
 #' @return An RLRanges object with all results available.
-#' @details 
-#' 
+#' @details
+#'
 #' The \code{RLSeq()} function does all of the following:
-#' 
+#'
 #' \enumerate{
-#'   \item RLFS Perm Test. Runs the \code{analyzeRLFS()} function to test the 
-#'   enrichment of user-supplied ranges within R-loop-forming sequences. 
-#'   \item Predict Condition. Runs the \code{predictCondition()} function to 
+#'   \item RLFS Perm Test. Runs the \code{analyzeRLFS()} function to test the
+#'   enrichment of user-supplied ranges within R-loop-forming sequences.
+#'   \item Predict Condition. Runs the \code{predictCondition()} function to
 #'   predict whether the user-supplied sample robustly maps R-loops or not.
 #'   \item Feature enrichment test. Runs the \code{featureEnrich()} function to
 #'   test the enrichment of user-supplied ranges within R-loop-relevant genomic features.
 #'   \item Correlation Analysis. Runs the \code{corrAnalyze()} function to test
 #'   the correlation of user-supplied R-loop signal with other samples in RLBase around
-#'   "gold-standard" R-loop regions. 
+#'   "gold-standard" R-loop regions.
 #'   \item Gene annotation. Runs the \code{geneAnnotation()} function to find the overlap
-#'   of genes with the user-supplied ranges. 
+#'   of genes with the user-supplied ranges.
 #'   \item R-loop Region Analysis. Runs the \code{rlRegionTest()} function to find
 #'   the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).
 #' }
-#' 
+#'
 #' @examples
 #'
 #' # Example RLRanges
 #' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Run RLSeq
-#' rlr <- RLSeq(rlr)
-#' 
+#' # `useMask=FALSE` & `ntime=10` for demonstration purposes only.
+#' # For an accurate analysis, use `rlr <- RLSeq(rlr)`
+#' rlr <- RLSeq(rlr, useMask = FALSE, ntimes = 10)
 #' @export
 RLSeq <- function(object, quiet = FALSE, ...) {
     if (!quiet) message("[1/6] RLFS Perm Test")
@@ -61,9 +62,12 @@ RLSeq <- function(object, quiet = FALSE, ...) {
             if (.Platform$OS.type != "windows") {
                 object <- corrAnalyze(object)
             } else {
-                if (! quiet) {
-                    warning("corrAnalyze does not work on windows OS. Please",
-                            " run corrAnalyze() directly with `force=TRUE` to override.")
+                if (!quiet) {
+                    warning(
+                        "corrAnalyze does not work on windows OS. Please",
+                        " run corrAnalyze() directly with ",
+                        "`force=TRUE` to override."
+                    )
                 }
             }
         } else {
@@ -79,7 +83,7 @@ RLSeq <- function(object, quiet = FALSE, ...) {
     }
 
     if (!quiet) message("[5/6] Gene Annotation")
-    objectanno <- try(geneAnnotation(object, quiet = TRUE), silent = TRUE)
+    objectanno <- try(geneAnnotation(object), silent = TRUE)
     if ("try-error" %in% class(objectanno)) {
         warning(objectanno)
     } else {

@@ -3,10 +3,10 @@
 #' Uses the results of analyzeRLFS() to predict whether a sample is "POS"
 #' (robust R-loop mapping) or "NEG" (poor R-loop mapping).
 #'
-#' @param object An RLRanges object with \code{analyzeRLFS()} already run. 
+#' @param object An RLRanges object with \code{analyzeRLFS()} already run.
 #' Ignored if rlfsRes provided.
 #' @param rlfsRes If object not supplied, provide the rlfsRes list which is
-#' obtained from \code{rlresult(object, "rlfsRes")}. 
+#' obtained from \code{rlresult(object, "rlfsRes")}.
 #' @param ... Internal use only.
 #' @return An RLRanges object with predictions included.
 #' @examples
@@ -16,16 +16,15 @@
 #'
 #' # predict condition
 #' rlr <- predictCondition(rlr)
-#' 
+#'
 #' # With rlfsRes
-#' predRes <- predictCondition(rlfsRes=rlresult(rlr, "rlfsRes"))
-#' 
+#' predRes <- predictCondition(rlfsRes = rlresult(rlr, "rlfsRes"))
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @importFrom stats fft acf
 #' @import caretEnsemble
 #' @export
-predictCondition <- function(object, rlfsRes=NULL, ...) {
+predictCondition <- function(object, rlfsRes = NULL, ...) {
 
     # Obtain RLFS-Res if not supplied
     if (is.null(rlfsRes)) {
@@ -34,7 +33,7 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
     } else {
         rlfsGiven <- TRUE
     }
-    
+
 
     # Check for missing packages and stop if found
     pkgs <- vapply(
@@ -44,9 +43,10 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
         FUN.VALUE = logical(1)
     )
     if (any(!pkgs)) {
+        pks <- paste0(names(pkgs)[which(!pkgs)], collapse = '", "')
         stop(
             'Packages needed for predictCondition() but not installed: "',
-            paste0(names(pkgs)[which(!pkgs)], collapse = '", "'), '"'
+            pks, '"'
         )
     }
 
@@ -56,8 +56,8 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
         prepFeatures <- dots$prepFeatures
         fftModel <- dots$fftModel
     } else {
-        prepFeatures <- suppressMessages(RLHub::prep_features())
-        fftModel <- suppressMessages(RLHub::fft_model())
+        prepFeatures <- RLHub::prep_features(quiet = TRUE)
+        fftModel <- RLHub::fft_model(quiet = TRUE)
     }
 
     # Get pval
@@ -65,6 +65,12 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
 
     # Get Z
     Z <- rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifted.z.scores
+    if (any(is.infinite(Z))) {
+        stop(
+            "Found Inf values in Z score distribution.",
+            " Set 'ntimes' higher in analyzeRLFS"
+        )
+    }
 
     # Get edge and center Z values
     shifts <- rlfsRes$`Z-scores`$`regioneR::numOverlaps`$shifts
@@ -78,7 +84,8 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
     # compute autocorrelation on Z
     Zacf <- drop(
         acf(
-            Z, lag.max = length(Z) / 1, plot = FALSE,
+            Z,
+            lag.max = length(Z) / 1, plot = FALSE,
             type = "covariance"
         )$acf
     )
@@ -142,7 +149,7 @@ predictCondition <- function(object, rlfsRes=NULL, ...) {
     )
 
     # Add to RLRanges and result
-    if (! rlfsGiven) {
+    if (!rlfsGiven) {
         methods::slot(object@metadata$results, "predictRes") <- reslst
         return(object)
     } else {

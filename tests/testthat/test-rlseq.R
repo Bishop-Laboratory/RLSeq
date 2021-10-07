@@ -8,7 +8,8 @@ test_that(desc = "Test that RLSeq works", {
         RLSeq::RLSeq(
             object = rlr,
             quiet = TRUE,
-            useMask=FALSE
+            useMask = FALSE,
+            ntimes = 10
         ),
         "RLRanges"
     )

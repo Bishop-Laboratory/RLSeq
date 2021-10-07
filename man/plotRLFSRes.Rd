@@ -33,6 +33,5 @@ rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 plotRLFSRes(rlr)
 
 # Plot the Fourier transform instead
-plotRLFSRes(rlr, fft=TRUE)
-
+plotRLFSRes(rlr, fft = TRUE)
 }

@@ -18,8 +18,10 @@ setValidity(
         ## Verification of other options ##
 
         # Mode
-        if (!object@metadata$mode %in% auxdata$available_modes$mode &&
-            length(object@metadata$mode) > 1) {
+        if (
+            !object@metadata$mode %in% auxdata$available_modes$mode &&
+                length(object@metadata$mode) > 1
+        ) {
             stop("'mode' must be one of auxdata$available_modes$mode or empty.")
         }
 
@@ -37,8 +39,10 @@ setValidity(
         }
 
         # label
-        if (!object@metadata$label %in% c("POS", "NEG") &&
-            object@metadata$label != "") {
+        if (
+            !object@metadata$label %in% c("POS", "NEG") &&
+                object@metadata$label != ""
+        ) {
             stop(
                 "'label' must be one of 'POS'",
                 " or 'NEG'-- or be unspecified."
@@ -47,8 +51,10 @@ setValidity(
 
         # coverage
         coverage <- object@metadata$coverage
-        if (object@metadata$coverage != "" &&
-            (!file.exists(coverage) && !urlExists(coverage))) {
+        if (
+            object@metadata$coverage != "" &&
+                (!file.exists(coverage) && !urlExists(coverage))
+        ) {
             stop(
                 "Coverage could not be found. Content of 'coverage' slot: ",
                 coverage, ". Set coverage with coverage(object) <-"
@@ -101,29 +107,28 @@ setMethod(
 #' Construct RLRanges Dataset
 #'
 #' \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
-#' and metadata about the R-loop-mapping experiment, along with results from 
+#' and metadata about the R-loop-mapping experiment, along with results from
 #' the analyses in \code{RLSeq}.
 #'
 #' @param peaks Path/URL to peak file or a GRanges object.
 #' @param coverage Path/URL to bigWig file. If not supplied, correlation tests
 #'  will be skipped.
-#' @param genome UCSC genome ID. Acceptable types are listed in 
+#' @param genome UCSC genome ID. Acceptable types are listed in
 #' \code{RLSeq:::auxdata$available_genomes}.
 #' @param mode Type of R-loop mapping from which peaks and coverage were
-#' derived. Acceptable types are listed in 
+#' derived. Acceptable types are listed in
 #' \code{RLSeq:::auxdata$available_modes$mode}. Can be unspecified.
 #' @param label "POS" (positive R-loop-mapping sample; e.g., DRIP-Seq S9.6 -RNH1)
 #' or "NEG" (negative control sample; e.g., DRIP-Seq S9.6 +RNH1 or Input).
 #' Can be unspecified.
-#' @param sampleName A unique name for identifying this sample. 
+#' @param sampleName A unique name for identifying this sample.
 #' Can be unspecified.
 #' @param qcol The name of the metadata column which contains the adjusted p
-#'  value. 
-#' If not specified, the last column will be chosen (standard for .broadPeak 
+#'  value or the column number corresponding to the adjusted p value in `peaks`.
+#' If not specified, the last column will be chosen (standard for .broadPeak
 #' files).
-#' If FALSE or if no metadata columns exist, it will be left blank and some 
+#' If FALSE or if no metadata columns exist, it will be left blank and some
 #' operations in \code{report()} will not fully run.
-#' @param quiet If TRUE, messages and warnings are suppressed. Default: FALSE.
 #' @return An object of class "RLRanges".
 #' @examples
 #'
@@ -134,7 +139,7 @@ setMethod(
 #'
 #' # Get RLRanges object
 #' rlr <- RLRanges(pks,
-#'     coverage = cvg, genome = "hg38", label="NEG",
+#'     coverage = cvg, genome = "hg38", label = "NEG",
 #'     mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
 #' )
 #' @export
@@ -144,26 +149,27 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
     mode = character(1),
     label = character(1),
     sampleName = "User-selected sample",
-    qcol = NULL,
-    quiet = FALSE) {
+    qcol = NULL) {
 
     # Obtain GRanges -- works even if file-path given
     peaks <- regioneR::toGRanges(peaks)
-    
+
     # Set the qval column
     md <- as.data.frame(methods::slot(peaks, "elementMetadata"))
-    if (ncol(md) != 0 & ! isFALSE(qcol)) {
+    if (ncol(md) != 0 & !isFALSE(qcol)) {
         if (is.null(qcol)) {
             qcol <- colnames(md)[ncol(md)]
-        } 
+        } else if (is.numeric(qcol)) {
+            qcol <- colnames(as.data.frame(peaks))[qcol]
+        }
         colnames(
             methods::slot(peaks, "elementMetadata")
         )[colnames(md) == qcol] <- "qval"
     } else {
-        if (! quiet) {
-            warning("No qcol (padjusted) column available...",
-                    " This will limit some operations in report().")
-        }
+        warning(
+            "No qcol (padjusted) column available...",
+            " This will limit some operations in report()."
+        )
     }
 
     # Add in genome info
@@ -173,29 +179,29 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
     # Add in seq info if not already available
     if (any(is.na(GenomeInfoDb::seqinfo(peaks)@seqlengths))) {
         si <- GenomeInfoDb::getChromInfoFromUCSC(genome, as.Seqinfo = TRUE)
-        if (quiet) {
-            suppressWarnings(
-                GenomeInfoDb::seqlevels(peaks) <- GenomeInfoDb::seqlevels(si)
-            )
-            suppressWarnings(GenomeInfoDb::seqinfo(peaks) <- si)
-        } else {
-            GenomeInfoDb::seqlevels(peaks) <- GenomeInfoDb::seqlevels(si)
-            GenomeInfoDb::seqinfo(peaks) <- si
-        }
+        GenomeInfoDb::seqlevels(
+            peaks,
+            pruning.mode = "coarse"
+        ) <- GenomeInfoDb::seqlevels(si)
+        GenomeInfoDb::seqinfo(peaks) <- si
 
         # Trim out-of-bounds ranges
         peaks <- GenomicRanges::trim(peaks)
     }
-    
+
     # Normalize coverage path
     if (coverage != "") {
-        if (! urlExists(coverage) && file.exists(coverage)) {
+        if (!urlExists(coverage) && file.exists(coverage)) {
             # POS: It is a file, which exists. Absolute path.
-            coverage <- file.path(normalizePath(dirname(coverage)), 
-                                  basename(coverage))
-        } else if (! urlExists(coverage)) {
-            stop("Coverage could not be found. Content of 'coverage': ",
-                coverage)
+            coverage <- file.path(
+                normalizePath(dirname(coverage)),
+                basename(coverage)
+            )
+        } else if (!urlExists(coverage)) {
+            stop(
+                "Coverage could not be found. Content of 'coverage': ",
+                coverage
+            )
         }
     }
 
@@ -224,34 +230,33 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 #' @param object RLRanges object.
 #' @param resultName Name of the result slot to access. See details.
 #' @return The contents of the requested slot.
-#' @details 
-#' 
+#' @details
+#'
 #' ## Slots available
-#' 
-#' \strong{"featureEnrichment"} The \code{tbl} generated from running the 
+#'
+#' \strong{"featureEnrichment"} The \code{tbl} generated from running the
 #' \code{featureEnrich()} function.
-#' 
-#' \strong{"correlationMat"}. The \code{matrix} generated from running the 
+#'
+#' \strong{"correlationMat"}. The \code{matrix} generated from running the
 #' \code{corrAnalyze()} function.
-#' 
-#' \strong{"rlfsRes"}. The \code{list} generated from running the 
+#'
+#' \strong{"rlfsRes"}. The \code{list} generated from running the
 #' \code{analyzeRLFS()} function.
-#' 
-#' \strong{"geneAnnoRes"}. The \code{tbl} generated from running the 
+#'
+#' \strong{"geneAnnoRes"}. The \code{tbl} generated from running the
 #' \code{geneAnnotation()} function.
-#' 
-#' \strong{"predictRes"}. The \code{list} generated from running the 
+#'
+#' \strong{"predictRes"}. The \code{list} generated from running the
 #' \code{predictCondition()} function.
-#' 
-#' \strong{"rlRegionRes"}. The \code{list} generated from running the 
+#'
+#' \strong{"rlRegionRes"}. The \code{list} generated from running the
 #' \code{rlRegionTest()} function.
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
-#' 
+#'
 #' rlresult(rlr, "predictRes")
-#' 
 #' @export
 rlresult <- function(object, resultName) {
 
@@ -270,20 +275,20 @@ rlresult <- function(object, resultName) {
 
 #' Construct RLResults Object
 #'
-#' \code{RLResults} is a class used internally for storing the 
+#' \code{RLResults} is a class used internally for storing the
 #' results of running
 #' \code{RLSeq} operations on an \code{RLRanges} object.
-#' @slot featureEnrichment The \code{tbl} generated from running the 
+#' @slot featureEnrichment The \code{tbl} generated from running the
 #' \code{featureEnrich()} function.
-#' @slot correlationMat The \code{matrix} generated from running the 
+#' @slot correlationMat The \code{matrix} generated from running the
 #' \code{corrAnalyze()} function.
-#' @slot rlfsRes The \code{list} generated from running the 
+#' @slot rlfsRes The \code{list} generated from running the
 #' \code{analyzeRLFS()} function.
-#' @slot geneAnnoRes The \code{tbl} generated from running the 
+#' @slot geneAnnoRes The \code{tbl} generated from running the
 #' \code{geneAnnotation()} function.
-#' @slot predictRes The \code{list} generated from running the 
+#' @slot predictRes The \code{list} generated from running the
 #' \code{predictCondition()} function.
-#' @slot rlRegionRes The \code{list} generated from running the 
+#' @slot rlRegionRes The \code{list} generated from running the
 #' \code{rlRegionTest()} function.
 setClass(
     "RLResults",

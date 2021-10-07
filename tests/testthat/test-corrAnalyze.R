@@ -17,5 +17,4 @@ test_that(desc = "Corr Analyze returns a numeric matrix", {
             )
         )
     }
-    
 })

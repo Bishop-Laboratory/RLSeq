@@ -31,7 +31,5 @@ if (.Platform$OS.type != "windows") {
 
     # run corrAnalyze
     rlr <- corrAnalyze(rlr)
-    
 }
-
 }
