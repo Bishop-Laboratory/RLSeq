@@ -8,6 +8,13 @@
 
 <title>Run RLSeq — RLSeq • RLSeq</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -41,6 +48,7 @@
 
 <meta property="og:title" content="Run RLSeq — RLSeq" />
 <meta property="og:description" content="Runs the full RLSeq pipeline." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -132,7 +140,7 @@
     <p>Runs the full RLSeq pipeline.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>RLSeq</span><span class='op'>(</span><span class='va'>object</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>RLSeq</span><span class='op'>(</span><span class='va'>object</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span>, skip <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,6 +154,11 @@
       <td><p>If TRUE, messages are suppressed. Default: FALSE.</p></td>
     </tr>
     <tr>
+      <th>skip</th>
+      <td><p>Analysis steps to skip.
+Default: NULL. See details for options.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Arguments passed to analyzeRLFS. See <a href='analyzeRLFS.html'>analyzeRLFS</a>.</p></td>
     </tr>
@@ -153,24 +166,29 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An RLRanges object with all results available.</p>
+    <p>An RLRanges object with results available.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>RLSeq()</code> function does all of the following:</p>
-<ol>
-<li><p>RLFS Perm Test. Runs the <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> function to test the
-enrichment of user-supplied ranges within R-loop-forming sequences.</p></li>
-<li><p>Predict Condition. Runs the <code><a href='predictCondition.html'>predictCondition()</a></code> function to
-predict whether the user-supplied sample robustly maps R-loops or not.</p></li>
-<li><p>Feature enrichment test. Runs the <code><a href='featureEnrich.html'>featureEnrich()</a></code> function to
-test the enrichment of user-supplied ranges within R-loop-relevant genomic features.</p></li>
-<li><p>Correlation Analysis. Runs the <code><a href='corrAnalyze.html'>corrAnalyze()</a></code> function to test
-the correlation of user-supplied R-loop signal with other samples in RLBase around
-"gold-standard" R-loop regions.</p></li>
-<li><p>Gene annotation. Runs the <code><a href='geneAnnotation.html'>geneAnnotation()</a></code> function to find the overlap
-of genes with the user-supplied ranges.</p></li>
-<li><p>R-loop Region Analysis. Runs the <code><a href='rlRegionTest.html'>rlRegionTest()</a></code> function to find
-the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).</p></li>
+    <p>The <code>RLSeq()</code> function does all of the following by default:</p><ol>
+<li><p><strong>RLFS Perm Test</strong>. Runs the <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> function to test the
+enrichment of user-supplied ranges within R-loop-forming sequences.
+<em>Cannot be skipped.</em></p></li>
+<li><p><strong>Predict Condition</strong>. Runs the <code><a href='predictCondition.html'>predictCondition()</a></code> function to
+predict whether the user-supplied sample robustly maps R-loops or not.
+<em>Cannot be skipped.</em> <a href='https://bishop-laboratory.github.io/RLHub/reference/models.html'>RLHub::models</a>.</p></li>
+<li><p><strong>Feature enrichment test</strong>. Runs the <code><a href='featureEnrich.html'>featureEnrich()</a></code> function to
+test the enrichment of user-supplied ranges within R-loop-relevant
+genomic features. Skip with <code>skip="featureEnrich"</code>. See also
+<a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a>.</p></li>
+<li><p><strong>Correlation Analysis</strong>. Runs the <code><a href='corrAnalyze.html'>corrAnalyze()</a></code> function to test
+the correlation of user-supplied R-loop signal with other samples in
+RLBase around "gold-standard" R-loop regions.
+Skip with <code>skip="corrAnalyze"</code>. See also <a href='https://bishop-laboratory.github.io/RLHub/reference/gs_signal.html'>RLHub::gs_signal</a>.</p></li>
+<li><p><strong>Gene annotation</strong>. Runs the <code><a href='geneAnnotation.html'>geneAnnotation()</a></code> function to find the overlap
+of genes with the user-supplied ranges. Skip with <code>skip="geneAnnotation"</code>.</p></li>
+<li><p><strong>R-loop Region Analysis</strong>. Runs the <code><a href='rlRegionTest.html'>rlRegionTest()</a></code> function to find
+the overlap of user-supplied ranges with consensus R-loop sites
+(RL-Regions). Skip with <code>skip="rlRegionTest"</code>. See also <a href='https://bishop-laboratory.github.io/RLHub/reference/rlregions.html'>RLHub::rlregions</a>.</p></li>
 </ol>
 
 
@@ -180,9 +198,12 @@ the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).</p
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ext-data"</span>, <span class='st'>"rlrsmall.rds"</span>, package <span class='op'>=</span> <span class='st'>"RLSeq"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Run RLSeq</span>
-<span class='co'># `useMask=FALSE` &amp; `ntime=10` for demonstration purposes only.</span>
-<span class='co'># For an accurate analysis, use `rlr &lt;- RLSeq(rlr)`</span>
-<span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'>RLSeq</span><span class='op'>(</span><span class='va'>rlr</span>, useMask <span class='op'>=</span> <span class='cn'>FALSE</span>, ntimes <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='co'># `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.</span>
+<span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'>RLSeq</span><span class='op'>(</span>
+    <span class='va'>rlr</span>, useMask <span class='op'>=</span> <span class='cn'>FALSE</span>, ntimes <span class='op'>=</span> <span class='fl'>10</span>,
+    skip<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'featureEnrich'</span>, <span class='st'>'corrAnalyze'</span>, <span class='st'>'geneAnnotation'</span>, <span class='st'>'rlRegionTest'</span><span class='op'>)</span>
+<span class='op'>)</span>
+
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -8,6 +8,13 @@
 
 <title>Plot Enrichment Test Results — plotEnrichment • RLSeq</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -42,7 +49,8 @@
 <meta property="og:title" content="Plot Enrichment Test Results — plotEnrichment" />
 <meta property="og:description" content="Creates a list of plots, one for each annotation database which display the
 user-supplied sample in comparison to the samples in RLBase. This
-will only work if using non-custom annotations." />
+will only work if you used default annotations with featureEnrich." />
+<meta property="og:image" content="/logo.png" />
 
 
 
@@ -133,12 +141,11 @@ will only work if using non-custom annotations." />
     <div class="ref-description">
     <p>Creates a list of plots, one for each annotation database which display the
 user-supplied sample in comparison to the samples in RLBase. This
-will only work if using non-custom annotations.</p>
+will only work if you used default annotations with <a href='featureEnrich.html'>featureEnrich</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotEnrichment</span><span class='op'>(</span>
   <span class='va'>object</span>,
-  modes <span class='op'>=</span> <span class='cn'>NULL</span>,
   pred_POS_only <span class='op'>=</span> <span class='cn'>TRUE</span>,
   label_POS_only <span class='op'>=</span> <span class='cn'>FALSE</span>,
   splitby <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"none"</span>, <span class='st'>"prediction"</span>, <span class='st'>"label"</span><span class='op'>)</span>,
@@ -153,10 +160,6 @@ will only work if using non-custom annotations.</p>
     <tr>
       <th>object</th>
       <td><p>The tibble object obtained from running <code>featureEnrich</code>.</p></td>
-    </tr>
-    <tr>
-      <th>modes</th>
-      <td><p>Which modes to include in plot? If empty, all modes included.</p></td>
     </tr>
     <tr>
       <th>pred_POS_only</th>
@@ -199,23 +202,9 @@ Default: FALSE</p></td>
 <span class='co'># Example dataset with featureEnrich() already run.</span>
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ext-data"</span>, <span class='st'>"rlrsmall.rds"</span>, package <span class='op'>=</span> <span class='st'>"RLSeq"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># Plot enrichment</span>
-<span class='fu'>plotEnrichment</span><span class='op'>(</span><span class='va'>rlr</span><span class='op'>)</span>
-
-<span class='co'># split by prediction</span>
+<span class='co'># Make plots, split by prediction</span>
 <span class='fu'>plotEnrichment</span><span class='op'>(</span><span class='va'>rlr</span>, pred_POS_only <span class='op'>=</span> <span class='cn'>FALSE</span>, splitby <span class='op'>=</span> <span class='st'>"prediction"</span><span class='op'>)</span>
 
-<span class='co'># split by "label" and only return plotting data</span>
-<span class='fu'>plotEnrichment</span><span class='op'>(</span><span class='va'>rlr</span>,
-    pred_POS_only <span class='op'>=</span> <span class='cn'>FALSE</span>, splitby <span class='op'>=</span> <span class='st'>"label"</span>,
-    returnData <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span>
-
-<span class='co'># Only include DRIP-family</span>
-<span class='fu'>plotEnrichment</span><span class='op'>(</span><span class='va'>rlr</span>,
-    modes <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"DRIP"</span>, <span class='st'>"DRIPc"</span>, <span class='st'>"qDRIP"</span>, <span class='st'>"sDRIP"</span>, <span class='st'>"ssDRIP"</span><span class='op'>)</span>,
-    pred_POS_only <span class='op'>=</span> <span class='cn'>FALSE</span>, splitby <span class='op'>=</span> <span class='st'>"prediction"</span>
-<span class='op'>)</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
