@@ -4,15 +4,13 @@
 \alias{geneAnnotation}
 \title{Annotate R-Loops with Genes}
 \usage{
-geneAnnotation(object, txdb = NULL, quiet = FALSE)
+geneAnnotation(object, txdb = NULL)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
 \item{txdb}{The TxDb or EnsDb object containing gene annotations. If not
 supplied, annotations will be automatically downloaded from AnnotationHub.}
-
-\item{quiet}{If TRUE, messages and warnings are suppressed.}
 }
 \value{
 An RLRanges object with genes overlaps included.

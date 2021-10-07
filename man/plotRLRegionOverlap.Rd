@@ -4,13 +4,17 @@
 \alias{plotRLRegionOverlap}
 \title{Plot RL-Region overlap with RLRanges}
 \usage{
-plotRLRegionOverlap(object, returnData = FALSE, ...)
+plotRLRegionOverlap(object, returnData = FALSE, rlregions_table = NULL, ...)
 }
 \arguments{
 \item{object}{An RLRanges object with \code{rlRegionTest()} already run.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
+
+\item{rlregions_table}{The table of RLRegions to overlap sample ranges with.
+Obtained from RLHUb using \code{RLHub::rlregions_meta()}. Loaded from RLHub if
+not supplied. Default: NULL.}
 
 \item{...}{Additional arguments passed to \code{VennDiagram::venn.diagram()}}
 }

@@ -76,7 +76,6 @@ Imports:
     ComplexHeatmap,
     AnnotationHub,
     VennDiagram,
-    futile.logger,
     callr,
     circlize,
     ggplotify,

@@ -6,31 +6,34 @@
 #' @param mask GRanges object containing masked genomic ranges.
 #'  Not needed unless masked genome unavailable (see \code{RLSeq:::genomeMasks}).
 #'  Custom masks can be generated using regioneR::getMask().
-#' @param useMask If FALSE, masked genome is not used. This is 
+#' @param useMask If FALSE, masked genome is not used. This is
 #' not recommended unless a mask is unavailable as it can lead to spurious
 #' results. Default: TRUE.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param noZ If TRUE, Z-score distribution is not calculated. Default: FALSE.
-#' @param ... Arguments passed to `regioneR::permTest()`
+#' @param ntimes Number of permutations to perform (default: 100).
+#' @param stepsize The step size for calculating the Z score distribution.
+#' Default: 50. See also [regioneR::localZScore()].
+#' @param ... Arguments passed to [regioneR::permTest()].
 #' @return An RLRanges object with RLFS analysis results included.
 #' @examples
 #'
 #' # Example dataset
 #' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 #'
-#' # Perform RLFS analysis
-#' rlr <- analyzeRLFS(rlr)
+#' # Perform RLFS analysis (remove ntimes=2 and noZ=TRUE for a typical analysis)
+#' rlr <- analyzeRLFS(rlr, ntimes = 2, noZ = TRUE)
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
-analyzeRLFS <- function(
-    object,
+analyzeRLFS <- function(object,
     mask = NULL,
     quiet = FALSE,
     useMask = TRUE,
-    noZ=FALSE,
+    noZ = FALSE,
+    ntimes = 100,
+    stepsize = 50,
     ...) {
-    
     if (!quiet) message(" - Evaluating Inputs...")
 
     # Check RLFS, chrom_sizes, and mask
@@ -38,9 +41,10 @@ analyzeRLFS <- function(
     RLFS <- getRLFSAnno(object)
     chrom_sizes <- getChromSizes(object)
     if (is.null(mask) & useMask) {
-        available_masks <- gsub(names(genomeMasks),
-                                pattern = "\\.masked",
-                                replacement = ""
+        available_masks <- gsub(
+            names(genomeMasks),
+            pattern = "\\.masked",
+            replacement = ""
         )
         if (!genome %in% available_masks) {
             stop(
@@ -66,52 +70,50 @@ analyzeRLFS <- function(
     genomeNow <- GenomicRanges::GRanges(
         dplyr::mutate(chrom_sizes, start = 1, end = .data$size)
     )
-    
-    if (! is.null(mask) & useMask) {
+
+    if (!is.null(mask) & useMask) {
         GenomeInfoDb::seqlevels(
-            genomeNow, pruning.mode="coarse"
+            genomeNow,
+            pruning.mode = "coarse"
         ) <- GenomeInfoDb::seqlevels(mask)
         GenomeInfoDb::seqinfo(genomeNow) <- GenomeInfoDb::seqinfo(mask)
     }
 
     if (!quiet) message(" - Running permTest...")
-    
+
     # Run RegioneR
     gr <- GenomicRanges::GRanges(object)
+    gr <- GenomicRanges::trim(gr)
     if (useMask) {
-        pt <- suppressWarnings(
-            regioneR::permTest(
-                A = gr, B = RLFS,
-                genome = genomeNow,
-                mask = mask,
-                randomize.function = regioneR::circularRandomizeRegions,
-                evaluate.function = regioneR::numOverlaps,
-                alternative = "greater",
-                ...
-            )
+        pt <- regioneR::permTest(
+            A = gr, B = RLFS,
+            genome = genomeNow,
+            mask = mask,
+            randomize.function = regioneR::circularRandomizeRegions,
+            evaluate.function = regioneR::numOverlaps,
+            alternative = "greater",
+            ntimes = ntimes,
+            ...
         )
     } else {
-        pt <- suppressWarnings(
-            regioneR::permTest(
-                A = gr, B = RLFS,
-                genome = genomeNow,
-                randomize.function = regioneR::circularRandomizeRegions,
-                evaluate.function = regioneR::numOverlaps,
-                alternative = "greater",
-                ...
-            )
+        pt <- regioneR::permTest(
+            A = gr, B = RLFS,
+            genome = genomeNow,
+            randomize.function = regioneR::circularRandomizeRegions,
+            evaluate.function = regioneR::numOverlaps,
+            alternative = "greater",
+            ntimes = ntimes,
+            ...
         )
     }
-    
-    
+
+
     if (!quiet) message(" - Extracting pileup...")
 
-    if (! noZ) {
+    if (!noZ) {
         # Return Z scores
-        z <- suppressWarnings(
-            regioneR::localZScore(
-                A = gr, B = RLFS, pt, window = 5000, step = 50
-            )
+        z <- regioneR::localZScore(
+            A = gr, B = RLFS, pt, window = 5000, step = stepsize
         )
     } else {
         z <- NA
@@ -121,7 +123,7 @@ analyzeRLFS <- function(
         "perTestResults" = pt,
         "Z-scores" = z
     )
-    
+
     if (!quiet) message(" - Done.")
 
     return(object)

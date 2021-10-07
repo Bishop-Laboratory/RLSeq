@@ -13,10 +13,9 @@
 #'
 #' # Get a TMP file (only for example usae)
 #' tmp <- tempfile()
-#' 
+#'
 #' # Generate the report
 #' report(rlr, reportPath = tmp)
-#' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
@@ -33,9 +32,10 @@ report <- function(object,
         FUN.VALUE = logical(1)
     )
     if (any(!pkgs)) {
+        pks <- paste0(names(pkgs)[which(!pkgs)], collapse = '", "')
         stop(
             'Packages needed for report() but not installed: "',
-            paste0(names(pkgs)[which(!pkgs)], collapse = '", "'), '"'
+            pks, '"'
         )
     }
 

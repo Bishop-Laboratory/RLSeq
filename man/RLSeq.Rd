@@ -11,7 +11,7 @@ RLSeq(object, quiet = FALSE, ...)
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
-\item{...}{Arguments passed to analyzeRLFS.}
+\item{...}{Arguments passed to analyzeRLFS. See \link{analyzeRLFS}.}
 }
 \value{
 An RLRanges object with all results available.
@@ -44,6 +44,7 @@ the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).
 rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Run RLSeq
-rlr <- RLSeq(rlr)
-
+# `useMask=FALSE` & `ntime=10` for demonstration purposes only.
+# For an accurate analysis, use `rlr <- RLSeq(rlr)`
+rlr <- RLSeq(rlr, useMask = FALSE, ntimes = 10)
 }

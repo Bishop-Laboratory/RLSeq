@@ -32,5 +32,4 @@ tmp <- tempfile()
 
 # Generate the report
 report(rlr, reportPath = tmp)
-
 }

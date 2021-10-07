@@ -58,8 +58,10 @@ plotEnrichment(rlr)
 plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
 
 # split by "label" and only return plotting data
-plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "label",
-               returnData = TRUE)
+plotEnrichment(rlr,
+    pred_POS_only = FALSE, splitby = "label",
+    returnData = TRUE
+)
 
 # Only include DRIP-family
 plotEnrichment(rlr,

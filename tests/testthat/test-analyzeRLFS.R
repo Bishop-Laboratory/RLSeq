@@ -7,23 +7,22 @@ test_that(desc = "Analyze RLFS works", {
     expect_s4_class(
         RLSeq::analyzeRLFS(
             object = rlr,
-            noZ=TRUE,
-            ntimes=10,
+            noZ = TRUE,
+            ntimes = 10,
             quiet = TRUE
         ),
         "RLRanges"
     )
-    
+
     # With no mask
     expect_s4_class(
         RLSeq::analyzeRLFS(
             object = rlr,
-            noZ=TRUE,
+            noZ = TRUE,
             useMask = FALSE,
-            ntimes=10,
+            ntimes = 10,
             quiet = TRUE
         ),
         "RLRanges"
     )
-    
 })

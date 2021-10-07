@@ -5,7 +5,6 @@
 #' @param object An RLRanges object.
 #' @param txdb The TxDb or EnsDb object containing gene annotations. If not
 #' supplied, annotations will be automatically downloaded from AnnotationHub.
-#' @param quiet If TRUE, messages and warnings are suppressed.
 #' @return An RLRanges object with genes overlaps included.
 #' @examples
 #'
@@ -23,7 +22,7 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
-geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
+geneAnnotation <- function(object, txdb = NULL) {
 
     # Get genome from object
     genome <- GenomeInfoDb::genome(object)[1]
@@ -36,31 +35,16 @@ geneAnnotation <- function(object, txdb = NULL, quiet = FALSE) {
 
     # If no TxDb provided, obtain from annotationhub
     if (is.null(txdb)) {
-        if (quiet) {
-            suppressMessages(suppressWarnings({
-                ah <- AnnotationHub::AnnotationHub()
-                ahDb <- AnnotationHub::query(
-                    x = ah,
-                    pattern = c("TxDb", "UCSC", "knownGene", genome)
-                )
-                txdb <- ah[[names(which.max(ahDb@.db_uid))]]
-            }))
-        } else {
-            ah <- AnnotationHub::AnnotationHub()
-            ahDb <- AnnotationHub::query(
-                x = ah,
-                pattern = c("TxDb", "UCSC", "knownGene", genome)
-            )
-            txdb <- ah[[names(which.max(ahDb@.db_uid))]]
-        }
+        ah <- AnnotationHub::AnnotationHub()
+        ahDb <- AnnotationHub::query(
+            x = ah,
+            pattern = c("TxDb", "UCSC", "knownGene", genome)
+        )
+        txdb <- ah[[names(which.max(ahDb@.db_uid)), verbose = FALSE]]
     }
 
     # Get the ensembl genes and conver to UCSC style
-    if (quiet) {
-        edb <- suppressMessages(GenomicFeatures::genes(txdb))
-    } else {
-        edb <- GenomicFeatures::genes(txdb)
-    }
+    edb <- GenomicFeatures::genes(txdb)
     GenomeInfoDb::seqlevelsStyle(edb) <- "UCSC"
 
     # Wrangle EnsDb to tibble

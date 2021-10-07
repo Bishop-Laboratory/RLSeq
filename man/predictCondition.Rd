@@ -31,6 +31,5 @@ rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 rlr <- predictCondition(rlr)
 
 # With rlfsRes
-predRes <- predictCondition(rlfsRes=rlresult(rlr, "rlfsRes"))
-
+predRes <- predictCondition(rlfsRes = rlresult(rlr, "rlfsRes"))
 }

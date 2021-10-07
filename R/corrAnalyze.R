@@ -2,8 +2,8 @@
 #'
 #' Finds the pairwise correlation in signal around gold-standard R-Loop sites
 #' between the query sample and the RLBase database.
-#' 
-#' Currently, this does not work on windows. 
+#'
+#' Currently, this does not work on windows.
 #'
 #' @param object An RLRanges object.
 #' @param force Force corrAnalyze() to run, even if on Windows. Default: FALSE.
@@ -15,22 +15,20 @@
 #'
 #' # corrAnalyze does not work on Windows OS
 #' if (.Platform$OS.type != "windows") {
-#' 
+#'
 #'     # run corrAnalyze
 #'     rlr <- corrAnalyze(rlr)
-#'     
 #' }
-#' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
-corrAnalyze <- function(object, force=FALSE) {
-    
+corrAnalyze <- function(object, force = FALSE) {
+
     # Check os
-    if (.Platform$OS.type == "windows" & ! force) {
+    if (.Platform$OS.type == "windows" & !force) {
         stop(
-            "corrAnalyze() does not work on Windows.",
-            " Override this message with `force=TRUE`."
+            "corrAnalyze does not work on Windows.",
+            " Override with force=TRUE."
         )
     }
 
@@ -48,7 +46,7 @@ corrAnalyze <- function(object, force=FALSE) {
     }
 
     # Load GS signal
-    gsSignalRLBase <- suppressMessages(RLHub::gs_signal())
+    gsSignalRLBase <- RLHub::gs_signal(quiet = TRUE)
 
     # Get the signal around GS R-loop sites
     bw <- getGSSignal(coverage, gssignal = gsSignalRLBase)
@@ -87,7 +85,7 @@ corrAnalyze <- function(object, force=FALSE) {
     gsSignalRLBase <- gsSignalRLBase[
         , which(colnames(gsSignalRLBase) != object@metadata$sampleName)
     ]
-    
+
     # Combine with the original matrix
     combinedMat <- gsSignalRLBase %>%
         dplyr::inner_join(

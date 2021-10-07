@@ -41,8 +41,8 @@ rlRegionTest <- function(object) {
         )
 
     # Get RLRegions
-    rlregions_table <- suppressMessages(RLHub::rlregions_meta())
-    
+    rlregions_table <- RLHub::rlregions_meta(quiet = TRUE)
+
     # Get the RL Regions
     rlReg <- tableToRegions(rlregions_table)
 

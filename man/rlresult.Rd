@@ -44,5 +44,4 @@ Result accessor function
 rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 rlresult(rlr, "predictRes")
-
 }

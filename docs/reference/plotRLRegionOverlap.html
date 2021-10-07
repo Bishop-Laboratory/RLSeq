@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot RLFS analysis results — plotRLFSRes • RLSeq</title>
+<title>Plot RL-Region overlap with RLRanges — plotRLRegionOverlap • RLSeq</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot RLFS analysis results — plotRLFSRes" />
-<meta property="og:description" content="Plots the results of the R-loop-forming sequences analysis." />
+<meta property="og:title" content="Plot RL-Region overlap with RLRanges — plotRLRegionOverlap" />
+<meta property="og:description" content="Plot RL-Region overlap with RLRanges" />
 
 
 
@@ -123,55 +123,55 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot RLFS analysis results</h1>
+    <h1>Plot RL-Region overlap with RLRanges</h1>
     <small class="dont-index">Source: <a href='https://github.com/Bishop-Laboratory/RLSeq/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
-    <div class="hidden name"><code>plotRLFSRes.Rd</code></div>
+    <div class="hidden name"><code>plotRLRegionOverlap.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plots the results of the R-loop-forming sequences analysis.</p>
+    <p>Plot RL-Region overlap with RLRanges</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>object</span>, plotName <span class='op'>=</span> <span class='cn'>NULL</span>, fft <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plotRLRegionOverlap</span><span class='op'>(</span><span class='va'>object</span>, returnData <span class='op'>=</span> <span class='cn'>FALSE</span>, rlregions_table <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges with <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> already run. Alternatively,
-can be the RLFS results object from an RLRanges.</p></td>
+      <td><p>An RLRanges object with <code><a href='rlRegionTest.html'>rlRegionTest()</a></code> already run.</p></td>
     </tr>
     <tr>
-      <th>plotName</th>
-      <td><p>A Sample name used for plotting.
-If blank, the RLRanges name is used.</p></td>
+      <th>returnData</th>
+      <td><p>If TRUE, plot data is returned instead of plotting.
+Default: FALSE</p></td>
     </tr>
     <tr>
-      <th>fft</th>
-      <td><p>If TRUE, the fourier transform of Z-score is plotted instead.
-Default: FALSE.</p></td>
+      <th>rlregions_table</th>
+      <td><p>The table of RLRegions to overlap sample ranges with.
+Obtained from RLHUb using <code><a href='https://bishop-laboratory.github.io/RLHub/reference/rlregions.html'>RLHub::rlregions_meta()</a></code>. Loaded from RLHub if
+not supplied. Default: NULL.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed to <code>ggplot</code>.</p></td>
+      <td><p>Additional arguments passed to <code><a href='https://rdrr.io/pkg/VennDiagram/man/venn.diagram.html'>VennDiagram::venn.diagram()</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot object.</p>
+    <p>A venn diagram ggplot object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">
-<span class='co'># Example RLRanges dataset with analyzeRLFS() already run.</span>
+<span class='co'># Example dataset with rlRegionTest() already run.</span>
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ext-data"</span>, <span class='st'>"rlrsmall.rds"</span>, package <span class='op'>=</span> <span class='st'>"RLSeq"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># Plot RLFS res</span>
-<span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>rlr</span><span class='op'>)</span>
+<span class='co'># Plot RL-Region overlap</span>
+<span class='fu'>plotRLRegionOverlap</span><span class='op'>(</span><span class='va'>rlr</span><span class='op'>)</span>
 
-<span class='co'># Plot the Fourier transform instead</span>
-<span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>rlr</span>, fft <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'># Return data only</span>
+<span class='fu'>plotRLRegionOverlap</span><span class='op'>(</span><span class='va'>rlr</span>, returnData <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

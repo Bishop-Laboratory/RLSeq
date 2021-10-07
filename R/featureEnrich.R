@@ -8,18 +8,18 @@
 #' @param annotations Annotation list. See details.
 #' @param downsample If a numeric, data will be down sampled to the requested
 #'  number of peaks.
-#' This improves the speed of genomic shuffling and 
+#' This improves the speed of genomic shuffling and
 #' helps prevent p-value inflation.
 #' If FALSE, then downsampling will not be performed. Default: 10000.
 #' @param quiet If TRUE, messages will be suppressed. Default: FALSE
 #' the same format as RLSeq::annotationLst.
 #' @details
 #'
-#' ## annotations 
-#' 
-#' \strong{RLHub}: \code{RLHub::annots_full_hg38()}, 
+#' ## annotations
+#'
+#' \strong{RLHub}: \code{RLHub::annots_full_hg38()},
 #' for example, will return the full suite of annotations for the hg38 genome.
-#' 
+#'
 #' \strong{Custom}: For custom annotations, the only requirement is that \code{annotations} is a
 #' named list of \code{tbl}s in which each \code{tbl} follows the structure:
 #'
@@ -79,10 +79,10 @@
 #' @importFrom dplyr .data
 #' @export
 featureEnrich <- function(object,
-                          annotype = c("primary", "full"),
-                          annotations = NULL,
-                          downsample = 10000,
-                          quiet = FALSE) {
+    annotype = c("primary", "full"),
+    annotations = NULL,
+    downsample = 10000,
+    quiet = FALSE) {
 
     # Cutoff for stats tests
     MIN_ROWS <- 200
@@ -95,15 +95,9 @@ featureEnrich <- function(object,
             "Please supply custom ones of use one of hg38, mm10"
         )
     } else if (is.null(annotations)) {
-        if (! quiet) {
-            annotations <- utils::getFromNamespace(
-                paste0("annots_", annotype[1], "_", genome), "RLHub"
-            )() 
-        } else {
-            annotations <- suppressMessages(utils::getFromNamespace(
-                paste0("annots_", annotype[1], "_", genome), "RLHub"
-            )())
-        }
+        annotations <- utils::getFromNamespace(
+            paste0("annots_", annotype[1], "_", genome), "RLHub"
+        )(quiet = TRUE)
     }
 
     # Get annotations
@@ -148,9 +142,8 @@ featureEnrich <- function(object,
     annots <- annotations[vapply(annotations, nrow, numeric(1)) > MIN_ROWS]
 
     # Test on all annotations
-    if (!quiet) {
-        message(" - Calculating enrichment...")
-    }
+    if (!quiet) message(" - Calculating enrichment...")
+
     annoRes <- lapply(
         seq(annots),
         function(j) {
@@ -199,9 +192,7 @@ featureEnrich <- function(object,
     ) %>%
         dplyr::bind_rows()
 
-    if (!quiet) {
-        message(" - Done")
-    }
+    if (!quiet) message(" - Done")
 
     # Add to object
     methods::slot(object@metadata$results,
@@ -219,7 +210,7 @@ featureEnrich <- function(object,
 #' @param x The R-loop peaks to test.
 #' @param xshuff x, but shuffled around the genome to build a control peakset.
 #' @param y The annotations against which to test x.
-#' @param chromSizeTbl A tibble containing the sizes of each 
+#' @param chromSizeTbl A tibble containing the sizes of each
 #' chromosome in x and y.
 #' @param quiet If TRUE, messages will be suppressed. Default: FALSE
 #' @return A tibble containing the test results.
@@ -231,10 +222,8 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
     # Obtain distance test results (rel and abs). Based upon:
     # https://rnabioco.github.io/valr/articles/interval-stats.html
     reldist_rl <- valr::bed_reldist(x, y, detail = TRUE)
-    if (! length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
-        if (!quiet) {
-            warning("Not enough observations for interval tests...")
-        }
+    if (!length(reldist_rl$chrom) | nrow(x) < MIN_ROWS | nrow(y) < MIN_ROWS) {
+        if (!quiet) warning("Not enough observations for interval tests...")
 
         # Return results
         dplyr::tibble(
@@ -248,21 +237,11 @@ peak_stats <- function(x, xshuff, y, chromSizeTbl, quiet = FALSE) {
         )
     } else {
         reldist_shuf <- valr::bed_reldist(xshuff, y, detail = TRUE)
-        if (quiet) {
-            ks <- suppressWarnings(
-                stats::ks.test(
-                    x = reldist_rl$.reldist,
-                    y = reldist_shuf$.reldist,
-                    exact = FALSE
-                )
-            )
-        } else {
-            ks <- stats::ks.test(
-                x = reldist_rl$.reldist,
-                y = reldist_shuf$.reldist,
-                exact = FALSE
-            )
-        }
+        ks <- stats::ks.test(
+            x = reldist_rl$.reldist,
+            y = reldist_shuf$.reldist,
+            exact = FALSE
+        )
 
 
         pval_reldist <- ks$p.value

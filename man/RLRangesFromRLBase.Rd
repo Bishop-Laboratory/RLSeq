@@ -22,5 +22,4 @@ use with RLSeq.
 \examples{
 
 rlr <- RLRangesFromRLBase("SRX1070676")
-
 }

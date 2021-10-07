@@ -13,8 +13,7 @@ RLRanges(
   mode = character(1),
   label = character(1),
   sampleName = "User-selected sample",
-  qcol = NULL,
-  quiet = FALSE
+  qcol = NULL
 )
 }
 \arguments{
@@ -38,13 +37,11 @@ Can be unspecified.}
 Can be unspecified.}
 
 \item{qcol}{The name of the metadata column which contains the adjusted p
-value.
+value or the column number corresponding to the adjusted p value in \code{peaks}.
 If not specified, the last column will be chosen (standard for .broadPeak
 files).
 If FALSE or if no metadata columns exist, it will be left blank and some
 operations in \code{report()} will not fully run.}
-
-\item{quiet}{If TRUE, messages and warnings are suppressed. Default: FALSE.}
 }
 \value{
 An object of class "RLRanges".
@@ -63,7 +60,7 @@ cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
 
 # Get RLRanges object
 rlr <- RLRanges(pks,
-    coverage = cvg, genome = "hg38", label="NEG",
+    coverage = cvg, genome = "hg38", label = "NEG",
     mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
 )
 }

@@ -10,6 +10,8 @@ analyzeRLFS(
   quiet = FALSE,
   useMask = TRUE,
   noZ = FALSE,
+  ntimes = 100,
+  stepsize = 50,
   ...
 )
 }
@@ -28,7 +30,12 @@ results. Default: TRUE.}
 
 \item{noZ}{If TRUE, Z-score distribution is not calculated. Default: FALSE.}
 
-\item{...}{Arguments passed to \code{regioneR::permTest()}}
+\item{ntimes}{Number of permutations to perform (default: 100).}
+
+\item{stepsize}{The step size for calculating the Z score distribution.
+Default: 50. See also \code{\link[regioneR:localZScore]{regioneR::localZScore()}}.}
+
+\item{...}{Arguments passed to \code{\link[regioneR:permTest]{regioneR::permTest()}}.}
 }
 \value{
 An RLRanges object with RLFS analysis results included.
@@ -41,6 +48,6 @@ Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
 # Example dataset
 rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
-# Perform RLFS analysis
-rlr <- analyzeRLFS(rlr)
+# Perform RLFS analysis (remove ntimes=2 and noZ=TRUE for a typical analysis)
+rlr <- analyzeRLFS(rlr, ntimes = 2, noZ = TRUE)
 }

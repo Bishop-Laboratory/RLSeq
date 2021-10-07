@@ -62,7 +62,7 @@ getMask2 <- function(genome) {
     mask <- GenomicRanges::GRanges(seqinfo = seqinfo(bsgenome))
     for (chr in chrs) {
         if (!is.null(chr.masks[[chr]])) {
-            suppressWarnings(mask <- c(mask, chr.masks[[chr]]))
+            mask <- c(mask, chr.masks[[chr]])
         }
     }
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot RLFS analysis results — plotRLFSRes • RLSeq</title>
+<title>Generate an RLSeq Report — report • RLSeq</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot RLFS analysis results — plotRLFSRes" />
-<meta property="og:description" content="Plots the results of the R-loop-forming sequences analysis." />
+<meta property="og:title" content="Generate an RLSeq Report — report" />
+<meta property="og:description" content="Generate an RLSeq Report" />
 
 
 
@@ -123,55 +123,53 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot RLFS analysis results</h1>
-    <small class="dont-index">Source: <a href='https://github.com/Bishop-Laboratory/RLSeq/blob/master/R/plots.R'><code>R/plots.R</code></a></small>
-    <div class="hidden name"><code>plotRLFSRes.Rd</code></div>
+    <h1>Generate an RLSeq Report</h1>
+    <small class="dont-index">Source: <a href='https://github.com/Bishop-Laboratory/RLSeq/blob/master/R/report.R'><code>R/report.R</code></a></small>
+    <div class="hidden name"><code>report.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plots the results of the R-loop-forming sequences analysis.</p>
+    <p>Generate an RLSeq Report</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>object</span>, plotName <span class='op'>=</span> <span class='cn'>NULL</span>, fft <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>report</span><span class='op'>(</span><span class='va'>object</span>, reportPath <span class='op'>=</span> <span class='st'>"rlreport.html"</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges with <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> already run. Alternatively,
-can be the RLFS results object from an RLRanges.</p></td>
+      <td><p>An RLRanges object.</p></td>
     </tr>
     <tr>
-      <th>plotName</th>
-      <td><p>A Sample name used for plotting.
-If blank, the RLRanges name is used.</p></td>
+      <th>reportPath</th>
+      <td><p>A path indicating the report output HTML file.
+Default: "rlreport.html"</p></td>
     </tr>
     <tr>
-      <th>fft</th>
-      <td><p>If TRUE, the fourier transform of Z-score is plotted instead.
-Default: FALSE.</p></td>
+      <th>quiet</th>
+      <td><p>If TRUE, messages are suppressed. Default: FALSE.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed to <code>ggplot</code>.</p></td>
+      <td><p>Arguments passed to <code><a href='https://pkgs.rstudio.com/rmarkdown/reference/render.html'>rmarkdown::render()</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot object.</p>
+    <p>TRUE</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">
-<span class='co'># Example RLRanges dataset with analyzeRLFS() already run.</span>
+<span class='co'># Example data with RLSeq() already run.</span>
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"ext-data"</span>, <span class='st'>"rlrsmall.rds"</span>, package <span class='op'>=</span> <span class='st'>"RLSeq"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># Plot RLFS res</span>
-<span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>rlr</span><span class='op'>)</span>
+<span class='co'># Get a TMP file (only for example usae)</span>
+<span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span><span class='op'>(</span><span class='op'>)</span>
 
-<span class='co'># Plot the Fourier transform instead</span>
-<span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>rlr</span>, fft <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'># Generate the report</span>
+<span class='fu'>report</span><span class='op'>(</span><span class='va'>rlr</span>, reportPath <span class='op'>=</span> <span class='va'>tmp</span><span class='op'>)</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -3,6 +3,7 @@
 .Rhistory
 RLSeq.Rproj
 .Rdata
+VennDiagram*
 tests/**/*.html
 misc/**/*.rda
 data-raw/**/*.rda
