@@ -6,7 +6,6 @@
 \usage{
 plotEnrichment(
   object,
-  modes = NULL,
   pred_POS_only = TRUE,
   label_POS_only = FALSE,
   splitby = c("none", "prediction", "label"),
@@ -17,8 +16,6 @@ plotEnrichment(
 }
 \arguments{
 \item{object}{The tibble object obtained from running \code{featureEnrich}.}
-
-\item{modes}{Which modes to include in plot? If empty, all modes included.}
 
 \item{pred_POS_only}{If TRUE, only "POS" predicted samples included.
 Default: TRUE.}
@@ -44,28 +41,14 @@ A named list of ggplot objects.
 \description{
 Creates a list of plots, one for each annotation database which display the
 user-supplied sample in comparison to the samples in RLBase. This
-will only work if using non-custom annotations.
+will only work if you used default annotations with \link{featureEnrich}.
 }
 \examples{
 
 # Example dataset with featureEnrich() already run.
 rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
-# Plot enrichment
-plotEnrichment(rlr)
-
-# split by prediction
+# Make plots, split by prediction
 plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
 
-# split by "label" and only return plotting data
-plotEnrichment(rlr,
-    pred_POS_only = FALSE, splitby = "label",
-    returnData = TRUE
-)
-
-# Only include DRIP-family
-plotEnrichment(rlr,
-    modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-    pred_POS_only = FALSE, splitby = "prediction"
-)
 }
