@@ -4,38 +4,46 @@
 \alias{RLSeq}
 \title{Run RLSeq}
 \usage{
-RLSeq(object, quiet = FALSE, ...)
+RLSeq(object, quiet = FALSE, skip = NULL, ...)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
+\item{skip}{Analysis steps to skip.
+Default: NULL. See details for options.}
+
 \item{...}{Arguments passed to analyzeRLFS. See \link{analyzeRLFS}.}
 }
 \value{
-An RLRanges object with all results available.
+An RLRanges object with results available.
 }
 \description{
 Runs the full RLSeq pipeline.
 }
 \details{
-The \code{RLSeq()} function does all of the following:
-
+The \code{RLSeq()} function does all of the following by default:
 \enumerate{
-\item RLFS Perm Test. Runs the \code{analyzeRLFS()} function to test the
+\item \strong{RLFS Perm Test}. Runs the \code{analyzeRLFS()} function to test the
 enrichment of user-supplied ranges within R-loop-forming sequences.
-\item Predict Condition. Runs the \code{predictCondition()} function to
+\emph{Cannot be skipped.}
+\item \strong{Predict Condition}. Runs the \code{predictCondition()} function to
 predict whether the user-supplied sample robustly maps R-loops or not.
-\item Feature enrichment test. Runs the \code{featureEnrich()} function to
-test the enrichment of user-supplied ranges within R-loop-relevant genomic features.
-\item Correlation Analysis. Runs the \code{corrAnalyze()} function to test
-the correlation of user-supplied R-loop signal with other samples in RLBase around
-"gold-standard" R-loop regions.
-\item Gene annotation. Runs the \code{geneAnnotation()} function to find the overlap
-of genes with the user-supplied ranges.
-\item R-loop Region Analysis. Runs the \code{rlRegionTest()} function to find
-the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).
+\emph{Cannot be skipped.} \link[RLHub:models]{RLHub::models}.
+\item \strong{Feature enrichment test}. Runs the \code{featureEnrich()} function to
+test the enrichment of user-supplied ranges within R-loop-relevant
+genomic features. Skip with \code{skip="featureEnrich"}. See also
+\link[RLHub:annotations]{RLHub::annotations}.
+\item \strong{Correlation Analysis}. Runs the \code{corrAnalyze()} function to test
+the correlation of user-supplied R-loop signal with other samples in
+RLBase around "gold-standard" R-loop regions.
+Skip with \code{skip="corrAnalyze"}. See also \link[RLHub:gs_signal]{RLHub::gs_signal}.
+\item \strong{Gene annotation}. Runs the \code{geneAnnotation()} function to find the overlap
+of genes with the user-supplied ranges. Skip with \code{skip="geneAnnotation"}.
+\item \strong{R-loop Region Analysis}. Runs the \code{rlRegionTest()} function to find
+the overlap of user-supplied ranges with consensus R-loop sites
+(RL-Regions). Skip with \code{skip="rlRegionTest"}. See also \link[RLHub:rlregions]{RLHub::rlregions}.
 }
 }
 \examples{
@@ -44,7 +52,10 @@ the overlap of user-supplied ranges with consensus R-loop sites (RL-Regions).
 rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 
 # Run RLSeq
-# `useMask=FALSE` & `ntime=10` for demonstration purposes only.
-# For an accurate analysis, use `rlr <- RLSeq(rlr)`
-rlr <- RLSeq(rlr, useMask = FALSE, ntimes = 10)
+# `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.
+rlr <- RLSeq(
+    rlr, useMask = FALSE, ntimes = 10,
+    skip=c('featureEnrich', 'corrAnalyze', 'geneAnnotation', 'rlRegionTest')
+)
+
 }
