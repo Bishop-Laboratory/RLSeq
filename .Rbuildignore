@@ -8,7 +8,9 @@
 ^Meta$
 ^.*\.bw$
 ^.*rlreport\.html$
+^.*report\.html$
 ^.*rlreport_files.*$
+^.*report_files.*$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
