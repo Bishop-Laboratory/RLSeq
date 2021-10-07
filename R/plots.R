@@ -248,9 +248,8 @@ corrHeatmap <- function(object,
 #'
 #' Creates a list of plots, one for each annotation database which display the
 #' user-supplied sample in comparison to the samples in RLBase. This
-#' will only work if using non-custom annotations.
+#' will only work if you used default annotations with [featureEnrich].
 #' @param object The tibble object obtained from running \code{featureEnrich}.
-#' @param modes Which modes to include in plot? If empty, all modes included.
 #' @param pred_POS_only If TRUE, only "POS" predicted samples included.
 #' Default: TRUE.
 #' @param label_POS_only If TRUE, only "POS" labeled samples included. Default: FALSE.
@@ -269,28 +268,13 @@ corrHeatmap <- function(object,
 #' # Example dataset with featureEnrich() already run.
 #' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
 #'
-#' # Plot enrichment
-#' plotEnrichment(rlr)
-#'
-#' # split by prediction
+#' # Make plots, split by prediction
 #' plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
 #'
-#' # split by "label" and only return plotting data
-#' plotEnrichment(rlr,
-#'     pred_POS_only = FALSE, splitby = "label",
-#'     returnData = TRUE
-#' )
-#'
-#' # Only include DRIP-family
-#' plotEnrichment(rlr,
-#'     modes = c("DRIP", "DRIPc", "qDRIP", "sDRIP", "ssDRIP"),
-#'     pred_POS_only = FALSE, splitby = "prediction"
-#' )
 #' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @export
 plotEnrichment <- function(object,
-    modes = NULL,
     pred_POS_only = TRUE,
     label_POS_only = FALSE,
     splitby = c("none", "prediction", "label"),
@@ -315,11 +299,6 @@ plotEnrichment <- function(object,
     # Verify splitby
     stopifnot(splitby[1] %in% c("none", "prediction", "label"))
 
-    # Verify modes
-    if (!is.null(modes)) {
-        stopifnot(all(modes %in% auxdata$mode_cols$mode))
-    }
-
     # Get sample-level feature enrichment and RLBase samples
     if (is.null(rlbaseRes)) rlbaseRes <- RLHub::feat_enrich_samples(quiet = TRUE)
     if (is.null(rlsamples)) rlsamples <- RLHub::rlbase_samples(quiet = TRUE)
@@ -336,16 +315,12 @@ plotEnrichment <- function(object,
     sampleRes$prediction <- predres$prediction
 
     # Filter RLBase
-    if (!is.null(modes)) {
-        rlsamples <- dplyr::filter(rlsamples, .data$mode %in% {{ modes }})
-    }
     if (pred_POS_only) {
         rlsamples <- dplyr::filter(rlsamples, .data$prediction == "POS")
     }
     if (label_POS_only) {
         rlsamples <- dplyr::filter(rlsamples, .data$label == "POS")
     }
-
 
     # Wrangle the RLBase data
     rlbaseRes <- rlbaseRes[rlbaseRes$db %in% sampleRes$db, ]
@@ -392,8 +367,7 @@ plotEnrichment <- function(object,
     # Make selected explicit
     input_data$selected <- ifelse(input_data$experiment == usamp, usamp, "")
     input_data <- dplyr::distinct(
-        input_data, .data$db, .data$type, .data$experiment,
-        .keep_all = TRUE
+        input_data, .data$db, .data$type, .data$experiment, .keep_all = TRUE
     )
 
     # Build plots
