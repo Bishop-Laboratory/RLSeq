@@ -3,14 +3,73 @@
 \docType{data}
 \name{auxdata}
 \alias{auxdata}
-\title{Description}
+\title{Auxiliary Data}
 \format{
-An object of class \code{list} of length 11.
+An object of class \code{list} of length 10.
 }
 \usage{
 auxdata
 }
 \description{
-Description
+A list containing data used internally by RLSeq functions. See also the
+\code{data-raw/auxdata.R} script that was used to create it.
+}
+\details{
+\subsection{Structure}{
+
+A named list containing the following entries:
+\itemize{
+\item \code{db_cols}
+\itemize{
+\item A \code{tbl} with colors associated with each database in RLHub
+useful for plotting. See also \link[RLHub:annotations]{RLHub::annotations}.
+}
+\item \code{annotypes}
+\itemize{
+\item A \code{tbl} containing the annotation databases and annotation types
+available from RLBase. See also \link[RLHub:annotations]{RLHub::annotations}.
+}
+\item \code{ip_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with each "Immunoprecipitation
+type" (ip_type) in RLBase. See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{mode_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with each R-loop mapping
+mode in \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{heat_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with user-supplied data and
+RLBase data when running \link{corrHeatmap}.
+}
+\item \code{label_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with the labels in RLBase.
+See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{prediction_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with the predictions in RLBase.
+See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{available_modes}
+\itemize{
+\item A \code{tbl} containing the modes available in RLBase and associated metadata.
+See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{available_genomes}
+\itemize{
+\item A \code{character} showing all the official UCSC genomes available for use
+with RLSeq. See also \link{available_genomes}.
+}
+\item \code{misc_modes}
+\itemize{
+\item A \code{character} showing the R-loop mapping modes that are lumped into
+the 'misc' category for simplification of plotting.
+}
+}
+}
 }
 \keyword{datasets}
