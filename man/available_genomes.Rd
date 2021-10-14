@@ -3,7 +3,7 @@
 \docType{data}
 \name{available_genomes}
 \alias{available_genomes}
-\title{Descriptionnn}
+\title{Available Genomes}
 \format{
 An object of class \code{data.frame} with 199 rows and 27 columns.
 }
@@ -11,6 +11,96 @@ An object of class \code{data.frame} with 199 rows and 27 columns.
 available_genomes
 }
 \description{
-Descriptionnn
+Contains metadata about all the genomes available in UCSC. It contains
+derived metadata, such as the effective genome sizes as well. See also
+the \code{data-raw/available_genomes.R} script to see processing steps.
+}
+\details{
+\subsection{Structure}{
+
+\code{available_genomes} is a \code{data.frame} with the following columns:
+\itemize{
+\item \code{UCSC_orgID}
+\itemize{
+\item Official UCSC ID of the genome
+}
+\item \code{description}
+\itemize{
+\item Verbose description of the assembly, source, and year/month of entry.
+}
+\item \code{nibPath}
+\itemize{
+\item Endpoint of the genome in UCSC gbdb.
+}
+\item \code{organism}
+\itemize{
+\item Name of the organism.
+}
+\item \code{defaultPos}
+\itemize{
+\item Default location of genome browser view for this genome.
+}
+\item \code{active}
+\itemize{
+\item Description not available.
+}
+\item \code{orderKey}
+\itemize{
+\item Description not available.
+}
+\item \code{genome}
+\itemize{
+\item The name of the genome.
+}
+\item \code{scientificName}
+\itemize{
+\item The scientific name of the organism.
+}
+\item \code{htmlPath}
+\itemize{
+\item Path in UCSC gbdb to the \code{description.html} file for the genome.
+}
+\item \code{hgNearOk}
+\itemize{
+\item Description not available.
+}
+\item \code{hgPbOk}
+\itemize{
+\item Description not available.
+}
+\item \code{sourceName}
+\itemize{
+\item Name of organization providing the genome.
+}
+\item \code{taxId}
+\itemize{
+\item The taxonomy ID of the organism.
+}
+\item \code{genes_available}
+\itemize{
+\item If \code{TRUE}, the gene annotations are available in GTF format.
+}
+\item \code{year}
+\itemize{
+\item The year the genome assembly was added.
+}
+\item \code{eff_genome_size_XXbp}
+\itemize{
+\item The effective genome size of this genome. Calculated at various read
+lengths with \code{khmer} and used to improve the accuracy of analysis. See
+the \code{data-raw/available_genomes.R} script to see how this calculation
+was performed.
+}
+\item \code{genome_length}
+\itemize{
+\item The total length of the genome.
+}
+\item \code{rlfs_available}
+\itemize{
+\item If \code{TRUE}, R-loop forming sequences annotations are available in the
+RLBase AWS S3 repository.
+}
+}
+}
 }
 \keyword{datasets}

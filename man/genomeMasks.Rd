@@ -3,7 +3,7 @@
 \docType{data}
 \name{genomeMasks}
 \alias{genomeMasks}
-\title{Desc}
+\title{Genome Masks}
 \format{
 An object of class \code{list} of length 8.
 }
@@ -11,6 +11,17 @@ An object of class \code{list} of length 8.
 genomeMasks
 }
 \description{
-Desc
+A collection of genome masks for use with \link{analyzeRLFS}. See the
+\code{data-raw/genome_masks.R} script for the processing steps.
+}
+\details{
+\subsection{Structure}{
+
+\code{genomeMasks} is a named list of \code{GRanges} objects. Each entry in the
+list follows the naming convention: \verb{<genome>.masked}. Each entry contains
+a \code{GRanges} object with the masked ranges from \verb{<genome>}. The genomes
+provided correspond to the masked genomes available in
+\link[BSgenome:available.genomes]{BSgenome::available.genomes}.
+}
 }
 \keyword{datasets}
