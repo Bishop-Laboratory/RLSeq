@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run RLSeq — RLSeq • RLSeq</title>
+<title>RLSeq — RLSeq • RLSeq</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Run RLSeq — RLSeq" />
-<meta property="og:description" content="Runs the full RLSeq pipeline." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:title" content="RLSeq — RLSeq" />
+<meta property="og:description" content="Executes the RLSeq analysis workflow." />
 
 
 
@@ -80,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -93,19 +92,10 @@
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -131,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run RLSeq</h1>
+    <h1>RLSeq</h1>
     <small class="dont-index">Source: <a href='https://github.com/Bishop-Laboratory/RLSeq/blob/master/R/RLSeq.R'><code>R/RLSeq.R</code></a></small>
     <div class="hidden name"><code>RLSeq.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Runs the full RLSeq pipeline.</p>
+    <p>Executes the RLSeq analysis workflow.</p>
     </div>
 
     <pre class="usage"><span class='fu'>RLSeq</span><span class='op'>(</span><span class='va'>object</span>, quiet <span class='op'>=</span> <span class='cn'>FALSE</span>, skip <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -147,48 +137,47 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges object.</p></td>
+      <td><p>An <a href='RLRanges-class.html'>RLRanges</a> object.</p></td>
     </tr>
     <tr>
       <th>quiet</th>
-      <td><p>If TRUE, messages are suppressed. Default: FALSE.</p></td>
+      <td><p>If <code>TRUE</code>, messages are suppressed. Default: <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>skip</th>
       <td><p>Analysis steps to skip.
-Default: NULL. See details for options.</p></td>
+Default: <code>NULL</code>. See <em>details</em> for options.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Arguments passed to analyzeRLFS. See <a href='analyzeRLFS.html'>analyzeRLFS</a>.</p></td>
+      <td><p>Arguments passed to <a href='analyzeRLFS.html'>analyzeRLFS</a>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An RLRanges object with results available.</p>
+    <p>An <a href='RLRanges-class.html'>RLRanges</a> object with results available (see <a href='rlresult.html'>rlresult</a>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The <code>RLSeq()</code> function does all of the following by default:</p><ol>
-<li><p><strong>RLFS Perm Test</strong>. Runs the <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> function to test the
+<li><p><strong>RLFS Perm Test</strong>. Runs the <a href='analyzeRLFS.html'>analyzeRLFS</a> function to test the
 enrichment of user-supplied ranges within R-loop-forming sequences.
 <em>Cannot be skipped.</em></p></li>
-<li><p><strong>Predict Condition</strong>. Runs the <code><a href='predictCondition.html'>predictCondition()</a></code> function to
+<li><p><strong>Predict Condition</strong>. Runs the <a href='predictCondition.html'>predictCondition</a> function to
 predict whether the user-supplied sample robustly maps R-loops or not.
-<em>Cannot be skipped.</em> <a href='https://bishop-laboratory.github.io/RLHub/reference/models.html'>RLHub::models</a>.</p></li>
-<li><p><strong>Feature enrichment test</strong>. Runs the <code><a href='featureEnrich.html'>featureEnrich()</a></code> function to
+<em>Cannot be skipped.</em></p></li>
+<li><p><strong>Feature enrichment test</strong>. Runs the <a href='featureEnrich.html'>featureEnrich</a> function to
 test the enrichment of user-supplied ranges within R-loop-relevant
-genomic features. Skip with <code>skip="featureEnrich"</code>. See also
-<a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a>.</p></li>
-<li><p><strong>Correlation Analysis</strong>. Runs the <code><a href='corrAnalyze.html'>corrAnalyze()</a></code> function to test
+genomic features. Skip with <code>skip="featureEnrich"</code>.</p></li>
+<li><p><strong>Correlation Analysis</strong>. Runs the <a href='corrAnalyze.html'>corrAnalyze</a> function to test
 the correlation of user-supplied R-loop signal with other samples in
 RLBase around "gold-standard" R-loop regions.
-Skip with <code>skip="corrAnalyze"</code>. See also <a href='https://bishop-laboratory.github.io/RLHub/reference/gs_signal.html'>RLHub::gs_signal</a>.</p></li>
-<li><p><strong>Gene annotation</strong>. Runs the <code><a href='geneAnnotation.html'>geneAnnotation()</a></code> function to find the overlap
+Skip with <code>skip="corrAnalyze"</code>.</p></li>
+<li><p><strong>Gene annotation</strong>. Runs the <a href='geneAnnotation.html'>geneAnnotation</a> function to find the overlap
 of genes with the user-supplied ranges. Skip with <code>skip="geneAnnotation"</code>.</p></li>
-<li><p><strong>R-loop Region Analysis</strong>. Runs the <code><a href='rlRegionTest.html'>rlRegionTest()</a></code> function to find
+<li><p><strong>R-loop Region Analysis</strong>. Runs the <a href='rlRegionTest.html'>rlRegionTest</a> function to find
 the overlap of user-supplied ranges with consensus R-loop sites
-(RL-Regions). Skip with <code>skip="rlRegionTest"</code>. See also <a href='https://bishop-laboratory.github.io/RLHub/reference/rlregions.html'>RLHub::rlregions</a>.</p></li>
+(RL-Regions). Skip with <code>skip="rlRegionTest"</code>.</p></li>
 </ol>
 
 

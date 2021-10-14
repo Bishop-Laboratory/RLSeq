@@ -47,8 +47,8 @@
 
 
 <meta property="og:title" content="Plot RL-Region overlap with RLRanges — plotRLRegionOverlap" />
-<meta property="og:description" content="Plot RL-Region overlap with RLRanges" />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:description" content="Convenience function for plotting the overlap between RLRanges and R-loop
+regions (RL regions) as calculated by rlRegionTest." />
 
 
 
@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -93,19 +93,10 @@
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -137,7 +128,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Plot RL-Region overlap with RLRanges</p>
+    <p>Convenience function for plotting the overlap between RLRanges and R-loop
+regions (RL regions) as calculated by <a href='rlRegionTest.html'>rlRegionTest</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotRLRegionOverlap</span><span class='op'>(</span><span class='va'>object</span>, returnData <span class='op'>=</span> <span class='cn'>FALSE</span>, rlregions_table <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -147,7 +139,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges object with <code><a href='rlRegionTest.html'>rlRegionTest()</a></code> already run.</p></td>
+      <td><p>An RLRanges object with <a href='rlRegionTest.html'>rlRegionTest</a> already run.</p></td>
     </tr>
     <tr>
       <th>returnData</th>
@@ -157,18 +149,19 @@ Default: FALSE</p></td>
     <tr>
       <th>rlregions_table</th>
       <td><p>The table of RLRegions to overlap sample ranges with.
-Obtained from RLHUb using <code><a href='https://bishop-laboratory.github.io/RLHub/reference/rlregions.html'>RLHub::rlregions_meta()</a></code>. Loaded from RLHub if
+Obtained from RLHUb using <a href='https://bishop-laboratory.github.io/RLHub/reference/rlregions.html'>RLHub::rlregions_meta</a>. Loaded from RLHub if
 not supplied. Default: NULL.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments passed to <code><a href='https://rdrr.io/pkg/VennDiagram/man/venn.diagram.html'>VennDiagram::venn.diagram()</a></code></p></td>
+      <td><p>Additional arguments passed to <a href='https://rdrr.io/pkg/VennDiagram/man/venn.diagram.html'>VennDiagram::venn.diagram</a></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A venn diagram ggplot object.</p>
+    <p>A <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot2::ggplot</a> object containing the venn diagram. Built
+using <a href='https://rdrr.io/pkg/ggplotify/man/as.ggplot.html'>ggplotify::as.ggplot</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">

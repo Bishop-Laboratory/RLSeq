@@ -106,42 +106,50 @@ setMethod(
 
 #' Construct RLRanges Dataset
 #'
-#' \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
+#' `RLRanges` is a subclass of `GRanges`, which stores R-loop peaks
 #' and metadata about the R-loop-mapping experiment, along with results from
-#' the analyses in \code{RLSeq}.
+#' the analyses in [RLSeq].
 #'
-#' @param peaks Path/URL to peak file or a GRanges object.
-#' @param coverage Path/URL to bigWig file. If not supplied, correlation tests
-#'  will be skipped.
+#' @param peaks Path/URL to peak file or a GRanges object. This file should be
+#' in "broadPeak" format if possible. If not, then `qcol` should be specified.
+#' @param coverage Path/URL to the coresponding coverage file
+#' (in "bigWig" format). If not supplied, correlation tests will be skipped.
 #' @param genome UCSC genome ID. Acceptable types are listed in
-#' \code{RLSeq:::auxdata$available_genomes}.
+#' [auxdata] (`available_genomes` entry).
 #' @param mode Type of R-loop mapping from which peaks and coverage were
 #' derived. Acceptable types are listed in
-#' \code{RLSeq:::auxdata$available_modes$mode}. Can be unspecified.
+#' [auxdata] (`available_modes` entry). Can be unspecified.
 #' @param label "POS" (positive R-loop-mapping sample; e.g., DRIP-Seq S9.6 -RNH1)
 #' or "NEG" (negative control sample; e.g., DRIP-Seq S9.6 +RNH1 or Input).
 #' Can be unspecified.
 #' @param sampleName A unique name for identifying this sample.
 #' Can be unspecified.
-#' @param qcol The name of the metadata column which contains the adjusted p
-#'  value or the column number corresponding to the adjusted p value in `peaks`.
-#' If not specified, the last column will be chosen (standard for .broadPeak
-#' files).
+#' @param qcol The name of the metadata column which contains the score or
+#' significance of each peak. For broadPeak (preferred), this is the 
+#' qvalue (column 11 after accounting for extra columns created during
+#' peakset building).
+#' If not specified, the last column will be chosen by default. **NOTE**:
+#' if supplying narrowPeak form peaks, the last column will NOT be appropriate
+#' and QCol should be specified as `11`.
 #' If FALSE or if no metadata columns exist, it will be left blank and some
-#' operations in \code{report()} will not fully run.
-#' @return An object of class "RLRanges".
+#' operations in `report()` will not fully run.
+#' @return An object of class `RLRanges`. These objects are an extension of 
+#' `GRanges` with the addition of sample metadata entries and [RLResults].
+#' @aliases RLRanges RLRanges-class
+#' @rdname RLRanges
 #' @examples
 #'
 #' # Example dataset
 #' rlbase <- "https://rlbase-data.s3.amazonaws.com"
-#' pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
 #' cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
+#' pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package="RLSeq")
 #'
 #' # Get RLRanges object
 #' rlr <- RLRanges(pks,
 #'     coverage = cvg, genome = "hg38", label = "NEG",
-#'     mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
+#'     mode = "RDIP", sampleName = "RDIP-Seq +RNH1", qcol = 9
 #' )
+#' 
 #' @export
 RLRanges <- function(peaks = GenomicRanges::GRanges(),
     coverage = character(1),
@@ -161,6 +169,10 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
             qcol <- colnames(md)[ncol(md)]
         } else if (is.numeric(qcol)) {
             qcol <- colnames(as.data.frame(peaks))[qcol]
+            message("Column ", qcol, " out of ", 
+                    length(colnames(as.data.frame(peaks))),
+                    " chosen as 'qcol'. Are you sure this is correct? View",
+                    " available columns with `colnames(as.data.frame(rlranges))`")
         }
         colnames(
             methods::slot(peaks, "elementMetadata")
@@ -225,32 +237,39 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 }
 
 
-#' Result accessor function
-#'
-#' @param object RLRanges object.
-#' @param resultName Name of the result slot to access. See details.
+#' RLSeq Results
+#' 
+#' Functions for creating and accessing the R-loop results (RL Results). These
+#' are a type of object used for holding the results of the tests implemented
+#' in RLSeq. They can be accessed using the `rlresult` function. 
+#' 
+#' @aliases rlresult RLResults RLResults-class
+#' @rdname RLResults
+#' @param object [RLRanges] object.
+#' @param resultName Name of the result slot to access. See *details*.
 #' @return The contents of the requested slot.
 #' @details
 #'
-#' ## Slots available
+#' ## Slot descriptions
 #'
-#' \strong{"featureEnrichment"} The \code{tbl} generated from running the
-#' \code{featureEnrich()} function.
-#'
-#' \strong{"correlationMat"}. The \code{matrix} generated from running the
-#' \code{corrAnalyze()} function.
-#'
-#' \strong{"rlfsRes"}. The \code{list} generated from running the
-#' \code{analyzeRLFS()} function.
-#'
-#' \strong{"geneAnnoRes"}. The \code{tbl} generated from running the
-#' \code{geneAnnotation()} function.
-#'
-#' \strong{"predictRes"}. The \code{list} generated from running the
-#' \code{predictCondition()} function.
-#'
-#' \strong{"rlRegionRes"}. The \code{list} generated from running the
-#' \code{rlRegionTest()} function.
+#' * `featureEnrichment` 
+#'   - The `tbl` generated from running [featureEnrich].
+#'   - The structure and column descriptions are provided in detail within
+#'   [RLHub::feat_enrich_samples].
+#' * `correlationMat`
+#'   - The `matrix` generated from running [corrAnalyze].
+#'   - Contains pairwise pearson correlations between all samples in 
+#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/) 
+#'   and the supplied RLRanges object.
+#' * `rlfsRes`
+#'   - The `list` generated from running [analyzeRLFS].
+#'   - See [analyzeRLFS] for description of structure.
+#' * `geneAnnoRes`
+#'   - The `tbl` generated from running [geneAnnotation].
+#' * `predictRes`
+#'   - The `list` generated from running [predictCondition].
+#' * `rlRegionRes`
+#'   - The `list` generated from running [rlRegionTest].
 #'
 #' @examples
 #'
@@ -273,23 +292,9 @@ rlresult <- function(object, resultName) {
 }
 
 
-#' Construct RLResults Object
-#'
-#' \code{RLResults} is a class used internally for storing the
-#' results of running
-#' \code{RLSeq} operations on an \code{RLRanges} object.
-#' @slot featureEnrichment The \code{tbl} generated from running the
-#' \code{featureEnrich()} function.
-#' @slot correlationMat The \code{matrix} generated from running the
-#' \code{corrAnalyze()} function.
-#' @slot rlfsRes The \code{list} generated from running the
-#' \code{analyzeRLFS()} function.
-#' @slot geneAnnoRes The \code{tbl} generated from running the
-#' \code{geneAnnotation()} function.
-#' @slot predictRes The \code{list} generated from running the
-#' \code{predictCondition()} function.
-#' @slot rlRegionRes The \code{list} generated from running the
-#' \code{rlRegionTest()} function.
+#' RLResults-class
+#' 
+#' @rdname RLResults
 setClass(
     "RLResults",
     slots = c(

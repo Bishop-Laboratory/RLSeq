@@ -1,6 +1,7 @@
 #' Auxiliary Data
 #' 
-#' A list containing data used internally by RLSeq functions. See also the
+#' A list containing data used by RLSeq functions. It can also be useful
+#' for checking the available modes and genomes in RLSeq. See also the
 #' `data-raw/auxdata.R` script that was used to create it.
 #' 
 #' ## Structure
@@ -23,10 +24,12 @@
 #'   - A `tbl` containing the colors associated with user-supplied data and
 #'   RLBase data when running [corrHeatmap].
 #' * `label_cols`
-#'   - A `tbl` containing the colors associated with the labels in RLBase.
+#'   - A `tbl` containing the colors associated with the labels in 
+#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
 #' * `prediction_cols`
-#'   - A `tbl` containing the colors associated with the predictions in RLBase.
+#'   - A `tbl` containing the colors associated with the predictions in 
+#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
 #' * `available_modes`
 #'   - A `tbl` containing the modes available in RLBase and associated metadata.
@@ -37,7 +40,11 @@
 #' * `misc_modes`
 #'   - A `character` showing the R-loop mapping modes that are lumped into
 #'   the 'misc' category for simplification of plotting.
+#'   
+#' @examples 
+#' auxdata
 #' 
+#' @export
 "auxdata"
 
 #' Available Genomes
@@ -84,7 +91,8 @@
 #'   - The year the genome assembly was added.
 #' * `eff_genome_size_XXbp`
 #'   - The effective genome size of this genome. Calculated at various read 
-#'   lengths with `khmer` and used to improve the accuracy of analysis. See
+#'   lengths with [khmer](https://khmer.readthedocs.io/en/latest/)
+#'   and used to improve the accuracy of analysis. See
 #'   the `data-raw/available_genomes.R` script to see how this calculation 
 #'   was performed.
 #' * `genome_length`
@@ -93,6 +101,10 @@
 #'   - If `TRUE`, R-loop forming sequences annotations are available in the 
 #'   RLBase AWS S3 repository.
 #' 
+#' @examples
+#' available_genomes
+#' 
+#' @export
 "available_genomes"
 
 
@@ -104,9 +116,14 @@
 #' ## Structure
 #' 
 #' `genomeMasks` is a named list of `GRanges` objects. Each entry in the 
-#' list follows the naming convention: `<genome>.masked`. Each entry contains
+#' list follows the naming convention: `<genome>.masked`, where `<genome>`
+#' is an official UCSC genome ID. Each entry contains
 #' a `GRanges` object with the masked ranges from `<genome>`. The genomes
 #' provided correspond to the masked genomes available in
 #' [BSgenome::available.genomes].
 #' 
+#' @examples 
+#' genomeMasks
+#' 
+#' @export
 "genomeMasks"

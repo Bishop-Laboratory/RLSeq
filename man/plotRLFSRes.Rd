@@ -7,22 +7,25 @@
 plotRLFSRes(object, plotName = NULL, fft = FALSE, ...)
 }
 \arguments{
-\item{object}{An RLRanges with \code{analyzeRLFS()} already run. Alternatively,
-can be the RLFS results object from an RLRanges.}
+\item{object}{An RLRanges object with \link{analyzeRLFS} already run.
+Alternatively, can be the RLFS results object from an RLRanges (from
+\code{rlresult(object, "rlfsRes")}).}
 
 \item{plotName}{A Sample name used for plotting.
-If blank, the RLRanges name is used.}
+If blank, the RLRanges \code{sampleName} metadata entry is used (see \link{RLRanges}).}
 
-\item{fft}{If TRUE, the fourier transform of Z-score is plotted instead.
+\item{fft}{If TRUE, the Fourier transform of the Z-score is plotted instead.
 Default: FALSE.}
 
-\item{...}{Additional parameters passed to \code{ggplot}.}
+\item{...}{Additional parameters passed to \link[ggplot2:ggplot]{ggplot2::ggplot}.}
 }
 \value{
-A ggplot object.
+A ggplot object. See also \link[ggplot2:ggplot]{ggplot2::ggplot}.
 }
 \description{
-Plots the results of the R-loop-forming sequences analysis.
+Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a
+metaplot of the Z score distribution around RLFS with the p value from
+permutation testing annotated. See also \link{analyzeRLFS}.
 }
 \examples{
 

@@ -50,7 +50,6 @@
 <meta property="og:description" content="RLRanges is a subclass of GRanges, which stores R-loop peaks
 and metadata about the R-loop-mapping experiment, along with results from
 the analyses in RLSeq." />
-<meta property="og:image" content="/logo.png" />
 
 
 
@@ -82,7 +81,7 @@ the analyses in RLSeq." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -95,19 +94,10 @@ the analyses in RLSeq." />
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -141,7 +131,7 @@ the analyses in RLSeq." />
     <div class="ref-description">
     <p><code>RLRanges</code> is a subclass of <code>GRanges</code>, which stores R-loop peaks
 and metadata about the R-loop-mapping experiment, along with results from
-the analyses in <code>RLSeq</code>.</p>
+the analyses in <a href='RLSeq.html'>RLSeq</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>RLRanges</span><span class='op'>(</span>
@@ -159,23 +149,24 @@ the analyses in <code>RLSeq</code>.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>peaks</th>
-      <td><p>Path/URL to peak file or a GRanges object.</p></td>
+      <td><p>Path/URL to peak file or a GRanges object. This file should be
+in "broadPeak" format if possible. If not, then <code>qcol</code> should be specified.</p></td>
     </tr>
     <tr>
       <th>coverage</th>
-      <td><p>Path/URL to bigWig file. If not supplied, correlation tests
-will be skipped.</p></td>
+      <td><p>Path/URL to the coresponding coverage file
+(in "bigWig" format). If not supplied, correlation tests will be skipped.</p></td>
     </tr>
     <tr>
       <th>genome</th>
       <td><p>UCSC genome ID. Acceptable types are listed in
-<code>RLSeq:::auxdata$available_genomes</code>.</p></td>
+<a href='auxdata.html'>auxdata</a> (<code>available_genomes</code> entry).</p></td>
     </tr>
     <tr>
       <th>mode</th>
       <td><p>Type of R-loop mapping from which peaks and coverage were
 derived. Acceptable types are listed in
-<code>RLSeq:::auxdata$available_modes$mode</code>. Can be unspecified.</p></td>
+<a href='auxdata.html'>auxdata</a> (<code>available_modes</code> entry). Can be unspecified.</p></td>
     </tr>
     <tr>
       <th>label</th>
@@ -190,10 +181,13 @@ Can be unspecified.</p></td>
     </tr>
     <tr>
       <th>qcol</th>
-      <td><p>The name of the metadata column which contains the adjusted p
-value or the column number corresponding to the adjusted p value in <code>peaks</code>.
-If not specified, the last column will be chosen (standard for .broadPeak
-files).
+      <td><p>The name of the metadata column which contains the score or
+significance of each peak. For broadPeak (preferred), this is the
+qvalue (column 11 after accounting for extra columns created during
+peakset building).
+If not specified, the last column will be chosen by default. <strong>NOTE</strong>:
+if supplying narrowPeak form peaks, the last column will NOT be appropriate
+and QCol should be specified as <code>11</code>.
 If FALSE or if no metadata columns exist, it will be left blank and some
 operations in <code><a href='report.html'>report()</a></code> will not fully run.</p></td>
     </tr>
@@ -201,20 +195,22 @@ operations in <code><a href='report.html'>report()</a></code> will not fully run
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class "RLRanges".</p>
+    <p>An object of class <code>RLRanges</code>. These objects are an extension of
+<code>GRanges</code> with the addition of sample metadata entries and <a href='rlresult.html'>RLResults</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">
 <span class='co'># Example dataset</span>
 <span class='va'>rlbase</span> <span class='op'>&lt;-</span> <span class='st'>"https://rlbase-data.s3.amazonaws.com"</span>
-<span class='va'>pks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>rlbase</span>, <span class='st'>"peaks"</span>, <span class='st'>"SRX7671349_hg38.broadPeak"</span><span class='op'>)</span>
 <span class='va'>cvg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/file.path.html'>file.path</a></span><span class='op'>(</span><span class='va'>rlbase</span>, <span class='st'>"coverage"</span>, <span class='st'>"SRX7671349_hg38.bw"</span><span class='op'>)</span>
+<span class='va'>pks</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"SRX7671349_hg38.broadPeak"</span>, package<span class='op'>=</span><span class='st'>"RLSeq"</span><span class='op'>)</span>
 
 <span class='co'># Get RLRanges object</span>
 <span class='va'>rlr</span> <span class='op'>&lt;-</span> <span class='fu'>RLRanges</span><span class='op'>(</span><span class='va'>pks</span>,
     coverage <span class='op'>=</span> <span class='va'>cvg</span>, genome <span class='op'>=</span> <span class='st'>"hg38"</span>, label <span class='op'>=</span> <span class='st'>"NEG"</span>,
-    mode <span class='op'>=</span> <span class='st'>"RDIP"</span>, sampleName <span class='op'>=</span> <span class='st'>"RDIP-Seq +RNH1"</span>
+    mode <span class='op'>=</span> <span class='st'>"RDIP"</span>, sampleName <span class='op'>=</span> <span class='st'>"RDIP-Seq +RNH1"</span>, qcol <span class='op'>=</span> <span class='fl'>9</span>
 <span class='op'>)</span>
+
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

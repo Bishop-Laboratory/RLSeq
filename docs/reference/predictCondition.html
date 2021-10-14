@@ -47,9 +47,8 @@
 
 
 <meta property="og:title" content="Predict Condition — predictCondition" />
-<meta property="og:description" content="Uses the results of analyzeRLFS() to predict whether a sample is &quot;POS&quot;
-(robust R-loop mapping) or &quot;NEG&quot; (poor R-loop mapping)." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:description" content="Uses the results of analyzeRLFS to predict whether a sample is &quot;POS&quot;
+(robust R-loop mapping) or &quot;NEG&quot; (poor R-loop mapping). See details." />
 
 
 
@@ -81,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -94,19 +93,10 @@
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -138,8 +128,8 @@
     </div>
 
     <div class="ref-description">
-    <p>Uses the results of analyzeRLFS() to predict whether a sample is "POS"
-(robust R-loop mapping) or "NEG" (poor R-loop mapping).</p>
+    <p>Uses the results of <a href='analyzeRLFS.html'>analyzeRLFS</a> to predict whether a sample is "POS"
+(robust R-loop mapping) or "NEG" (poor R-loop mapping). See <em>details</em>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>predictCondition</span><span class='op'>(</span><span class='va'>object</span>, rlfsRes <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -149,8 +139,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges object with <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> already run.
-Ignored if rlfsRes provided.</p></td>
+      <td><p>An RLRanges object with <a href='analyzeRLFS.html'>analyzeRLFS</a> already run.
+Ignored if <code>rlfsRes</code> is provided.</p></td>
     </tr>
     <tr>
       <th>rlfsRes</th>
@@ -165,7 +155,93 @@ obtained from <code><a href='rlresult.html'>rlresult(object, "rlfsRes")</a></cod
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An RLRanges object with predictions included.</p>
+    <p>An RLRanges object with predictions accessible via
+<code><a href='rlresult.html'>rlresult(object, "predictRes")</a></code>.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Structure</h3>
+
+
+<p>The results object is a named <code>list</code> of the structure:</p><ul>
+<li><p><code>Features</code></p><ul>
+<li><p>A <code>tbl</code> with three columns that describe the engineered features used
+for prediction:</p><ul>
+<li><p><code>feature</code>: the name of the feature (see <em>details</em>).</p></li>
+<li><p><code>raw_value</code>: The raw value of that feature in the supplied object.</p></li>
+<li><p><code>processed_value</code>: The normalized value of that feature after
+preprocessing (see <em>details</em>).</p></li>
+</ul></li>
+</ul></li>
+<li><p>Criteria</p><ul>
+<li><p>The four criteria which must all be <code>TRUE</code> to render a
+prediction of "POS" (see <em>details</em>).</p></li>
+</ul></li>
+<li><p>prediction</p><ul>
+<li><p>The final prediction. "POS" indicates robust R-loop mapping, "NEG"
+indicates poor R-loop mapping.</p></li>
+</ul></li>
+</ul>
+
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Following R-loop forming sequences (RLFS) analysis, the quality model
+(see <a href='https://bishop-laboratory.github.io/RLHub/reference/models.html'>RLHub::models</a>) is implemented for predicting the sample condition in
+coordination with other results from <a href='analyzeRLFS.html'>analyzeRLFS</a>.
+A prediction of “POS” indicates robust R-loop mapping, whereas “NEG”
+indicates poor R-loop mapping. The succeeding sections describe this
+process in greater detail.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Application of binary classification model</h3>
+
+
+<p>First, the binary classifier is applied, yielding a preliminary
+prediction of quality. This is accomplished via the following
+steps:</p><ol>
+<li><p>Calculate the Fourier transform of the Z-score distribution
+(see <a href='analyzeRLFS.html'>analyzeRLFS</a>).</p></li>
+<li><p>Reduce the dimensions to the engineered feature set (see table below).</p></li>
+<li><p>Apply the preprocessing model (see <a href='https://bishop-laboratory.github.io/RLHub/reference/models.html'>RLHub::models</a>) to normalize these
+features</p></li>
+<li><p>Apply the classifier (see <a href='https://bishop-laboratory.github.io/RLHub/reference/models.html'>RLHub::models</a>) to render a quality prediction.</p></li>
+</ol>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Engineered feature set</h4>
+
+
+<p>Abbreviations: Z, Z-score distribution; ACF, autocorrelation function;
+FT, Fourier Transform.</p><table class='table'>
+<tr><td>feature</td><td>description</td></tr>
+<tr><td>Z1</td><td>mean of Z</td></tr>
+<tr><td>Z2</td><td>variance of Z</td></tr>
+<tr><td>Zacf1</td><td>mean of Z ACF</td></tr>
+<tr><td>Zacf2</td><td>variance of Z ACF</td></tr>
+<tr><td>ReW1</td><td>mean of FT of Z (real part)</td></tr>
+<tr><td>ReW2</td><td>variance of FT of Z (real part)</td></tr>
+<tr><td>ImW1</td><td>mean of FT of Z (imaginary part)</td></tr>
+<tr><td>ImW2</td><td>variance of FT of Z (imaginary part)</td></tr>
+<tr><td>ReWacf1</td><td>mean of FT of Z ACF (real part)</td></tr>
+<tr><td>ReWacf2</td><td>variance of FT of Z ACF (real part)</td></tr>
+<tr><td>ImWacf1</td><td>mean of FT of Z ACF (imaginary part)</td></tr>
+<tr><td>ImWacf2</td><td>variance of FT of Z ACF (imaginary part)</td></tr>
+</table>
+
+
+
+
+
+
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Final quality prediction</h3>
+
+
+<p>The results from the binary classifier are combined with other results from
+<a href='analyzeRLFS.html'>analyzeRLFS</a> to yield a final prediction. To yield a prediction of “POS”
+all the following must be <code>TRUE</code>:</p><ol>
+<li><p>The RLFS Permutation test P value is significant (p &lt; .05). Stored as
+<code>PVal Significant</code> in the results object.</p></li>
+<li><p>The Z-score distribution at 0bp is &gt; 0. Stored as <code>ZApex &gt; 0</code> in
+the results object.</p></li>
+<li><p>The Z-score distribution at 0bp is &gt; the start and the end. Sored as
+<code>ZApex &gt; ZEdges</code> in the results object.</p></li>
+<li><p>binary The classifier predicts a label of “POS”. Stored as
+<code>Predicted 'POS'</code> in the results object.</p></li>
+</ol>
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">

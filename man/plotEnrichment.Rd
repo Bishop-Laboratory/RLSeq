@@ -15,33 +15,38 @@ plotEnrichment(
 )
 }
 \arguments{
-\item{object}{The tibble object obtained from running \code{featureEnrich}.}
+\item{object}{An RLRanges object with \link{featureEnrich} already run.}
 
-\item{pred_POS_only}{If TRUE, only "POS" predicted samples included.
-Default: TRUE.}
+\item{pred_POS_only}{If TRUE, only "POS" predicted samples included (see
+also \link{predictCondition}). Default: TRUE.}
 
-\item{label_POS_only}{If TRUE, only "POS" labeled samples included. Default: FALSE.}
+\item{label_POS_only}{If TRUE, only "POS" labeled samples included (samples
+which are expected to robustly map R-loops,
+e.g., "D210N" condition R-ChIP data). Default: FALSE.}
 
 \item{splitby}{Metadata by which to split plots. Can be "none", "prediction",
 or "label".}
 
-\item{limits}{Specify limits on data. Useful for controlling infinite
-estimation of odds ratio
-resulting from fisher's exact test. To remove limits, set c(-Inf, Inf).
-Default: c(-10, 15).}
+\item{limits}{Specify limits on data range. This is used for controlling
+the infinite estimation of odds ratio resulting from fisher's exact test.
+To remove limits, set c(-Inf, Inf). Default: c(-10, 15).}
 
-\item{returnData}{If TRUE, plot data is returned instead of plotting.
+\item{returnData}{If TRUE, plot data is returned instead of plot objects.
 Default: FALSE}
 
 \item{...}{For internal use.}
 }
 \value{
-A named list of ggplot objects.
+A named list of \link[ggplot2:ggplot]{ggplot2::ggplot} objects. Names correspond to
+the annotations provided. See also \link{featureEnrich}.
 }
 \description{
-Creates a list of plots, one for each annotation database which display the
-user-supplied sample in comparison to the samples in RLBase. This
-will only work if you used default annotations with \link{featureEnrich}.
+Creates a list of plots, one for each annotation database
+(see \link[RLHub:annotations]{RLHub::annotations}).
+These plots show the feature enrichment for the user-supplied sample in
+comparison to the samples in
+\href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase}. This
+will only work if you did not use custom annotations with \link{featureEnrich}.
 }
 \examples{
 

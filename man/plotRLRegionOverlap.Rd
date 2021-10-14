@@ -7,22 +7,24 @@
 plotRLRegionOverlap(object, returnData = FALSE, rlregions_table = NULL, ...)
 }
 \arguments{
-\item{object}{An RLRanges object with \code{rlRegionTest()} already run.}
+\item{object}{An RLRanges object with \link{rlRegionTest} already run.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
 
 \item{rlregions_table}{The table of RLRegions to overlap sample ranges with.
-Obtained from RLHUb using \code{RLHub::rlregions_meta()}. Loaded from RLHub if
+Obtained from RLHUb using \link[RLHub:rlregions]{RLHub::rlregions_meta}. Loaded from RLHub if
 not supplied. Default: NULL.}
 
-\item{...}{Additional arguments passed to \code{VennDiagram::venn.diagram()}}
+\item{...}{Additional arguments passed to \link[VennDiagram:venn.diagram]{VennDiagram::venn.diagram}}
 }
 \value{
-A venn diagram ggplot object.
+A \link[ggplot2:ggplot]{ggplot2::ggplot} object containing the venn diagram. Built
+using \link[ggplotify:as.ggplot]{ggplotify::as.ggplot}.
 }
 \description{
-Plot RL-Region overlap with RLRanges
+Convenience function for plotting the overlap between RLRanges and R-loop
+regions (RL regions) as calculated by \link{rlRegionTest}.
 }
 \examples{
 
