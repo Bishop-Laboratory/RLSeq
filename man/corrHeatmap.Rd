@@ -26,7 +26,7 @@ Plot Correlation Results
 \examples{
 
 # Example RLRanges data with corrAnalyze() already run.
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # Corr heatmap
 corrHeatmap(rlr)

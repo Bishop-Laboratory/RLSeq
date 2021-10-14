@@ -27,7 +27,7 @@ Plot RL-Region overlap with RLRanges
 \examples{
 
 # Example dataset with rlRegionTest() already run.
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # Plot RL-Region overlap
 plotRLRegionOverlap(rlr)

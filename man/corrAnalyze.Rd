@@ -24,7 +24,7 @@ Currently, this does not work on windows.
 \examples{
 
 # Example RLRanges object
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # corrAnalyze does not work on Windows OS
 if (.Platform$OS.type != "windows") {

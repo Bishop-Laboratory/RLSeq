@@ -154,4 +154,4 @@ buildAvailableGenomes <- function(test = FALSE, ...) {
 
 # Main execution of the data building steps
 available_genomes <- buildAvailableGenomes()
-saveRDS(available_genomes, file = "inst/int-data/available_genomes.rds", compress = "xz")
+usethis::use_data(available_genomes, overwrite = TRUE, compress = "xz")

@@ -1,4 +1,4 @@
-#' This script creates the \code{inst/ext-data/rlrsmall.rds} data object
+#' This script creates the \code{inst/extdata/rlrsmall.rds} data object
 
 # Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
@@ -15,5 +15,5 @@ rlr <- RLSeq::RLRanges(pks,
 rlr <- RLSeq::RLSeq(rlr)
 
 # Save
-dir.create("inst/ext-data/", showWarnings = FALSE)
-saveRDS(rlr, file = "inst/ext-data/rlrsmall.rds", compress = "xz")
+dir.create("inst/extdata/", showWarnings = FALSE)
+saveRDS(rlr, file = "inst/extdata/rlrsmall.rds", compress = "xz")

@@ -46,7 +46,7 @@ will only work if you used default annotations with \link{featureEnrich}.
 \examples{
 
 # Example dataset with featureEnrich() already run.
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # Make plots, split by prediction
 plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")

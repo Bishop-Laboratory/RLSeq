@@ -196,7 +196,7 @@ rlrRNH <- RLRanges(
 
 ```{r, include=FALSE}
 # For the sake of getting this to build in the allotted 5 minutes on bioc,
-# we precalculated RLSeq() on the above files and stored them in ext-data.
+# we precalculated RLSeq() on the above files and stored them in extdata.
 # rlr <- RLSeq(rlr)
 # rlrRNH <- RLSeq(rlrRNH)
 # saveRDS(rlr, file = "rlr_vgn.rds", compress = "xz")
