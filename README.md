@@ -20,7 +20,7 @@
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("RLHub")
+BiocManager::install("RLSeq")
 ```
 
 ### From Github
@@ -70,7 +70,7 @@ report(rlr)
 The code above performs a typical analysis. It builds the `RLRanges` object, an extension of `GRanges` for
 use with RLSeq. Then, it runs all core analyses using `RLSeq()`. Finally, it generates an
 HTML report with `report()` (see the report 
-[here](https://rlbase-data.s3.amazonaws.com/reports/SRX1025890_hg38.html)).
+[here](https://rlbase-data.s3.amazonaws.com/misc/rlseq_report_example.html)).
 
 ## Detail
 

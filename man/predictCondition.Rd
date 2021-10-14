@@ -7,8 +7,8 @@
 predictCondition(object, rlfsRes = NULL, ...)
 }
 \arguments{
-\item{object}{An RLRanges object with \code{analyzeRLFS()} already run.
-Ignored if rlfsRes provided.}
+\item{object}{An RLRanges object with \link{analyzeRLFS} already run.
+Ignored if \code{rlfsRes} is provided.}
 
 \item{rlfsRes}{If object not supplied, provide the rlfsRes list which is
 obtained from \code{rlresult(object, "rlfsRes")}.}
@@ -16,11 +16,99 @@ obtained from \code{rlresult(object, "rlfsRes")}.}
 \item{...}{Internal use only.}
 }
 \value{
-An RLRanges object with predictions included.
+An RLRanges object with predictions accessible via
+\code{rlresult(object, "predictRes")}.
+\subsection{Structure}{
+
+The results object is a named \code{list} of the structure:
+\itemize{
+\item \code{Features}
+\itemize{
+\item A \code{tbl} with three columns that describe the engineered features used
+for prediction:
+\itemize{
+\item \code{feature}: the name of the feature (see \emph{details}).
+\item \code{raw_value}: The raw value of that feature in the supplied object.
+\item \code{processed_value}: The normalized value of that feature after
+preprocessing (see \emph{details}).
+}
+}
+\item Criteria
+\itemize{
+\item The four criteria which must all be \code{TRUE} to render a
+prediction of "POS" (see \emph{details}).
+}
+\item prediction
+\itemize{
+\item The final prediction. "POS" indicates robust R-loop mapping, "NEG"
+indicates poor R-loop mapping.
+}
+}
+}
 }
 \description{
-Uses the results of analyzeRLFS() to predict whether a sample is "POS"
-(robust R-loop mapping) or "NEG" (poor R-loop mapping).
+Uses the results of \link{analyzeRLFS} to predict whether a sample is "POS"
+(robust R-loop mapping) or "NEG" (poor R-loop mapping). See \emph{details}.
+}
+\details{
+Following R-loop forming sequences (RLFS) analysis, the quality model
+(see \link[RLHub:models]{RLHub::models}) is implemented for predicting the sample condition in
+coordination with other results from \link{analyzeRLFS}.
+A prediction of “POS” indicates robust R-loop mapping, whereas “NEG”
+indicates poor R-loop mapping. The succeeding sections describe this
+process in greater detail.
+\subsection{Application of binary classification model}{
+
+First, the binary classifier is applied, yielding a preliminary
+prediction of quality. This is accomplished via the following
+steps:
+\enumerate{
+\item Calculate the Fourier transform of the Z-score distribution
+(see \link{analyzeRLFS}).
+\item Reduce the dimensions to the engineered feature set (see table below).
+\item Apply the preprocessing model (see \link[RLHub:models]{RLHub::models}) to normalize these
+features
+\item Apply the classifier (see \link[RLHub:models]{RLHub::models}) to render a quality prediction.
+}
+\subsection{Engineered feature set}{
+
+Abbreviations: Z, Z-score distribution; ACF, autocorrelation function;
+FT, Fourier Transform.\tabular{ll}{
+   feature \tab description \cr
+   Z1 \tab mean of Z \cr
+   Z2 \tab variance of Z \cr
+   Zacf1 \tab mean of Z ACF \cr
+   Zacf2 \tab variance of Z ACF \cr
+   ReW1 \tab mean of FT of Z (real part) \cr
+   ReW2 \tab variance of FT of Z (real part) \cr
+   ImW1 \tab mean of FT of Z (imaginary part) \cr
+   ImW2 \tab variance of FT of Z (imaginary part) \cr
+   ReWacf1 \tab mean of FT of Z ACF (real part) \cr
+   ReWacf2 \tab variance of FT of Z ACF (real part) \cr
+   ImWacf1 \tab mean of FT of Z ACF (imaginary part) \cr
+   ImWacf2 \tab variance of FT of Z ACF (imaginary part) \cr
+}
+
+}
+
+}
+
+\subsection{Final quality prediction}{
+
+The results from the binary classifier are combined with other results from
+\link{analyzeRLFS} to yield a final prediction. To yield a prediction of “POS”
+all the following must be \code{TRUE}:
+\enumerate{
+\item The RLFS Permutation test P value is significant (p < .05). Stored as
+\verb{PVal Significant} in the results object.
+\item The Z-score distribution at 0bp is > 0. Stored as \code{ZApex > 0} in
+the results object.
+\item The Z-score distribution at 0bp is > the start and the end. Sored as
+\code{ZApex > ZEdges} in the results object.
+\item binary The classifier predicts a label of “POS”. Stored as
+\verb{Predicted 'POS'} in the results object.
+}
+}
 }
 \examples{
 

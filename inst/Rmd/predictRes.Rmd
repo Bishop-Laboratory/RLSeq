@@ -76,7 +76,9 @@ dplyr::tibble(
     ) 
 ```
 
-These results led to the final prediction: `r verd`.
+These results led to the final prediction: `r verd`. 
+
+For additional detail, please refer to the `RLSeq::predictCondition` documentation ([link](https://bishop-laboratory.github.io/RLSeq/reference/predictCondition.html){target="_blank"}).
 
 </details>
 

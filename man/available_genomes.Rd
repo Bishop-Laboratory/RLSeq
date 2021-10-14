@@ -87,7 +87,8 @@ the \code{data-raw/available_genomes.R} script to see processing steps.
 \item \code{eff_genome_size_XXbp}
 \itemize{
 \item The effective genome size of this genome. Calculated at various read
-lengths with \code{khmer} and used to improve the accuracy of analysis. See
+lengths with \href{https://khmer.readthedocs.io/en/latest/}{khmer}
+and used to improve the accuracy of analysis. See
 the \code{data-raw/available_genomes.R} script to see how this calculation
 was performed.
 }
@@ -102,5 +103,9 @@ RLBase AWS S3 repository.
 }
 }
 }
+}
+\examples{
+available_genomes
+
 }
 \keyword{datasets}

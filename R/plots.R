@@ -1,14 +1,18 @@
 #' Plot RLFS analysis results
 #'
-#' Plots the results of the R-loop-forming sequences analysis.
-#' @param object An RLRanges with \code{analyzeRLFS()} already run. Alternatively,
-#' can be the RLFS results object from an RLRanges.
+#' Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a 
+#' metaplot of the Z score distribution around RLFS with the p value from 
+#' permutation testing annotated. See also [analyzeRLFS].
+#' 
+#' @param object An RLRanges object with [analyzeRLFS] already run.
+#' Alternatively, can be the RLFS results object from an RLRanges (from
+#' `rlresult(object, "rlfsRes")`).
 #' @param plotName A Sample name used for plotting.
-#' If blank, the RLRanges name is used.
-#' @param fft If TRUE, the fourier transform of Z-score is plotted instead.
+#' If blank, the RLRanges `sampleName` metadata entry is used (see [RLRanges]).
+#' @param fft If TRUE, the Fourier transform of the Z-score is plotted instead.
 #' Default: FALSE.
-#' @param ... Additional parameters passed to \code{ggplot}.
-#' @return A ggplot object.
+#' @param ... Additional parameters passed to [ggplot2::ggplot].
+#' @return A ggplot object. See also [ggplot2::ggplot].
 #' @examples
 #'
 #' # Example RLRanges dataset with analyzeRLFS() already run.
@@ -79,14 +83,17 @@ plotRLFSRes <- function(object,
 
 
 #' Plot Correlation Results
+#' 
+#' Plots a heatmap to visualize the pairwise Pearson correlation matrix
+#' generated via [corrAnalyze].
 #'
-#' @param object An RLRanges with \code{corrAnalyze()} already run.
+#' @param object An RLRanges with [corrAnalyze] already run.
 #' @param returnData If TRUE, plot data is returned instead of plotting.
 #' Default: FALSE
-#' @param complex If TRUE, ComplexHeatmap will be used for plotting.
-#' Otherwise, pheatmap. Default: TRUE
+#' @param complex If TRUE, [ComplexHeatmap::Heatmap] will be used for plotting.
+#' Otherwise, [pheatmap::pheatmap] is used. Default: TRUE
 #' @param ... For internal use.
-#' @return A Heatmap object.
+#' @return A plot object or plotting data (if `returnData` is `TRUE`).
 #' @examples
 #'
 #' # Example RLRanges data with corrAnalyze() already run.
@@ -243,23 +250,29 @@ corrHeatmap <- function(object,
 
 #' Plot Enrichment Test Results
 #'
-#' Creates a list of plots, one for each annotation database which display the
-#' user-supplied sample in comparison to the samples in RLBase. This
-#' will only work if you used default annotations with [featureEnrich].
-#' @param object The tibble object obtained from running \code{featureEnrich}.
-#' @param pred_POS_only If TRUE, only "POS" predicted samples included.
-#' Default: TRUE.
-#' @param label_POS_only If TRUE, only "POS" labeled samples included. Default: FALSE.
+#' Creates a list of plots, one for each annotation database
+#' (see [RLHub::annotations]).
+#' These plots show the feature enrichment for the user-supplied sample in 
+#' comparison to the samples in 
+#' [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/). This
+#' will only work if you did not use custom annotations with [featureEnrich].
+#' 
+#' @param object An RLRanges object with [featureEnrich] already run.
+#' @param pred_POS_only If TRUE, only "POS" predicted samples included (see 
+#' also [predictCondition]). Default: TRUE. 
+#' @param label_POS_only If TRUE, only "POS" labeled samples included (samples
+#' which are expected to robustly map R-loops,
+#' e.g., "D210N" condition R-ChIP data). Default: FALSE.
 #' @param splitby Metadata by which to split plots. Can be "none", "prediction",
 #'  or "label".
-#' @param limits Specify limits on data. Useful for controlling infinite
-#' estimation of odds ratio
-#' resulting from fisher's exact test. To remove limits, set c(-Inf, Inf).
-#'  Default: c(-10, 15).
-#' @param returnData If TRUE, plot data is returned instead of plotting.
+#' @param limits Specify limits on data range. This is used for controlling 
+#' the infinite estimation of odds ratio resulting from fisher's exact test. 
+#' To remove limits, set c(-Inf, Inf). Default: c(-10, 15).
+#' @param returnData If TRUE, plot data is returned instead of plot objects.
 #'  Default: FALSE
 #' @param ... For internal use.
-#' @return A named list of ggplot objects.
+#' @return A named list of [ggplot2::ggplot] objects. Names correspond to 
+#' the annotations provided. See also [featureEnrich].
 #' @examples
 #'
 #' # Example dataset with featureEnrich() already run.
@@ -553,14 +566,18 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 
 #' Plot RL-Region overlap with RLRanges
 #'
-#' @param object An RLRanges object with `rlRegionTest()` already run.
+#' Convenience function for plotting the overlap between RLRanges and R-loop
+#' regions (RL regions) as calculated by [rlRegionTest].
+#'
+#' @param object An RLRanges object with [rlRegionTest] already run.
 #' @param returnData If TRUE, plot data is returned instead of plotting.
 #'  Default: FALSE
 #' @param rlregions_table The table of RLRegions to overlap sample ranges with.
-#' Obtained from RLHUb using `RLHub::rlregions_meta()`. Loaded from RLHub if
+#' Obtained from RLHUb using [RLHub::rlregions_meta]. Loaded from RLHub if
 #' not supplied. Default: NULL.
-#' @param ... Additional arguments passed to `VennDiagram::venn.diagram()`
-#' @return A venn diagram ggplot object.
+#' @param ... Additional arguments passed to [VennDiagram::venn.diagram]
+#' @return A [ggplot2::ggplot] object containing the venn diagram. Built 
+#' using [ggplotify::as.ggplot].
 #' @examples
 #'
 #' # Example dataset with rlRegionTest() already run.
@@ -630,6 +647,13 @@ plotRLRegionOverlap <- function(object, returnData = FALSE,
         return(retData)
     }
 
+    # Suppress output log from venn.diagram if futile logger available
+    if (requireNamespace("futile.logger", quietly = TRUE)) {
+        futile.logger::flog.threshold(
+            futile.logger::ERROR, name = "VennDiagramLogger"
+        )
+    }
+    
     # Make the plot
     gt <- pltdata %>%
         VennDiagram::venn.diagram(

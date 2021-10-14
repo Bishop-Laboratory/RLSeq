@@ -2,7 +2,7 @@
 % Please edit documentation in R/report.R
 \name{report}
 \alias{report}
-\title{Generate an RLSeq Report}
+\title{RLSeq Report}
 \usage{
 report(object, reportPath = "rlreport.html", quiet = FALSE, ...)
 }
@@ -20,7 +20,8 @@ Default: "rlreport.html"}
 TRUE
 }
 \description{
-Generate an RLSeq Report
+Builds an HTML report to showcase the results available in the supplied
+\link{RLRanges} object (see also \link{RLResults}).
 }
 \examples{
 

@@ -17,17 +17,18 @@ RLRanges(
 )
 }
 \arguments{
-\item{peaks}{Path/URL to peak file or a GRanges object.}
+\item{peaks}{Path/URL to peak file or a GRanges object. This file should be
+in "broadPeak" format if possible. If not, then \code{qcol} should be specified.}
 
-\item{coverage}{Path/URL to bigWig file. If not supplied, correlation tests
-will be skipped.}
+\item{coverage}{Path/URL to the coresponding coverage file
+(in "bigWig" format). If not supplied, correlation tests will be skipped.}
 
 \item{genome}{UCSC genome ID. Acceptable types are listed in
-\code{RLSeq:::auxdata$available_genomes}.}
+\link{auxdata} (\code{available_genomes} entry).}
 
 \item{mode}{Type of R-loop mapping from which peaks and coverage were
 derived. Acceptable types are listed in
-\code{RLSeq:::auxdata$available_modes$mode}. Can be unspecified.}
+\link{auxdata} (\code{available_modes} entry). Can be unspecified.}
 
 \item{label}{"POS" (positive R-loop-mapping sample; e.g., DRIP-Seq S9.6 -RNH1)
 or "NEG" (negative control sample; e.g., DRIP-Seq S9.6 +RNH1 or Input).
@@ -36,31 +37,36 @@ Can be unspecified.}
 \item{sampleName}{A unique name for identifying this sample.
 Can be unspecified.}
 
-\item{qcol}{The name of the metadata column which contains the adjusted p
-value or the column number corresponding to the adjusted p value in \code{peaks}.
-If not specified, the last column will be chosen (standard for .broadPeak
-files).
+\item{qcol}{The name of the metadata column which contains the score or
+significance of each peak. For broadPeak (preferred), this is the
+qvalue (column 11 after accounting for extra columns created during
+peakset building).
+If not specified, the last column will be chosen by default. \strong{NOTE}:
+if supplying narrowPeak form peaks, the last column will NOT be appropriate
+and QCol should be specified as \code{11}.
 If FALSE or if no metadata columns exist, it will be left blank and some
 operations in \code{report()} will not fully run.}
 }
 \value{
-An object of class "RLRanges".
+An object of class \code{RLRanges}. These objects are an extension of
+\code{GRanges} with the addition of sample metadata entries and \link{RLResults}.
 }
 \description{
 \code{RLRanges} is a subclass of \code{GRanges}, which stores R-loop peaks
 and metadata about the R-loop-mapping experiment, along with results from
-the analyses in \code{RLSeq}.
+the analyses in \link{RLSeq}.
 }
 \examples{
 
 # Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
-pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
+pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package="RLSeq")
 
 # Get RLRanges object
 rlr <- RLRanges(pks,
     coverage = cvg, genome = "hg38", label = "NEG",
-    mode = "RDIP", sampleName = "RDIP-Seq +RNH1"
+    mode = "RDIP", sampleName = "RDIP-Seq +RNH1", qcol = 9
 )
+
 }

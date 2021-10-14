@@ -11,7 +11,8 @@ An object of class \code{list} of length 10.
 auxdata
 }
 \description{
-A list containing data used internally by RLSeq functions. See also the
+A list containing data used by RLSeq functions. It can also be useful
+for checking the available modes and genomes in RLSeq. See also the
 \code{data-raw/auxdata.R} script that was used to create it.
 }
 \details{
@@ -46,12 +47,14 @@ RLBase data when running \link{corrHeatmap}.
 }
 \item \code{label_cols}
 \itemize{
-\item A \code{tbl} containing the colors associated with the labels in RLBase.
+\item A \code{tbl} containing the colors associated with the labels in
+\href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase}.
 See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 }
 \item \code{prediction_cols}
 \itemize{
-\item A \code{tbl} containing the colors associated with the predictions in RLBase.
+\item A \code{tbl} containing the colors associated with the predictions in
+\href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase}.
 See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 }
 \item \code{available_modes}
@@ -71,5 +74,9 @@ the 'misc' category for simplification of plotting.
 }
 }
 }
+}
+\examples{
+auxdata
+
 }
 \keyword{datasets}

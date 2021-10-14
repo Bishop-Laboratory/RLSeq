@@ -7,21 +7,22 @@
 corrHeatmap(object, returnData = FALSE, complex = TRUE, ...)
 }
 \arguments{
-\item{object}{An RLRanges with \code{corrAnalyze()} already run.}
+\item{object}{An RLRanges with \link{corrAnalyze} already run.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
 
-\item{complex}{If TRUE, ComplexHeatmap will be used for plotting.
-Otherwise, pheatmap. Default: TRUE}
+\item{complex}{If TRUE, \link[ComplexHeatmap:Heatmap]{ComplexHeatmap::Heatmap} will be used for plotting.
+Otherwise, \link[pheatmap:pheatmap]{pheatmap::pheatmap} is used. Default: TRUE}
 
 \item{...}{For internal use.}
 }
 \value{
-A Heatmap object.
+A plot object or plotting data (if \code{returnData} is \code{TRUE}).
 }
 \description{
-Plot Correlation Results
+Plots a heatmap to visualize the pairwise Pearson correlation matrix
+generated via \link{corrAnalyze}.
 }
 \examples{
 

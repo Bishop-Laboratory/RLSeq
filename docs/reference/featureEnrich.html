@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tests Genomic Feature Enrichment — featureEnrich • RLSeq</title>
+<title>Test Genomic Feature Enrichment — featureEnrich • RLSeq</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Tests Genomic Feature Enrichment — featureEnrich" />
-<meta property="og:description" content="Tests the enrichment of genomic features in supplied peaks." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:title" content="Test Genomic Feature Enrichment — featureEnrich" />
+<meta property="og:description" content="Tests the enrichment of genomic features in supplied peaks. See details." />
 
 
 
@@ -80,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -93,19 +92,10 @@
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -131,13 +121,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Tests Genomic Feature Enrichment</h1>
+    <h1>Test Genomic Feature Enrichment</h1>
     <small class="dont-index">Source: <a href='https://github.com/Bishop-Laboratory/RLSeq/blob/master/R/featureEnrich.R'><code>R/featureEnrich.R</code></a></small>
     <div class="hidden name"><code>featureEnrich.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Tests the enrichment of genomic features in supplied peaks.</p>
+    <p>Tests the enrichment of genomic features in supplied peaks. See <em>details</em>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>featureEnrich</span><span class='op'>(</span>
@@ -157,64 +147,54 @@
     </tr>
     <tr>
       <th>annotype</th>
-      <td><p>The type of annotations to use. Options include "primary"
-(missing ChIP and eCLiP data) and "full" (all annotations). Default: "primary".</p></td>
+      <td><p>The type of annotations to use. Can be one of "primary"
+or "full". Default: "primary". See
+<a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a> for greater detail.</p></td>
     </tr>
     <tr>
       <th>annotations</th>
-      <td><p>Annotation list. See details.</p></td>
+      <td><p>A custom annotation list of the same structure
+described in <a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a>.</p></td>
     </tr>
     <tr>
       <th>downsample</th>
       <td><p>If a numeric, data will be down sampled to the requested
-number of peaks.
-This improves the speed of genomic shuffling and
+number of peaks. This improves the speed of genomic shuffling and
 helps prevent p-value inflation.
 If FALSE, then downsampling will not be performed. Default: 10000.</p></td>
     </tr>
     <tr>
       <th>quiet</th>
-      <td><p>If TRUE, messages will be suppressed. Default: FALSE
-the same format as RLSeq::annotationLst.</p></td>
+      <td><p>If TRUE, messages will be suppressed. Default: FALSE</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An RLRanges object containing the results of the enrichment test.</p>
+    <p>An RLRanges object containing the results of the enrichment test
+accessed via <code><a href='rlresult.html'>rlresult(object, "featureEnrichment")</a></code>. The results
+are in <code>tbl</code> format. For a full description of all columns in the output
+table see RLHub::feat_enrich_samples.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     
-<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>annotations</h3>
+<h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method</h3>
 
 
-<p><strong>RLHub</strong>: <code><a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annots_full_hg38()</a></code>,
-for example, will return the full suite of annotations for the hg38 genome.</p>
-<p><strong>Custom</strong>: For custom annotations, the only requirement is that <code>annotations</code> is a
-named list of <code>tbl</code>s in which each <code>tbl</code> follows the structure:</p>
-<table class='table'>
-<tr><td>chrom</td><td>start</td><td>end</td><td>strand</td><td>name</td></tr>
-<tr><td>chr1</td><td>10015</td><td>10498</td><td>+</td><td>skewr__C_SKEW__1</td></tr>
-<tr><td>chr1</td><td>10614</td><td>11380</td><td>+</td><td>skewr__G_SKEW__1</td></tr>
-</table>
-
-
-<p>Such a list can be generated directly from RLBase S3 bucket files:</p>
-<pre>
-  <span class='va'>small_anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-    <span class='st'>"Centromeres"</span> <span class='op'>=</span> <span class='fu'>readr</span><span class='fu'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span>
-          <span class='st'>"https://rlbase-data.s3.amazonaws.com"</span>,
-          <span class='st'>"/annotations/hg38/Centromeres.csv.gz"</span>
-      <span class='op'>)</span>
-    <span class='op'>)</span>,
-    <span class='st'>"SkewR"</span> <span class='op'>=</span> <span class='fu'>readr</span><span class='fu'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>
-      <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span>
-          <span class='st'>"https://rlbase-data.s3.amazonaws.com/"</span>,
-          <span class='st'>"annotations/hg38/SkewR.csv.gz"</span><span class='op'>)</span>
-    <span class='op'>)</span>
-  <span class='op'>)</span>
-</pre>
+<p>Annotations relevant to R-loops were curated as part of the
+<a href='https://github.com/Bishop-Laboratory/RLBase-data'>RLBase-data</a> workflow
+and are provided via <a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a>.</p>
+<p>In <code>featureEnrich</code>, each annotation "type" (e.g., "Exons", "Introns", etc)
+is compared to the supplied RLRanges, yielding enrichment statistics with
+the following procedure:</p><ol>
+<li><p>For each annotation type, the peaks are overlapped with the annotations.</p></li>
+<li><p>Then, <a href='https://rnabioco.github.io/valr/reference/bed_reldist.html'>valr::bed_reldist</a> is used to find the relative distance
+distribution between the peaks and the annotations for both the supplied
+RLRanges and shuffled RLRanges (via <a href='https://rnabioco.github.io/valr/reference/bed_shuffle.html'>valr::bed_shuffle</a>).
+Significance of the relative distance is calculated via <a href='https://rdrr.io/r/stats/ks.test.html'>stats::ks.test</a>.</p></li>
+<li><p>Then, Fisher’s exact test is implemented via <a href='https://rnabioco.github.io/valr/reference/bed_fisher.html'>valr::bed_fisher</a>
+to obtain the significance of the overlap and the odds ratio.</p></li>
+</ol>
 
 
 
@@ -229,17 +209,7 @@ named list of <code>tbl</code>s in which each <code>tbl</code> follows the struc
 <span class='co'># With custom annotations</span>
 <span class='va'>small_anno</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
     <span class='st'>"Centromeres"</span> <span class='op'>=</span> <span class='fu'>readr</span><span class='fu'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>
-        <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span>
-            <span class='st'>"https://rlbase-data.s3.amazonaws.com/"</span>,
-            <span class='st'>"annotations/hg38/Centromeres.csv.gz"</span>
-        <span class='op'>)</span>,
-        show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span>
-    <span class='op'>)</span>,
-    <span class='st'>"SkewR"</span> <span class='op'>=</span> <span class='fu'>readr</span><span class='fu'>::</span><span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span>
-        <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span>
-            <span class='st'>"https://rlbase-data.s3.amazonaws.com/"</span>,
-            <span class='st'>"annotations/hg38/SkewR.csv.gz"</span>
-        <span class='op'>)</span>,
+        <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"Centromeres.csv.gz"</span>, package<span class='op'>=</span><span class='st'>"RLSeq"</span><span class='op'>)</span>,
         show_col_types <span class='op'>=</span> <span class='cn'>FALSE</span>
     <span class='op'>)</span>
 <span class='op'>)</span>

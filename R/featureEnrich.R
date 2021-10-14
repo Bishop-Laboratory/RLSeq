@@ -1,54 +1,43 @@
-#' Tests Genomic Feature Enrichment
+#' Test Genomic Feature Enrichment
 #'
-#' @description Tests the enrichment of genomic features in supplied peaks.
+#' Tests the enrichment of genomic features in supplied peaks. See *details*.
 #'
 #' @param object An RLRanges object.
-#' @param annotype The type of annotations to use. Options include "primary"
-#'  (missing ChIP and eCLiP data) and "full" (all annotations). Default: "primary".
-#' @param annotations Annotation list. See details.
+#' @param annotype The type of annotations to use. Can be one of "primary"
+#' or "full". Default: "primary". See
+#' [RLHub::annotations] for greater detail.
+#' @param annotations A custom annotation list of the same structure
+#' described in [RLHub::annotations].
 #' @param downsample If a numeric, data will be down sampled to the requested
-#'  number of peaks.
-#' This improves the speed of genomic shuffling and
+#' number of peaks. This improves the speed of genomic shuffling and
 #' helps prevent p-value inflation.
 #' If FALSE, then downsampling will not be performed. Default: 10000.
 #' @param quiet If TRUE, messages will be suppressed. Default: FALSE
-#' the same format as RLSeq::annotationLst.
 #' @details
 #'
-#' ## annotations
-#'
-#' \strong{RLHub}: \code{RLHub::annots_full_hg38()},
-#' for example, will return the full suite of annotations for the hg38 genome.
-#'
-#' \strong{Custom}: For custom annotations, the only requirement is that \code{annotations} is a
-#' named list of \code{tbl}s in which each \code{tbl} follows the structure:
-#'
-#' \tabular{lllll}{
-#'   chrom \tab start \tab end \tab strand \tab name\cr
-#'   chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
-#'   chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
-#'   ...
-#' }
-#'
-#' Such a list can be generated directly from RLBase S3 bucket files:
-#'
-#' \preformatted{
-#'   small_anno <- list(
-#'     "Centromeres" = readr::read_csv(
-#'       paste0(
-#'           "https://rlbase-data.s3.amazonaws.com",
-#'           "/annotations/hg38/Centromeres.csv.gz"
-#'       )
-#'     ),
-#'     "SkewR" = readr::read_csv(
-#'       paste0(
-#'           "https://rlbase-data.s3.amazonaws.com/",
-#'           "annotations/hg38/SkewR.csv.gz")
-#'     )
-#'   )
-#' }
-#'
-#' @return An RLRanges object containing the results of the enrichment test.
+#' ## Method
+#' 
+#' Annotations relevant to R-loops were curated as part of the 
+#' [RLBase-data](https://github.com/Bishop-Laboratory/RLBase-data) workflow
+#' and are provided via [RLHub::annotations].
+#' 
+#' In `featureEnrich`, each annotation "type" (e.g., "Exons", "Introns", etc)
+#' is compared to the supplied RLRanges, yielding enrichment statistics with 
+#' the following procedure:
+#' 
+#' 1. For each annotation type, the peaks are overlapped with the annotations. 
+#' 2. Then, [valr::bed_reldist] is used to find the relative distance
+#' distribution between the peaks and the annotations for both the supplied 
+#' RLRanges and shuffled RLRanges (via [valr::bed_shuffle]).
+#' Significance of the relative distance is calculated via [stats::ks.test].
+#' 3. Then, Fisher’s exact test is implemented via [valr::bed_fisher] 
+#' to obtain the significance of the overlap and the odds ratio.
+#' 
+#' @return An RLRanges object containing the results of the enrichment test 
+#' accessed via `rlresult(object, "featureEnrichment")`. The results 
+#' are in `tbl` format. For a full description of all columns in the output 
+#' table see [RLHub::feat_enrich_samples]. 
+#' 
 #' @examples
 #'
 #' # Example RLRanges dataset
@@ -60,17 +49,7 @@
 #' # With custom annotations
 #' small_anno <- list(
 #'     "Centromeres" = readr::read_csv(
-#'         paste0(
-#'             "https://rlbase-data.s3.amazonaws.com/",
-#'             "annotations/hg38/Centromeres.csv.gz"
-#'         ),
-#'         show_col_types = FALSE
-#'     ),
-#'     "SkewR" = readr::read_csv(
-#'         paste0(
-#'             "https://rlbase-data.s3.amazonaws.com/",
-#'             "annotations/hg38/SkewR.csv.gz"
-#'         ),
+#'         system.file("extdata", "Centromeres.csv.gz", package="RLSeq"),
 #'         show_col_types = FALSE
 #'     )
 #' )

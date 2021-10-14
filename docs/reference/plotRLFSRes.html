@@ -47,8 +47,9 @@
 
 
 <meta property="og:title" content="Plot RLFS analysis results — plotRLFSRes" />
-<meta property="og:description" content="Plots the results of the R-loop-forming sequences analysis." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:description" content="Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a
+metaplot of the Z score distribution around RLFS with the p value from
+permutation testing annotated. See also analyzeRLFS." />
 
 
 
@@ -80,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -93,19 +94,10 @@
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -137,7 +129,9 @@
     </div>
 
     <div class="ref-description">
-    <p>Plots the results of the R-loop-forming sequences analysis.</p>
+    <p>Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a
+metaplot of the Z score distribution around RLFS with the p value from
+permutation testing annotated. See also <a href='analyzeRLFS.html'>analyzeRLFS</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotRLFSRes</span><span class='op'>(</span><span class='va'>object</span>, plotName <span class='op'>=</span> <span class='cn'>NULL</span>, fft <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -147,28 +141,29 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>An RLRanges with <code><a href='analyzeRLFS.html'>analyzeRLFS()</a></code> already run. Alternatively,
-can be the RLFS results object from an RLRanges.</p></td>
+      <td><p>An RLRanges object with <a href='analyzeRLFS.html'>analyzeRLFS</a> already run.
+Alternatively, can be the RLFS results object from an RLRanges (from
+<code><a href='rlresult.html'>rlresult(object, "rlfsRes")</a></code>).</p></td>
     </tr>
     <tr>
       <th>plotName</th>
       <td><p>A Sample name used for plotting.
-If blank, the RLRanges name is used.</p></td>
+If blank, the RLRanges <code>sampleName</code> metadata entry is used (see <a href='RLRanges-class.html'>RLRanges</a>).</p></td>
     </tr>
     <tr>
       <th>fft</th>
-      <td><p>If TRUE, the fourier transform of Z-score is plotted instead.
+      <td><p>If TRUE, the Fourier transform of the Z-score is plotted instead.
 Default: FALSE.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed to <code>ggplot</code>.</p></td>
+      <td><p>Additional parameters passed to <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot2::ggplot</a>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot object.</p>
+    <p>A ggplot object. See also <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot2::ggplot</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">

@@ -1,11 +1,12 @@
 #' Analyze RLFS
 #'
 #' Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
+#' See *details*.
 #'
-#' @param object An RLRanges object.
+#' @param object An [RLRanges] object.
 #' @param mask GRanges object containing masked genomic ranges.
-#'  Not needed unless masked genome unavailable (see \code{RLSeq:::genomeMasks}).
-#'  Custom masks can be generated using regioneR::getMask().
+#'  Not needed unless masked genome unavailable (see [genomeMasks]).
+#'  Custom masks can be generated using [regioneR::getMask].
 #' @param useMask If FALSE, masked genome is not used. This is
 #' not recommended unless a mask is unavailable as it can lead to spurious
 #' results. Default: TRUE.
@@ -13,9 +14,46 @@
 #' @param noZ If TRUE, Z-score distribution is not calculated. Default: FALSE.
 #' @param ntimes Number of permutations to perform (default: 100).
 #' @param stepsize The step size for calculating the Z score distribution.
-#' Default: 50. See also [regioneR::localZScore()].
-#' @param ... Arguments passed to [regioneR::permTest()].
-#' @return An RLRanges object with RLFS analysis results included.
+#' Default: 50. See also [regioneR::localZScore].
+#' @param ... Arguments passed to [regioneR::permTest].
+#' @details 
+#' 
+#' R-loop forming sequences are regions of the genome with sequences that are 
+#' favorable for R-loop formation. They are computationally 
+#' predicted with the 
+#' [QmRLFS-finder](https://github.com/piroonj/QmRLFS-finder) 
+#' software program and serve as a data-independent test of whether a sample
+#' has mapped R-loops robustly or not.
+#'  
+#' ## Method
+#' 
+#' Permutation testing is implemented via [regioneR::permTest] such that,
+#' for each permutation, R-loop peaks were randomized using  
+#' [regioneR::circularRandomizeRegions] and then the number of overlaps with
+#' RLFS are counted. 100 permutations are used by default to build an empirical
+#' distribution for peak/RLFS overlap. Then the true number of overlaps from
+#' non-randomized peaks and RLFS are compared to the null distribution to
+#' calculate Z-score and significance of enrichment. Finally, a Z-score 
+#' distribution was calculated (using [regioneR::localZScore])
+#' 5kb upstream and downstream of the average RLFS midpoint. 
+#' 
+#' These results are subsequently used in the binary classification of 
+#' the sample as "POS" (maps R-loops) or "NEG" (does not map R-loops). See also
+#' [predictCondition].
+#' 
+#' @return An RLRanges object with RLFS analysis results 
+#' accessible via `RLSeq::rlresult(object, "rlfsRes")`. Contains the 
+#' following structure:
+#' 
+#' - `perTestResults`
+#'   * An object of the class `permTestResultsList` from `regioneR` with
+#'   the results of permutation testing. See also
+#'   [regioneR::permTest] for full description.
+#' - `Z-scores`
+#'   * An object of the class `localZScoreResultsList` from `regioneR`. 
+#'   Contains the results of local Z-score analysis +/-5kb around each RLFS.
+#'   See also [regioneR::localZScore].
+#'   
 #' @examples
 #'
 #' # Example dataset

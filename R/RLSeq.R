@@ -1,36 +1,35 @@
-#' Run RLSeq
+#' RLSeq
 #'
-#' Runs the full RLSeq pipeline.
-#'
-#' @param object An RLRanges object.
-#' @param quiet If TRUE, messages are suppressed. Default: FALSE.
+#' Executes the RLSeq analysis workflow.
+#' 
+#' @param object An [RLRanges] object.
+#' @param quiet If `TRUE`, messages are suppressed. Default: `FALSE`.
 #' @param skip Analysis steps to skip. 
-#' Default: NULL. See details for options.
-#' @param ... Arguments passed to analyzeRLFS. See [analyzeRLFS].
-#' @return An RLRanges object with results available.
+#' Default: `NULL`. See *details* for options.
+#' @param ... Arguments passed to [analyzeRLFS].
+#' @return An [RLRanges] object with results available (see [rlresult]).
 #' @details
 #'
 #' The `RLSeq()` function does all of the following by default:
 #'
-#' 1. **RLFS Perm Test**. Runs the `analyzeRLFS()` function to test the
+#' 1. **RLFS Perm Test**. Runs the [analyzeRLFS] function to test the
 #'   enrichment of user-supplied ranges within R-loop-forming sequences.
 #'   *Cannot be skipped.*
-#' 2. **Predict Condition**. Runs the `predictCondition()` function to
+#' 2. **Predict Condition**. Runs the [predictCondition] function to
 #'   predict whether the user-supplied sample robustly maps R-loops or not.
-#'   *Cannot be skipped.* [RLHub::models].
-#' 3. **Feature enrichment test**. Runs the `featureEnrich()` function to
+#'   *Cannot be skipped.* 
+#' 3. **Feature enrichment test**. Runs the [featureEnrich] function to
 #'   test the enrichment of user-supplied ranges within R-loop-relevant 
-#'   genomic features. Skip with `skip="featureEnrich"`. See also
-#'   [RLHub::annotations].
-#' 4. **Correlation Analysis**. Runs the `corrAnalyze()` function to test
+#'   genomic features. Skip with `skip="featureEnrich"`. 
+#' 4. **Correlation Analysis**. Runs the [corrAnalyze] function to test
 #'   the correlation of user-supplied R-loop signal with other samples in 
 #'   RLBase around "gold-standard" R-loop regions. 
-#'   Skip with `skip="corrAnalyze"`. See also [RLHub::gs_signal].
-#' 5. **Gene annotation**. Runs the `geneAnnotation()` function to find the overlap
+#'   Skip with `skip="corrAnalyze"`.
+#' 5. **Gene annotation**. Runs the [geneAnnotation] function to find the overlap
 #'   of genes with the user-supplied ranges. Skip with `skip="geneAnnotation"`.
-#' 6. **R-loop Region Analysis**. Runs the `rlRegionTest()` function to find
+#' 6. **R-loop Region Analysis**. Runs the [rlRegionTest] function to find
 #'   the overlap of user-supplied ranges with consensus R-loop sites 
-#'   (RL-Regions). Skip with `skip="rlRegionTest"`. See also [RLHub::rlregions].
+#'   (RL-Regions). Skip with `skip="rlRegionTest"`.
 #' 
 #' @examples
 #'
