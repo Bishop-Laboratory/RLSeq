@@ -27,7 +27,7 @@ Plots the results of the R-loop-forming sequences analysis.
 \examples{
 
 # Example RLRanges dataset with analyzeRLFS() already run.
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # Plot RLFS res
 plotRLFSRes(rlr)

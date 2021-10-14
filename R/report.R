@@ -9,7 +9,7 @@
 #' @examples
 #'
 #' # Example data with RLSeq() already run.
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Get a TMP file (only for example usae)
 #' tmp <- tempfile()

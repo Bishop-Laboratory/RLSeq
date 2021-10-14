@@ -21,5 +21,7 @@ tests/testthat/rlreport.html
 tests/testthat/rlreport_files
 *report.html
 *annotated_peaks.csv
+logo.png
 *broadPeak
 *.bed
+misc/

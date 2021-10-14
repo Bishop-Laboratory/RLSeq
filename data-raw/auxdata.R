@@ -133,6 +133,6 @@ auxdata <- list(
     available_genomes = genomes,
     misc_modes = misc
 )
-saveRDS(auxdata, file = "inst/int-data/auxdata.rds", compress = "xz")
+usethis::use_data(auxdata, overwrite = TRUE, compress = "xz")
 
 

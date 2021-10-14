@@ -25,7 +25,7 @@ Uses the results of analyzeRLFS() to predict whether a sample is "POS"
 \examples{
 
 # Example data with analyzeRLFS already run
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # predict condition
 rlr <- predictCondition(rlr)

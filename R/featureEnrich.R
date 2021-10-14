@@ -52,7 +52,7 @@
 #' @examples
 #'
 #' # Example RLRanges dataset
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # RL Region Test
 #' featureEnrich(rlr)

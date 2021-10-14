@@ -19,7 +19,7 @@
 #' @examples
 #'
 #' # Example dataset
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Perform RLFS analysis (remove ntimes=2 and noZ=TRUE for a typical analysis)
 #' rlr <- analyzeRLFS(rlr, ntimes = 2, noZ = TRUE)

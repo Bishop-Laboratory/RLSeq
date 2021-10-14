@@ -12,7 +12,7 @@
 #' @examples
 #'
 #' # Example RLRanges dataset with analyzeRLFS() already run.
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Plot RLFS res
 #' plotRLFSRes(rlr)
@@ -90,7 +90,7 @@ plotRLFSRes <- function(object,
 #' @examples
 #'
 #' # Example RLRanges data with corrAnalyze() already run.
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Corr heatmap
 #' corrHeatmap(rlr)
@@ -123,25 +123,25 @@ corrHeatmap <- function(object,
     # Wrangle the annotation data
     rlsamples <- rlsamples[rlsamples$rlsample != object@metadata$sampleName, ]
     annoCorr <- rlsamples %>%
-        dplyr::mutate(group = "RLBase") %>%
+        dplyr::mutate(Selected = "RLBase") %>%
         dplyr::select(
-            .data$rlsample, .data$mode,
-            label = .data$label,
-            prediction = .data$prediction, .data$group
+            .data$rlsample, Mode = .data$mode,
+            Label = .data$label,
+            Prediction = .data$prediction, .data$Selected
         ) %>%
         dplyr::bind_rows(
             dplyr::tibble(
                 rlsample = object@metadata$sampleName,
-                mode = object@metadata$mode,
-                label = object@metadata$label,
-                prediction = prediction$prediction,
-                group = object@metadata$sampleName
+                Mode = object@metadata$mode,
+                Label = object@metadata$label,
+                Prediction = prediction$prediction,
+                Selected = object@metadata$sampleName
             )
         ) %>%
         dplyr::mutate(
-            mode = dplyr::case_when(
-                .data$mode %in% auxdata$misc_modes ~ "misc",
-                TRUE ~ .data$mode
+            Mode = dplyr::case_when(
+                .data$Mode %in% auxdata$misc_modes ~ "misc",
+                TRUE ~ .data$Mode
             )
         ) %>%
         dplyr::distinct(.data$rlsample, .keep_all = TRUE)
@@ -158,21 +158,19 @@ corrHeatmap <- function(object,
     annoCorr <- annoCorr[toSelect, ]
 
     # Filter to remove any un-predicted samples
-    keep <- which(!is.na(annoCorr$prediction))
+    keep <- which(!is.na(annoCorr$Prediction))
     corrRes <- corrRes[keep, keep]
     annoCorr <- annoCorr[keep, ]
 
     # Pallete
-    paletteLength <- 100
+    paletteLength <- 250
     myColor <- grDevices::colorRampPalette(
         rev(RColorBrewer::brewer.pal(n = 7, name = "RdBu"))
     )(paletteLength)
-    # length(breaks) == length(paletteLength) + 1
-    # use floor and ceiling to deal with even/odd length pallettelengths
     myBreaks <- c(
-        seq(min(corrRes), 0, length.out = ceiling(paletteLength / 2) + 1),
+        seq(-1, 0, length.out = ceiling(paletteLength / 2) + 1),
         seq(
-            max(corrRes) / paletteLength, max(corrRes),
+            1 / paletteLength, 1,
             length.out = floor(paletteLength / 2)
         )
     )
@@ -189,12 +187,12 @@ corrHeatmap <- function(object,
         auxdata$heat_cols$col[auxdata$heat_cols$selected == "RLBase"]
     ), nm = c(object@metadata$sampleName, "RLBase"))
     cat_cols <- list(
-        "mode" = mode_cols,
-        "label" = c(cond_cols, "grey"),
-        "prediction" = verd_cols,
-        "group" = group_cols
+        "Mode" = mode_cols,
+        "Label" = c(cond_cols, "grey"),
+        "Prediction" = verd_cols,
+        "Selected" = group_cols
     )
-    cat_cols$mode <- cat_cols$mode[names(cat_cols$mode) %in% annoCorr$mode]
+    cat_cols$Mode <- cat_cols$Mode[names(cat_cols$Mode) %in% annoCorr$Mode]
     continuous_pal <- circlize::colorRamp2(
         breaks = myBreaks[-1],
         colors = myColor
@@ -239,7 +237,6 @@ corrHeatmap <- function(object,
             silent = TRUE
         )
     }
-
     return(hm)
 }
 
@@ -266,7 +263,7 @@ corrHeatmap <- function(object,
 #' @examples
 #'
 #' # Example dataset with featureEnrich() already run.
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Make plots, split by prediction
 #' plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
@@ -567,7 +564,7 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 #' @examples
 #'
 #' # Example dataset with rlRegionTest() already run.
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Plot RL-Region overlap
 #' plotRLRegionOverlap(rlr)
