@@ -1,13 +1,43 @@
 #' Analyze Correlations
 #'
 #' Finds the pairwise correlation in signal around gold-standard R-Loop sites
-#' between the query sample and the RLBase database.
+#' between the query sample and the coverage tracks in the 
+#' [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/) database.
+#' See *details*.
 #'
 #' Currently, this does not work on windows.
 #'
 #' @param object An RLRanges object.
-#' @param force Force corrAnalyze() to run, even if on Windows. Default: FALSE.
-#' @return An RLRanges object with correlation results included.
+#' @param force Force `corrAnalyze` to run, even if on Windows. Default: FALSE.
+#' @return An RLRanges object with correlation results included as a `matrix`.
+#' The correlation matrix is accessed via
+#' `rlresults(object, "correlationMat")`.
+#' @details 
+#' 
+#' ## Method 
+#' 
+#' The `corrAnalyze` function performs a correlation test that can 
+#' be used to assess sample-sample similarity by calculating coverage signal
+#' (from genomic alignments) around “gold standard”
+#' R-loop sites (PMID: [33411340](https://pubmed.ncbi.nlm.nih.gov/33411340/)).
+#' The resulting correlation matrix is useful for determining how well a 
+#' supplied sample correlates with previously-published datasets.
+#' 
+#' During the 
+#' [RLBase-data workflow](https://github.com/Bishop-Laboratory/RLBase-data), 
+#' the signal for each R-loop mapping sample
+#' within “gold standard” R-loop sites was calculated see [RLHub::gs_signal]. 
+#' 
+#' The `corrAnalyze` function loads [RLHub::gs_signal] and accepts an [RLRanges]
+#' object with a valid coverage slot. It then does the following:
+#' 
+#' 1. The coverage is quantified within the “gold standard”
+#' sites and added as a column to the signal matrix from [RLHub::gs_signal].
+#' 2. Then, the [stats::cor] function is used to calculate the Pearson
+#' correlation pairwise between all samples, yielding a correlation matrix
+#' 3. Finally, the correlation matrix is stashed in the in the 
+#' `correlationMat` slot of the [RLResults] and returned. 
+#' 
 #' @examples
 #'
 #' # Example RLRanges object

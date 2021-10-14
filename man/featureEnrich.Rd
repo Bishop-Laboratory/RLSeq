@@ -2,7 +2,7 @@
 % Please edit documentation in R/featureEnrich.R
 \name{featureEnrich}
 \alias{featureEnrich}
-\title{Tests Genomic Feature Enrichment}
+\title{Test Genomic Feature Enrichment}
 \usage{
 featureEnrich(
   object,
@@ -15,58 +15,47 @@ featureEnrich(
 \arguments{
 \item{object}{An RLRanges object.}
 
-\item{annotype}{The type of annotations to use. Options include "primary"
-(missing ChIP and eCLiP data) and "full" (all annotations). Default: "primary".}
+\item{annotype}{The type of annotations to use. Can be one of "primary"
+or "full". Default: "primary". See
+\link[RLHub:annotations]{RLHub::annotations} for greater detail.}
 
-\item{annotations}{Annotation list. See details.}
+\item{annotations}{A custom annotation list of the same structure
+described in \link[RLHub:annotations]{RLHub::annotations}.}
 
 \item{downsample}{If a numeric, data will be down sampled to the requested
-number of peaks.
-This improves the speed of genomic shuffling and
+number of peaks. This improves the speed of genomic shuffling and
 helps prevent p-value inflation.
 If FALSE, then downsampling will not be performed. Default: 10000.}
 
-\item{quiet}{If TRUE, messages will be suppressed. Default: FALSE
-the same format as RLSeq::annotationLst.}
+\item{quiet}{If TRUE, messages will be suppressed. Default: FALSE}
 }
 \value{
-An RLRanges object containing the results of the enrichment test.
+An RLRanges object containing the results of the enrichment test
+accessed via \code{rlresult(object, "featureEnrichment")}. The results
+are in \code{tbl} format. For a full description of all columns in the output
+table see \link[RLHub:featureEnrichment]{RLHub::feat_enrich_samples}.
 }
 \description{
-Tests the enrichment of genomic features in supplied peaks.
+Tests the enrichment of genomic features in supplied peaks. See \emph{details}.
 }
 \details{
-\subsection{annotations}{
+\subsection{Method}{
 
-\strong{RLHub}: \code{RLHub::annots_full_hg38()},
-for example, will return the full suite of annotations for the hg38 genome.
+Annotations relevant to R-loops were curated as part of the
+\href{https://github.com/Bishop-Laboratory/RLBase-data}{RLBase-data} workflow
+and are provided via \link[RLHub:annotations]{RLHub::annotations}.
 
-\strong{Custom}: For custom annotations, the only requirement is that \code{annotations} is a
-named list of \code{tbl}s in which each \code{tbl} follows the structure:
-
-\tabular{lllll}{
-chrom \tab start \tab end \tab strand \tab name\cr
-chr1 \tab 10015 \tab 10498 \tab + \tab skewr__C_SKEW__1\cr
-chr1 \tab 10614 \tab 11380 \tab + \tab skewr__G_SKEW__1\cr
-...
-}
-
-Such a list can be generated directly from RLBase S3 bucket files:
-
-\preformatted{
-  small_anno <- list(
-    "Centromeres" = readr::read_csv(
-      paste0(
-          "https://rlbase-data.s3.amazonaws.com",
-          "/annotations/hg38/Centromeres.csv.gz"
-      )
-    ),
-    "SkewR" = readr::read_csv(
-      paste0(
-          "https://rlbase-data.s3.amazonaws.com/",
-          "annotations/hg38/SkewR.csv.gz")
-    )
-  )
+In \code{featureEnrich}, each annotation "type" (e.g., "Exons", "Introns", etc)
+is compared to the supplied RLRanges, yielding enrichment statistics with
+the following procedure:
+\enumerate{
+\item For each annotation type, the peaks are overlapped with the annotations.
+\item Then, \link[valr:bed_reldist]{valr::bed_reldist} is used to find the relative distance
+distribution between the peaks and the annotations for both the supplied
+RLRanges and shuffled RLRanges (via \link[valr:bed_shuffle]{valr::bed_shuffle}).
+Significance of the relative distance is calculated via \link[stats:ks.test]{stats::ks.test}.
+\item Then, Fisher’s exact test is implemented via \link[valr:bed_fisher]{valr::bed_fisher}
+to obtain the significance of the overlap and the odds ratio.
 }
 }
 }
@@ -81,17 +70,7 @@ featureEnrich(rlr)
 # With custom annotations
 small_anno <- list(
     "Centromeres" = readr::read_csv(
-        paste0(
-            "https://rlbase-data.s3.amazonaws.com/",
-            "annotations/hg38/Centromeres.csv.gz"
-        ),
-        show_col_types = FALSE
-    ),
-    "SkewR" = readr::read_csv(
-        paste0(
-            "https://rlbase-data.s3.amazonaws.com/",
-            "annotations/hg38/SkewR.csv.gz"
-        ),
+        system.file("extdata", "Centromeres.csv.gz", package="RLSeq"),
         show_col_types = FALSE
     )
 )

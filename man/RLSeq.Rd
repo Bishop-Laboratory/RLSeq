@@ -2,48 +2,47 @@
 % Please edit documentation in R/RLSeq.R
 \name{RLSeq}
 \alias{RLSeq}
-\title{Run RLSeq}
+\title{RLSeq}
 \usage{
 RLSeq(object, quiet = FALSE, skip = NULL, ...)
 }
 \arguments{
-\item{object}{An RLRanges object.}
+\item{object}{An \link{RLRanges} object.}
 
-\item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
+\item{quiet}{If \code{TRUE}, messages are suppressed. Default: \code{FALSE}.}
 
 \item{skip}{Analysis steps to skip.
-Default: NULL. See details for options.}
+Default: \code{NULL}. See \emph{details} for options.}
 
-\item{...}{Arguments passed to analyzeRLFS. See \link{analyzeRLFS}.}
+\item{...}{Arguments passed to \link{analyzeRLFS}.}
 }
 \value{
-An RLRanges object with results available.
+An \link{RLRanges} object with results available (see \link{rlresult}).
 }
 \description{
-Runs the full RLSeq pipeline.
+Executes the RLSeq analysis workflow.
 }
 \details{
 The \code{RLSeq()} function does all of the following by default:
 \enumerate{
-\item \strong{RLFS Perm Test}. Runs the \code{analyzeRLFS()} function to test the
+\item \strong{RLFS Perm Test}. Runs the \link{analyzeRLFS} function to test the
 enrichment of user-supplied ranges within R-loop-forming sequences.
 \emph{Cannot be skipped.}
-\item \strong{Predict Condition}. Runs the \code{predictCondition()} function to
+\item \strong{Predict Condition}. Runs the \link{predictCondition} function to
 predict whether the user-supplied sample robustly maps R-loops or not.
-\emph{Cannot be skipped.} \link[RLHub:models]{RLHub::models}.
-\item \strong{Feature enrichment test}. Runs the \code{featureEnrich()} function to
+\emph{Cannot be skipped.}
+\item \strong{Feature enrichment test}. Runs the \link{featureEnrich} function to
 test the enrichment of user-supplied ranges within R-loop-relevant
-genomic features. Skip with \code{skip="featureEnrich"}. See also
-\link[RLHub:annotations]{RLHub::annotations}.
-\item \strong{Correlation Analysis}. Runs the \code{corrAnalyze()} function to test
+genomic features. Skip with \code{skip="featureEnrich"}.
+\item \strong{Correlation Analysis}. Runs the \link{corrAnalyze} function to test
 the correlation of user-supplied R-loop signal with other samples in
 RLBase around "gold-standard" R-loop regions.
-Skip with \code{skip="corrAnalyze"}. See also \link[RLHub:gs_signal]{RLHub::gs_signal}.
-\item \strong{Gene annotation}. Runs the \code{geneAnnotation()} function to find the overlap
+Skip with \code{skip="corrAnalyze"}.
+\item \strong{Gene annotation}. Runs the \link{geneAnnotation} function to find the overlap
 of genes with the user-supplied ranges. Skip with \code{skip="geneAnnotation"}.
-\item \strong{R-loop Region Analysis}. Runs the \code{rlRegionTest()} function to find
+\item \strong{R-loop Region Analysis}. Runs the \link{rlRegionTest} function to find
 the overlap of user-supplied ranges with consensus R-loop sites
-(RL-Regions). Skip with \code{skip="rlRegionTest"}. See also \link[RLHub:rlregions]{RLHub::rlregions}.
+(RL-Regions). Skip with \code{skip="rlRegionTest"}.
 }
 }
 \examples{

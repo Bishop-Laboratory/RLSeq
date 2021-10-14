@@ -10,11 +10,44 @@ rlRegionTest(object)
 \item{object}{An RLRanges object with genome "hg38".}
 }
 \value{
-An RLRanges object with test results included.
+An RLRanges object with test results accessible via
+\code{rlresult(object, "rlRegionRes")}.
+\subsection{Structure}{
+
+The structure of the results is a named \code{list} containing the following:
+\itemize{
+\item \code{Overlap}
+\itemize{
+\item A \code{tbl} showing the overlap between RL regions and user-supplied ranges.
+\item Column description:
+\itemize{
+\item \code{chrom} - The chromosome name
+\item \code{start__peaks} - The starting position of the user-supplied peak in
+the overlap.
+\item \code{end__peaks} - Same as above for end position.
+\item \code{name__peaks} - The name of the user-supplied peak in the overlap
+(from \code{names(object)}).
+\item \code{start/end/name__rlregion} - Same as above for RL regions.
+\item \code{strand__rlregion} - The genomic strand of the RL region in the overlap.
+\item \code{.overlap} - The size of the overlap.
+}
+}
+\item \code{Test_results}
+\itemize{
+\item A \code{tbl} showing the results of the Fisher's exact test.
+See \link[valr:bed_fisher]{valr::bed_fisher}.
+}
+}
+}
 }
 \description{
-Tests the overlap of user-supplied ranges with R-loop regions (R-loop consensus
-sites derived from meta-analysis of RLBase)
+Tests the overlap of user-supplied ranges with R-loop regions (RL regions).
+}
+\details{
+R-loop regions (RL regions) are consensus sites of R-loop formation. For
+more information, see \link[RLHub:rlregions]{RLHub::rlregions}. The \code{rlRegionTest} is a simple
+function which finds the overlap of user-supplied samples with RL regions and
+calculates Fisher's exact test via \link[valr:bed_fisher]{valr::bed_fisher}.
 }
 \examples{
 

@@ -1,6 +1,6 @@
 ## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
-Using the method described in [*Chedin et al. 2020*](https://doi.org/10.15252/embj.2020106394){target="_blank"}, the inter-sample correlations between **`r object@metadata$sampleName`** and the samples in *RLBase* were calculated. 
+Using the method described in [*Chedin et al. 2020*](https://doi.org/10.15252/embj.2020106394){target="_blank"}, the inter-sample correlations between **`r object@metadata$sampleName`** and the samples in *RLBase* were calculated. For additional detail, please refer to the `RLSeq::corrAnalyze` documentation ([link](https://bishop-laboratory.github.io/RLSeq/reference/corrAnalyze.html){target="_blank"}). 
 
 In the resulting heatmap, **`r object@metadata$sampleName`** is identified via the `group` annotation.
 

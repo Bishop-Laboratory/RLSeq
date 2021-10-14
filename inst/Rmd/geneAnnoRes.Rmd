@@ -1,6 +1,6 @@
 ## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
-**`r GenomeInfoDb::genome(object)[1]`** Gene annotations were downloaded from [*AnnotationHub*](https://bioconductor.org/packages/release/bioc/html/AnnotationHub.html){target="_blank"} and overlapped with R-loop ranges in **`r object@metadata$sampleName`**. The resulting gene table was then filtered for the top 2000 peaks (by p-adjusted value) and is observed here:
+**`r GenomeInfoDb::genome(object)[1]`** Gene annotations were downloaded from [*AnnotationHub*](https://bioconductor.org/packages/release/bioc/html/AnnotationHub.html){target="_blank"} and overlapped with R-loop ranges in **`r object@metadata$sampleName`**. For additional detail, please refer to the `RLSeq::geneAnnotation` documentation ([link](https://bishop-laboratory.github.io/RLSeq/reference/geneAnnotation.html){target="_blank"}). The resulting gene table was then filtered for the top 2000 peaks (by p-adjusted value) and is observed here:
 
 ```{r}
 geneRes <- rlresult(object, resultName = "geneAnnoRes")

@@ -16,11 +16,11 @@ analyzeRLFS(
 )
 }
 \arguments{
-\item{object}{An RLRanges object.}
+\item{object}{An \link{RLRanges} object.}
 
 \item{mask}{GRanges object containing masked genomic ranges.
-Not needed unless masked genome unavailable (see \code{RLSeq:::genomeMasks}).
-Custom masks can be generated using regioneR::getMask().}
+Not needed unless masked genome unavailable (see \link{genomeMasks}).
+Custom masks can be generated using \link[regioneR:getMask]{regioneR::getMask}.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 
@@ -33,15 +33,56 @@ results. Default: TRUE.}
 \item{ntimes}{Number of permutations to perform (default: 100).}
 
 \item{stepsize}{The step size for calculating the Z score distribution.
-Default: 50. See also \code{\link[regioneR:localZScore]{regioneR::localZScore()}}.}
+Default: 50. See also \link[regioneR:localZScore]{regioneR::localZScore}.}
 
-\item{...}{Arguments passed to \code{\link[regioneR:permTest]{regioneR::permTest()}}.}
+\item{...}{Arguments passed to \link[regioneR:permTest]{regioneR::permTest}.}
 }
 \value{
-An RLRanges object with RLFS analysis results included.
+An RLRanges object with RLFS analysis results
+accessible via \code{RLSeq::rlresult(object, "rlfsRes")}. Contains the
+following structure:
+\itemize{
+\item \code{perTestResults}
+\itemize{
+\item An object of the class \code{permTestResultsList} from \code{regioneR} with
+the results of permutation testing. See also
+\link[regioneR:permTest]{regioneR::permTest} for full description.
+}
+\item \code{Z-scores}
+\itemize{
+\item An object of the class \code{localZScoreResultsList} from \code{regioneR}.
+Contains the results of local Z-score analysis +/-5kb around each RLFS.
+See also \link[regioneR:localZScore]{regioneR::localZScore}.
+}
+}
 }
 \description{
 Analyzes the enrichment of ranges within R-loop forming sequences (RLFS).
+See \emph{details}.
+}
+\details{
+R-loop forming sequences are regions of the genome with sequences that are
+favorable for R-loop formation. They are computationally
+predicted with the
+\href{https://github.com/piroonj/QmRLFS-finder}{QmRLFS-finder}
+software program and serve as a data-independent test of whether a sample
+has mapped R-loops robustly or not.
+\subsection{Method}{
+
+Permutation testing is implemented via \link[regioneR:permTest]{regioneR::permTest} such that,
+for each permutation, R-loop peaks were randomized using
+\link[regioneR:circularRandomizeRegions]{regioneR::circularRandomizeRegions} and then the number of overlaps with
+RLFS are counted. 100 permutations are used by default to build an empirical
+distribution for peak/RLFS overlap. Then the true number of overlaps from
+non-randomized peaks and RLFS are compared to the null distribution to
+calculate Z-score and significance of enrichment. Finally, a Z-score
+distribution was calculated (using \link[regioneR:localZScore]{regioneR::localZScore})
+5kb upstream and downstream of the average RLFS midpoint.
+
+These results are subsequently used in the binary classification of
+the sample as "POS" (maps R-loops) or "NEG" (does not map R-loops). See also
+\link{predictCondition}.
+}
 }
 \examples{
 

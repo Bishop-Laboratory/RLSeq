@@ -1,10 +1,38 @@
 #' R-Loop region test
 #'
-#' Tests the overlap of user-supplied ranges with R-loop regions (R-loop consensus
-#' sites derived from meta-analysis of RLBase)
+#' Tests the overlap of user-supplied ranges with R-loop regions (RL regions).
 #'
 #' @param object An RLRanges object with genome "hg38".
-#' @return An RLRanges object with test results included.
+#' @details 
+#' 
+#' R-loop regions (RL regions) are consensus sites of R-loop formation. For
+#' more information, see [RLHub::rlregions]. The `rlRegionTest` is a simple
+#' function which finds the overlap of user-supplied samples with RL regions and
+#' calculates Fisher's exact test via [valr::bed_fisher].
+#' 
+#' @return An RLRanges object with test results accessible via
+#' `rlresult(object, "rlRegionRes")`.
+#' 
+#' ### Structure
+#' 
+#' The structure of the results is a named `list` containing the following:
+#' 
+#' * `Overlap`
+#'   - A `tbl` showing the overlap between RL regions and user-supplied ranges.
+#'   - Column description:
+#'     * `chrom` - The chromosome name
+#'     * `start__peaks` - The starting position of the user-supplied peak in 
+#'     the overlap.
+#'     * `end__peaks` - Same as above for end position.
+#'     * `name__peaks` - The name of the user-supplied peak in the overlap
+#'     (from `names(object)`).
+#'     * `start/end/name__rlregion` - Same as above for RL regions.
+#'     * `strand__rlregion` - The genomic strand of the RL region in the overlap.
+#'     * `.overlap` - The size of the overlap.
+#' * `Test_results`
+#'   - A `tbl` showing the results of the Fisher's exact test. 
+#'   See [valr::bed_fisher].
+#' 
 #' @examples
 #'
 #' # Example RLRanges data

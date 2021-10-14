@@ -1,5 +1,8 @@
-#' Generate an RLSeq Report
+#' RLSeq Report
 #'
+#' Builds an HTML report to showcase the results available in the supplied
+#' [RLRanges] object (see also [RLResults]). 
+#' 
 #' @param object An RLRanges object.
 #' @param reportPath A path indicating the report output HTML file.
 #'  Default: "rlreport.html"

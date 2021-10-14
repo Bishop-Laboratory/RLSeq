@@ -10,13 +10,43 @@ geneAnnotation(object, txdb = NULL)
 \item{object}{An RLRanges object.}
 
 \item{txdb}{The TxDb or EnsDb object containing gene annotations. If not
-supplied, annotations will be automatically downloaded from AnnotationHub.}
+supplied, annotations will be automatically downloaded from AnnotationHub.
+See also \link[GenomicFeatures:TxDb-class]{GenomicFeatures::TxDb}.}
 }
 \value{
-An RLRanges object with genes overlaps included.
+An RLRanges object with gene overlaps included. The results
+are available via \code{rlresult(object, "geneAnnoRes")}. The result object
+is a \code{tbl} with a mapping of \code{peak_name} (peak names from \code{names(object)})
+to \code{gene_id} (entrez gene IDs).
 }
 \description{
-Annotates RLRanges with entrez ids for overlapping genes.
+Annotates RLRanges with entrez ids for overlapping genes. See \emph{details}.
+}
+\details{
+The \code{geneAnnotation} function provides a simple procedure for annotating
+RLRanges with gene IDs by overlap.
+\subsection{Annotations}{
+
+First. gene annotations are
+automatically downloaded using \link[AnnotationHub:AnnotationHub-class]{AnnotationHub::query} with the following
+pattern:\if{html}{\out{<div class="sourceCode r">}}\preformatted{AnnotationHub::query(
+    x = ah,
+    pattern = c("TxDb", "UCSC", "knownGene", genome)
+)
+}\if{html}{\out{</div>}}
+
+Where \code{genome} is the UCSC genome id for the RLRanges object. If these
+annotations are unavailable, they should be provded using the \code{txdb}
+parameter. See also \link[GenomicFeatures:TxDb-class]{GenomicFeatures::TxDb}.
+}
+
+\subsection{Overlaps}{
+
+The annotations are subsequently overlapped with the ranges in the
+supplied RLRanges object using \link[valr:bed_intersect]{valr::bed_intersect} and saved in the
+\link{RLResults} object as a \code{tbl} with a mapping of peak names to \code{gene_id}
+(entrez gene IDs).
+}
 }
 \examples{
 

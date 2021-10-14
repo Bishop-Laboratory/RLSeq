@@ -1,14 +1,91 @@
 #' Predict Condition
 #'
-#' Uses the results of analyzeRLFS() to predict whether a sample is "POS"
-#' (robust R-loop mapping) or "NEG" (poor R-loop mapping).
+#' Uses the results of [analyzeRLFS] to predict whether a sample is "POS"
+#' (robust R-loop mapping) or "NEG" (poor R-loop mapping). See *details*.
 #'
-#' @param object An RLRanges object with \code{analyzeRLFS()} already run.
-#' Ignored if rlfsRes provided.
+#' @param object An RLRanges object with [analyzeRLFS] already run.
+#' Ignored if `rlfsRes` is provided.
 #' @param rlfsRes If object not supplied, provide the rlfsRes list which is
-#' obtained from \code{rlresult(object, "rlfsRes")}.
+#' obtained from `rlresult(object, "rlfsRes")`.
 #' @param ... Internal use only.
-#' @return An RLRanges object with predictions included.
+#' @details 
+#' 
+#' Following R-loop forming sequences (RLFS) analysis, the quality model 
+#' (see [RLHub::models]) is implemented for predicting the sample condition in
+#' coordination with other results from [analyzeRLFS].
+#' A prediction of “POS” indicates robust R-loop mapping, whereas “NEG”
+#' indicates poor R-loop mapping. The succeeding sections describe this 
+#' process in greater detail.
+#' 
+#' ### Application of binary classification model
+#' 
+#' First, the binary classifier is applied, yielding a preliminary
+#' prediction of quality. This is accomplished via the following 
+#' steps:
+#' 
+#' 1. Calculate the Fourier transform of the Z-score distribution
+#' (see [analyzeRLFS]).
+#' 2. Reduce the dimensions to the engineered feature set (see table below).
+#' 3. Apply the preprocessing model (see [RLHub::models]) to normalize these 
+#' features 
+#' 4. Apply the classifier (see [RLHub::models]) to render a quality prediction. 
+#' 
+#' #### Engineered feature set
+#' 
+#' Abbreviations: Z, Z-score distribution; ACF, autocorrelation function; 
+#' FT, Fourier Transform.
+#' 
+#' |feature |description                              |
+#' |:-------|:----------------------------------------|
+#' |Z1      |mean of Z                                |
+#' |Z2      |variance of Z                            |
+#' |Zacf1   |mean of Z ACF                            |
+#' |Zacf2   |variance of Z ACF                        |
+#' |ReW1    |mean of FT of Z (real part)              |
+#' |ReW2    |variance of FT of Z (real part)          |
+#' |ImW1    |mean of FT of Z (imaginary part)         |
+#' |ImW2    |variance of FT of Z (imaginary part)     |
+#' |ReWacf1 |mean of FT of Z ACF (real part)          |
+#' |ReWacf2 |variance of FT of Z ACF (real part)      |
+#' |ImWacf1 |mean of FT of Z ACF (imaginary part)     |
+#' |ImWacf2 |variance of FT of Z ACF (imaginary part) |
+#' 
+#' ### Final quality prediction
+#' 
+#' The results from the binary classifier are combined with other results from 
+#' [analyzeRLFS] to yield a final prediction. To yield a prediction of “POS”
+#' all the following must be `TRUE`:
+#' 
+#' 1. The RLFS Permutation test P value is significant (p < .05). Stored as
+#' `PVal Significant` in the results object.
+#' 2. The Z-score distribution at 0bp is > 0. Stored as `ZApex > 0` in
+#' the results object.
+#' 3. The Z-score distribution at 0bp is > the start and the end. Sored as 
+#' `ZApex > ZEdges` in the results object.
+#' 4. binary The classifier predicts a label of “POS”. Stored as 
+#' `Predicted 'POS'` in the results object.
+#' 
+#' @return An RLRanges object with predictions accessible via 
+#' `rlresult(object, "predictRes")`. 
+#' 
+#' ### Structure
+#' 
+#' The results object is a named `list` of the structure:
+#' 
+#' * `Features`
+#'   - A `tbl` with three columns that describe the engineered features used
+#'   for prediction:
+#'     * `feature`: the name of the feature (see *details*).
+#'     * `raw_value`: The raw value of that feature in the supplied object.
+#'     * `processed_value`: The normalized value of that feature after
+#'     preprocessing (see *details*).
+#' * Criteria
+#'   - The four criteria which must all be `TRUE` to render a 
+#'   prediction of "POS" (see *details*).
+#' * prediction
+#'   - The final prediction. "POS" indicates robust R-loop mapping, "NEG" 
+#'   indicates poor R-loop mapping.
+#' 
 #' @examples
 #'
 #' # Example data with analyzeRLFS already run

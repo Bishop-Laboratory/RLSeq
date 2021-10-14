@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .Rdata
-VennDiagram*
+*VennDiagram*
 tests/**/*.html
 misc/**/*.rda
 data-raw/**/*.rda

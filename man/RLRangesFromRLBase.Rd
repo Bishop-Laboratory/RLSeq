@@ -7,19 +7,23 @@
 RLRangesFromRLBase(acc, rlsamples = NULL)
 }
 \arguments{
-\item{acc}{The sample ID of the RLBase object. \code{rlsample} column in \code{RLHub::rlbase_samples()}.}
+\item{acc}{The sample ID of the RLBase object. See the \code{rlsample} column
+in \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.}
 
-\item{rlsamples}{The tibble provided by \code{RLHub::rlbase_samples()}.
+\item{rlsamples}{The tibble provided by \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 Providing these data ahead of time speeds up this operation. Default: NULL.}
 }
 \value{
 An RLRanges object with all results available.
 }
 \description{
-Accessor function which returns any sample in RLBase as an RLRanges object for
-use with RLSeq.
+Accessor function which returns any sample in
+\href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase} as an
+\link{RLRanges} object for use with RLSeq. For a full list of available
+samples, see \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 }
 \examples{
 
 rlr <- RLRangesFromRLBase("SRX1070676")
+
 }

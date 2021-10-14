@@ -1,9 +1,18 @@
-#' This script creates the \code{inst/extdata/rlrsmall.rds} data object
+#' This script creates the objects in `inst/extdata`
+
+# Download hg38 centromere annotations
+download.file(
+    "https://rlbase-data.s3.amazonaws.com/annotations/hg38/Centromeres.csv.gz",
+    destfile = "inst/extdata/Centromeres.csv.gz"
+)
 
 # Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
 pks <- file.path(rlbase, "peaks", "SRX7671349_hg38.broadPeak")
 cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
+
+# Download
+download.file(pks, destfile = "inst/extdata/SRX7671349_hg38.broadPeak")
 
 # Get RLRanges object
 rlr <- RLSeq::RLRanges(pks,

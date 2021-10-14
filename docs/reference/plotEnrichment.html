@@ -47,10 +47,12 @@
 
 
 <meta property="og:title" content="Plot Enrichment Test Results — plotEnrichment" />
-<meta property="og:description" content="Creates a list of plots, one for each annotation database which display the
-user-supplied sample in comparison to the samples in RLBase. This
-will only work if you used default annotations with featureEnrich." />
-<meta property="og:image" content="/logo.png" />
+<meta property="og:description" content="Creates a list of plots, one for each annotation database
+(see RLHub::annotations).
+These plots show the feature enrichment for the user-supplied sample in
+comparison to the samples in
+RLBase. This
+will only work if you did not use custom annotations with featureEnrich." />
 
 
 
@@ -82,7 +84,7 @@ will only work if you used default annotations with featureEnrich." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
       </span>
     </div>
 
@@ -95,19 +97,10 @@ will only work if you used default annotations with featureEnrich." />
   </a>
 </li>
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../articles/RLSeq.html">Get started</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/analyzing-rloop-data-with-rlseq.html">Analyzing R-loop data with RLSeq</a>
-    </li>
-  </ul>
+<li>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li>
   <a href="../news/index.html">Changelog</a>
@@ -139,9 +132,12 @@ will only work if you used default annotations with featureEnrich." />
     </div>
 
     <div class="ref-description">
-    <p>Creates a list of plots, one for each annotation database which display the
-user-supplied sample in comparison to the samples in RLBase. This
-will only work if you used default annotations with <a href='featureEnrich.html'>featureEnrich</a>.</p>
+    <p>Creates a list of plots, one for each annotation database
+(see <a href='https://bishop-laboratory.github.io/RLHub/reference/annotations.html'>RLHub::annotations</a>).
+These plots show the feature enrichment for the user-supplied sample in
+comparison to the samples in
+<a href='https://gccri.bishop-lab.uthscsa.edu/rlbase/'>RLBase</a>. This
+will only work if you did not use custom annotations with <a href='featureEnrich.html'>featureEnrich</a>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>plotEnrichment</span><span class='op'>(</span>
@@ -159,16 +155,18 @@ will only work if you used default annotations with <a href='featureEnrich.html'
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>object</th>
-      <td><p>The tibble object obtained from running <code>featureEnrich</code>.</p></td>
+      <td><p>An RLRanges object with <a href='featureEnrich.html'>featureEnrich</a> already run.</p></td>
     </tr>
     <tr>
       <th>pred_POS_only</th>
-      <td><p>If TRUE, only "POS" predicted samples included.
-Default: TRUE.</p></td>
+      <td><p>If TRUE, only "POS" predicted samples included (see
+also <a href='predictCondition.html'>predictCondition</a>). Default: TRUE.</p></td>
     </tr>
     <tr>
       <th>label_POS_only</th>
-      <td><p>If TRUE, only "POS" labeled samples included. Default: FALSE.</p></td>
+      <td><p>If TRUE, only "POS" labeled samples included (samples
+which are expected to robustly map R-loops,
+e.g., "D210N" condition R-ChIP data). Default: FALSE.</p></td>
     </tr>
     <tr>
       <th>splitby</th>
@@ -177,14 +175,13 @@ or "label".</p></td>
     </tr>
     <tr>
       <th>limits</th>
-      <td><p>Specify limits on data. Useful for controlling infinite
-estimation of odds ratio
-resulting from fisher's exact test. To remove limits, set c(-Inf, Inf).
-Default: c(-10, 15).</p></td>
+      <td><p>Specify limits on data range. This is used for controlling
+the infinite estimation of odds ratio resulting from fisher's exact test.
+To remove limits, set c(-Inf, Inf). Default: c(-10, 15).</p></td>
     </tr>
     <tr>
       <th>returnData</th>
-      <td><p>If TRUE, plot data is returned instead of plotting.
+      <td><p>If TRUE, plot data is returned instead of plot objects.
 Default: FALSE</p></td>
     </tr>
     <tr>
@@ -195,7 +192,8 @@ Default: FALSE</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A named list of ggplot objects.</p>
+    <p>A named list of <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot2::ggplot</a> objects. Names correspond to
+the annotations provided. See also <a href='featureEnrich.html'>featureEnrich</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples">

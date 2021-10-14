@@ -18,10 +18,15 @@ A collection of genome masks for use with \link{analyzeRLFS}. See the
 \subsection{Structure}{
 
 \code{genomeMasks} is a named list of \code{GRanges} objects. Each entry in the
-list follows the naming convention: \verb{<genome>.masked}. Each entry contains
+list follows the naming convention: \verb{<genome>.masked}, where \verb{<genome>}
+is an official UCSC genome ID. Each entry contains
 a \code{GRanges} object with the masked ranges from \verb{<genome>}. The genomes
 provided correspond to the masked genomes available in
 \link[BSgenome:available.genomes]{BSgenome::available.genomes}.
 }
+}
+\examples{
+genomeMasks
+
 }
 \keyword{datasets}

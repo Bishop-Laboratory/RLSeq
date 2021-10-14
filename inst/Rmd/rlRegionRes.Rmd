@@ -1,6 +1,6 @@
 ## `r i`. `r names(resAnchor)` {#`r resAnchor`}
 
-RL-Regions are consensus R-loop sites derived from a meta-analysis of all high-confidence R-loop mapping samples in RLBase (see the RLSuite manuscript for a full description). The ranges supplied for **`r object@metadata$sampleName`** were compared to the RL-Regions to determine the degree and significance of overlap.
+RL-Regions are consensus R-loop sites derived from a meta-analysis of all high-confidence R-loop mapping samples in RLBase (see the RLSuite manuscript for a full description). The ranges supplied for **`r object@metadata$sampleName`** were compared to the RL-Regions to determine the degree and significance of overlap. For additional detail, please refer to the `RLSeq::rlRegionTest` documentation ([link](https://bishop-laboratory.github.io/RLSeq/reference/rlRegionTest.html){target="_blank"}).
 
 <br>
 
