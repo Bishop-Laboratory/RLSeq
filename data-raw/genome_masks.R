@@ -74,7 +74,7 @@ maskLst <- buildGenomeMasks()
 
 # Shrink size of mask genome list
 # 1. Only keep masks which have RLFS
-maskLst <- maskLst[sapply(names(maskLst), RSeqR:::checkRLFSAnno)]
+maskLst <- maskLst[sapply(names(maskLst), RLSeq:::checkRLFSAnno)]
 # 2. Remove large masks
 maskLst <- maskLst[sapply(maskLst, function(x) {
     object.size(x) < 500000
@@ -88,4 +88,4 @@ genomeMasks <- lapply(names(maskLst), function(genome) {
 names(genomeMasks) <- names(maskLst)
 
 # Save the data with xz compression
-saveRDS(genomeMasks, file = "inst/int-data/genomeMasks.rds", compress = "xz")
+usethis::use_data(genomeMasks, overwrite = TRUE, compress = "xz")

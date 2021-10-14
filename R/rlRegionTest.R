@@ -8,7 +8,7 @@
 #' @examples
 #'
 #' # Example RLRanges data
-#' rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # RL Region Test
 #' rlRegionTest(rlr)

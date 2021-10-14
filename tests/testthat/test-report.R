@@ -1,6 +1,6 @@
 test_that(desc = "RLSeq report", {
     # Load
-    rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+    rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
     # Plot the enrich
     expect_true(

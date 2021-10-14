@@ -49,7 +49,7 @@ the overlap of user-supplied ranges with consensus R-loop sites
 \examples{
 
 # Example RLRanges
-rlr <- readRDS(system.file("ext-data", "rlrsmall.rds", package = "RLSeq"))
+rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 
 # Run RLSeq
 # `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.
