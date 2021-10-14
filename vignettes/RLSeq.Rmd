@@ -258,14 +258,22 @@ A limitation of this approach is that Fisher's exact test sometimes returns `Inf
 
 Correlation analysis finds inter-sample correlation coefficients of bin-level R-loop signal around gold-standard R-loop sites (sites profiled using ultra-long-read R-loop mapping -- "SMRF-Seq") [@Chédin2021]. This analysis helps to answer the question "how well does my data agree with previous results in public datasets?" For greater detail, please refer to the documentation for `corrAnalyze()`.
 
+**Note**: `corrAnalyze()` does not work on Windows OS systems.
+
 ```{r corrAnalyze}
-rlr <- corrAnalyze(rlr)
+# corrAnalyze does not work on Windows OS
+if (.Platform$OS.type != "windows") {
+  rlr <- corrAnalyze(rlr)
+}
 ```
 
 The results of this analysis are visualized using `corrHeatmap`.
 
 ```{r}
-corrHeatmap(rlr)
+# corrAnalyze does not work on Windows OS
+if (.Platform$OS.type != "windows") {
+  corrHeatmap(rlr)
+}
 ```
 
 These results demonstrate that our sample correlates well with similar DRIP-Seq data sets. 
