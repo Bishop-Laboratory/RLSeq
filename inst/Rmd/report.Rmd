@@ -18,7 +18,7 @@ params:
   object: "placeholder"
 ---
 
-<img src="logo.png" align="right" alt="logo" width="220" style = "border: none; float: right;">
+<img src="https://rlbase-data.s3.amazonaws.com/misc/assets/whitebgRLSeq+Logo.png" align="right" alt="logo" width="220" style = "border: none; float: right;">
 
 ```{r setup, include=FALSE, echo=FALSE}
 
