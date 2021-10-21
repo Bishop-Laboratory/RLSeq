@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.99.9</span>
       </span>
     </div>
 
@@ -150,10 +150,7 @@
 <div id="obtaining-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#obtaining-data" class="anchor"></a>Obtaining data</h2>
-<p><br></p>
-<details><summary>
-Obtaining data from raw files with <code>RLPipes</code>
-</summary><p>RLSeq is compatible with R-loop data generated from a variety of pipelines and tools. <em>However</em>, it is strongly recommended that you use <a href="https://github.com/Bishop-Laboratory/RLPipes" target="_blank">RLPipes</a>, a snakemake-based CLI pipeline tool built specifically for upstream processing of R-loop datasets.</p>
+<p>RLSeq is compatible with R-loop data generated from a variety of pipelines and tools. <em>However</em>, it is strongly recommended that you use <a href="https://github.com/Bishop-Laboratory/RLPipes" target="_blank">RLPipes</a>, a snakemake-based CLI pipeline tool built specifically for upstream processing of R-loop datasets.</p>
 <p>RLPipes can be installed using <a href="https://anaconda.org/conda-forge/mamba" target="_blank">mamba</a> or <a href="https://docs.conda.io/en/latest/miniconda.html" target="_blank">conda</a> (slower).</p>
 <pre class="shell"><code># conda install -c conda-forge mamba
 mamba create -n rlpipes -c bioconda -c conda-forge rlpipes
@@ -177,31 +174,33 @@ conda activate rlpipes</code></pre>
 RLPipes run rseq_out/</code></pre>
 <p>The resulting directory will contain <code>peaks/</code>, <code>coverage/</code>, <code>bam/</code>, and other processed data sets which are used in downstream analysis.</p>
 <p><em>Note</em>: If you choose to use a different pipeline, use <a href="https://github.com/macs3-project/MACS" target="_blank">macs2/macs3</a> for peak calling to ensure compatibility with RLBase.</p>
-</details><p><br></p>
 </div>
 </div>
 <div id="end-to-end-rlseq" class="section level1">
 <h1 class="hasAnchor">
 <a href="#end-to-end-rlseq" class="anchor"></a>End-to-end RLSeq</h1>
 <p>Here, we describe each step of the analysis pipeline which is run as part of the <code><a href="../reference/RLSeq.html">RLSeq()</a></code> command.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bishop-Laboratory/RLSeq">RLSeq</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></code></pre></div>
 <div id="data-sets" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-sets" class="anchor"></a>Data sets</h2>
 <p>For this example, we will be using DRIP-Seq data from a 2018 <em>Nature</em> paper on R-loops in Ewing sarcoma <span class="citation">(Gorthi et al. 2018)</span>. The sample has been IP’d for R-loops (S9.6 -RNaseH1; label: <strong>“POS”</strong>). The data was processed using RLPipes and uploaded to RLBase. Peaks are converted to <code>GRanges</code> objects using a helper function from <code>regioneR</code>. URLs and file paths for peak files can also be supplied directly to without this step.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rlbase</span> <span class="op">&lt;-</span> <span class="st">"https://rlbase-data.s3.amazonaws.com"</span>
 
 <span class="co"># Get peaks and coverage</span>
 <span class="va">s96Pks</span> <span class="op">&lt;-</span> <span class="fu">regioneR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/regioneR/man/toGRanges.html">toGRanges</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"peaks"</span>, <span class="st">"SRX1025890_hg38.broadPeak"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">s96Cvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"coverage"</span>, <span class="st">"SRX1025890_hg38.bw"</span><span class="op">)</span></code></pre></div>
 <p>For demonstration purposes, only 10000 ranges are analyzed here.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># For expediency, peaks we filter and down-sampled to the top 10000 by padj (V9)</span>
 <span class="co"># This is not necessary as part of the typical workflow, however</span>
 <span class="va">s96Pks</span> <span class="op">&lt;-</span> <span class="va">s96Pks</span><span class="op">[</span><span class="va">s96Pks</span><span class="op">$</span><span class="va">V9</span> <span class="op">&gt;</span> <span class="fl">2</span>,<span class="op">]</span>
 <span class="va">s96Pks</span> <span class="op">&lt;-</span> <span class="va">s96Pks</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">s96Pks</span><span class="op">)</span>, <span class="fl">10000</span><span class="op">)</span><span class="op">]</span></code></pre></div>
 <p>Finally, <code>RLRanges</code> objects were constructed. These are the primary objects used in all <code>RLSeq</code> functions. <code>RLRanges</code> are an extension of <code>GRanges</code> which provide additional metadata and validation functions.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">## Build RLRanges ##</span>
 <span class="co"># S9.6 -RNaseH1</span>
 <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RLRanges-class.html">RLRanges</a></span><span class="op">(</span>
@@ -221,11 +220,11 @@ RLPipes run rseq_out/</code></pre>
 <h3 class="hasAnchor">
 <a href="#permutation-tests" class="anchor"></a>Permutation tests</h3>
 <p>RLSeq first implements a permutation test to evaluate the enrichment of peaks within RLFS and build a Z-score distribution around RLFS sites.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Analyze RLFS for positive sample</span>
 <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyzeRLFS.html">analyzeRLFS</a></span><span class="op">(</span><span class="va">rlr</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>The resulting objects now contain the permutation test results. These results can be easily visualized with the <code>plotRLFSRes</code> function.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plotRLFSRes.html">plotRLFSRes</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="RLSeq_files/figure-html/plot-perm-1.png" alt="Plot of permutation test results (S9.6 -RNaseH1)." width="700"><p class="caption">
@@ -237,11 +236,11 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <h3 class="hasAnchor">
 <a href="#quality-classification" class="anchor"></a>Quality classification</h3>
 <p>The quality classifier is an ensemble model based on an online-learning scheme. It predicts “POS” for samples which are predicted to show robust R-loop mapping and “NEG” for samples which are not. The latest version can be accessed via <a href="https://github.com/Bishop-Laboratory/RLHub" target="_blank">RLHub</a>. For greater detail, please see the <a href="https://bishop-laboratory.github.io/RLHub/reference/models.html#details" target="_blank"><code>RLHub::modes</code> reference</a>. To apply the model and predict sample quality, use the <code><a href="../reference/predictCondition.html">predictCondition()</a></code> function.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Predict </span>
 <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictCondition.html">predictCondition</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
 <p>The results from testing our example samples:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Access results</span>
 <span class="va">s96_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rlresult.html">rlresult</a></span><span class="op">(</span><span class="va">rlr</span>, <span class="st">"predictRes"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Prediction: "</span>, <span class="va">s96_pred</span><span class="op">$</span><span class="va">prediction</span><span class="op">)</span></code></pre></div>
@@ -252,32 +251,32 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <h2 class="hasAnchor">
 <a href="#feature-enrichment" class="anchor"></a>Feature enrichment</h2>
 <p>The feature enrichment test assesses the enrichment of genomic features within a supplied R-loop dataset. The function queries the RLHub annotation database to retrieve genomic features, and then it performs fisher’s exact test and the relative distance test to assess feature enrichment <span class="citation">(Favorov et al. 2012)</span>. For a description of all features, see <a href="https://bishop-laboratory.github.io/RLHub/reference/annotations.html" target="_blank">RLHub::annotations</a>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Perform test</span>
 <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/featureEnrich.html">featureEnrich</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">rlr</span>,
   quiet <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p>The results:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># View Top Results</span>
 <span class="va">annoResS96</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rlresult.html">rlresult</a></span><span class="op">(</span><span class="va">rlr</span>, <span class="st">"featureEnrichment"</span><span class="op">)</span>
 <span class="va">annoResS96</span> <span class="op">%&gt;%</span>
-  <span class="fu">relocate</span><span class="op">(</span><span class="fu">contains</span><span class="op">(</span><span class="st">"fisher"</span><span class="op">)</span>, .after <span class="op">=</span> <span class="va">type</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">arrange</span><span class="op">(</span><span class="fu">desc</span><span class="op">(</span><span class="va">stat_fisher_rl</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html">relocate</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains</a></span><span class="op">(</span><span class="st">"fisher"</span><span class="op">)</span>, .after <span class="op">=</span> <span class="va">type</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">stat_fisher_rl</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 50 × 13
 ##    db      type  stat_fisher_rl stat_fisher_shuf pval_fisher_rl pval_fisher_shuf
 ##    &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;
-##  1 Repeat… SINE          Inf               1.29       1.13e-161         0.000199
-##  2 Transc… Intr…         Inf               0.997      2.23e-308         0.908   
-##  3 Transc… Exon           16.3             1.02       2.23e-308         0.542   
-##  4 snoRNA… CDBox          14.2             0          1.78e- 13         0.633   
-##  5 Transc… TTS            12.7             1.03       2.23e-308         0.424   
-##  6 Transc… TSS            12.3             0.980      2.23e-308         0.631   
-##  7 knownG… prot…          12.1             1.03       2.23e-308         0.283   
-##  8 Encode… enhP           10.6             1.14       2.23e-308         0.000697
-##  9 PolyA   poly…           9.63            1.00       2.23e-308         0.970   
-## 10 Transc… thre…           8.37            1.09       2.23e-308         0.161   
+##  1 Repeat… SINE          Inf               1.23       1.58e-106           0.0264
+##  2 Transc… Intr…         Inf               1.01       2.23e-308           0.548 
+##  3 Transc… Exon           17.0             0.999      2.23e-308           0.978 
+##  4 Transc… TTS            16.8             1.00       2.23e-308           0.937 
+##  5 Transc… TSS            15.1             1.05       2.23e-308           0.229 
+##  6 Encode… enhP           12.1             1.05       2.23e-308           0.221 
+##  7 knownG… prot…          11.9             0.997      2.23e-308           0.895 
+##  8 PolyA   poly…          10.4             0.932      2.23e-308           0.375 
+##  9 Transc… thre…           9.63            1.05       2.23e-308           0.372 
+## 10 PolyA   poly…           9.15            0.904      2.23e-308           0.257 
 ## # … with 40 more rows, and 7 more variables: num_tested_peaks &lt;int&gt;,
 ## #   num_total_peaks &lt;int&gt;, num_tested_anno_ranges &lt;int&gt;,
 ## #   num_total_anno_ranges &lt;int&gt;, avg_reldist_rl &lt;dbl&gt;, avg_reldist_shuf &lt;dbl&gt;,
@@ -287,10 +286,10 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <h3 class="hasAnchor">
 <a href="#visualization-of-enrichment-results" class="anchor"></a>Visualization of enrichment results</h3>
 <p>RLSeq provides a helper function, <code>plotEnrichment</code>, to facilitate the visualization of enrichment results.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pltlst</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plotEnrichment.html">plotEnrichment</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
 <p>This returns a list of plots named according to the corresponding annotation database. For example, Encode cis-regulatory elements (CREs):</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pltlst</span><span class="op">$</span><span class="va">Encode_CREs</span></code></pre></div>
 <p><img src="RLSeq_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <details><summary><strong>Note</strong>: Caveat on data range
@@ -303,13 +302,13 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <a href="#correlation-analysis" class="anchor"></a>Correlation analysis</h2>
 <p>Correlation analysis finds inter-sample correlation coefficients of bin-level R-loop signal around gold-standard R-loop sites (sites profiled using ultra-long-read R-loop mapping – “SMRF-Seq”) <span class="citation">(Chédin et al. 2021)</span>. This analysis helps to answer the question “how well does my data agree with previous results in public datasets?” For greater detail, please refer to the documentation for <code><a href="../reference/corrAnalyze.html">corrAnalyze()</a></code>.</p>
 <p><strong>Note</strong>: <code><a href="../reference/corrAnalyze.html">corrAnalyze()</a></code> does not work on Windows OS systems.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># corrAnalyze does not work on Windows OS</span>
 <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">!=</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/corrAnalyze.html">corrAnalyze</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>The results of this analysis are visualized using <code>corrHeatmap</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># corrAnalyze does not work on Windows OS</span>
 <span class="kw">if</span> <span class="op">(</span><span class="va">.Platform</span><span class="op">$</span><span class="va">OS.type</span> <span class="op">!=</span> <span class="st">"windows"</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="../reference/corrHeatmap.html">corrHeatmap</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
@@ -321,17 +320,17 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <h2 class="hasAnchor">
 <a href="#gene-annotation" class="anchor"></a>Gene Annotation</h2>
 <p>Gene annotations are automatically downloaded using <code>AnnotationHub()</code> and then intersected with RLRanges.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/geneAnnotation.html">geneAnnotation</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="r-loop-region-test" class="section level2">
 <h2 class="hasAnchor">
 <a href="#r-loop-region-test" class="anchor"></a>R-Loop Region Test</h2>
 <p>R-loop regions are consensus R-loop-forming sites discovered from analyzing all high-confidence R-loop mapping samples in RLBase. The <code><a href="../reference/rlRegionTest.html">rlRegionTest()</a></code> analyzes the enrichment of the ranges in our <code>RLRanges</code> object with these consensus R-loop sites, which, like correlation analysis, also helps answer the question “how well does my data agree with previous results?” For greater detail, please refer to the documentation for <code><a href="../reference/rlRegionTest.html">rlRegionTest()</a></code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rlRegionTest.html">rlRegionTest</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
 <p>The test results can be easily visualized in the following manner.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Plot overlap</span>
 <span class="fu"><a href="../reference/plotRLRegionOverlap.html">plotRLRegionOverlap</a></span><span class="op">(</span>
   object <span class="op">=</span> <span class="va">rlr</span>, 
@@ -350,34 +349,38 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <h1 class="hasAnchor">
 <a href="#accessing-rlbase-data" class="anchor"></a>Accessing RLBase data</h1>
 <p>For convenience, we also provide pre-analyzed <code>RLRanges</code> objects for every sample in RLBase. To access them, you need only provide the ID of the sample which you want to obtain data from. These IDs, along with other metadata, are listed in <code><a href="https://bishop-laboratory.github.io/RLHub/reference/rlbase_samples.html">RLHub::rlbase_samples()</a></code>.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RLRangesFromRLBase.html">RLRangesFromRLBase</a></span><span class="op">(</span>acc <span class="op">=</span> <span class="st">"SRX1025890"</span><span class="op">)</span>
 <span class="va">rlr</span></code></pre></div>
-<pre><code>## RLRanges object with 107029 ranges and 6 metadata columns:
-##          seqnames            ranges strand |                     V4  V5  V6
-##        1     chr1       10034-10345      * | /home/UTHSCSA/miller..  40   .
-##        2     chr1     180610-181657      * | /home/UTHSCSA/miller..  53   .
-##        3     chr1     182752-182950      * | /home/UTHSCSA/miller..  38   .
-##        4     chr1     184149-184628      * | /home/UTHSCSA/miller..  28   .
-##        5     chr1     629787-630103      * | /home/UTHSCSA/miller..  42   .
-##      ...      ...               ...    ... .                    ... ... ...
-##   107025     chrY 11293162-11294964      * | /home/UTHSCSA/miller..  38   .
-##   107026     chrY 11295281-11296131      * | /home/UTHSCSA/miller..  36   .
-##   107027     chrY 11297625-11297944      * | /home/UTHSCSA/miller..  23   .
-##   107028     chrY 11301521-11301748      * | /home/UTHSCSA/miller..  20   .
-##   107029     chrY 26641735-26642007      * | /home/UTHSCSA/miller..  15   .
-##               V7      V8    qval
-##        1 4.17431 6.16893 4.04326
-##        2 4.63235 7.59510 5.31977
-##        3 4.21966 5.95157 3.81400
-##        4 3.57860 4.84694 2.87393
-##        5 2.59231 6.38817 4.27687
-##      ...     ...     ...     ...
-##   107025 2.33249 5.86578 3.81115
-##   107026 2.18689 5.72732 3.67967
-##   107027 2.45115 4.20891 2.32963
-##   107028 2.98060 3.91975 2.09600
-##   107029 2.80910 3.30759 1.56104
+<pre><code>## GRanges object with 107029 ranges and 6 metadata columns:
+##          seqnames            ranges strand |                     V4        V5
+##             &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |            &lt;character&gt; &lt;integer&gt;
+##        1     chr1       10034-10345      * | /home/UTHSCSA/miller..        40
+##        2     chr1     180610-181657      * | /home/UTHSCSA/miller..        53
+##        3     chr1     182752-182950      * | /home/UTHSCSA/miller..        38
+##        4     chr1     184149-184628      * | /home/UTHSCSA/miller..        28
+##        5     chr1     629787-630103      * | /home/UTHSCSA/miller..        42
+##      ...      ...               ...    ... .                    ...       ...
+##   107025     chrY 11293162-11294964      * | /home/UTHSCSA/miller..        38
+##   107026     chrY 11295281-11296131      * | /home/UTHSCSA/miller..        36
+##   107027     chrY 11297625-11297944      * | /home/UTHSCSA/miller..        23
+##   107028     chrY 11301521-11301748      * | /home/UTHSCSA/miller..        20
+##   107029     chrY 26641735-26642007      * | /home/UTHSCSA/miller..        15
+##                   V6        V7        V8      qval
+##          &lt;character&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;
+##        1           .   4.17431   6.16893   4.04326
+##        2           .   4.63235   7.59510   5.31977
+##        3           .   4.21966   5.95157   3.81400
+##        4           .   3.57860   4.84694   2.87393
+##        5           .   2.59231   6.38817   4.27687
+##      ...         ...       ...       ...       ...
+##   107025           .   2.33249   5.86578   3.81115
+##   107026           .   2.18689   5.72732   3.67967
+##   107027           .   2.45115   4.20891   2.32963
+##   107028           .   2.98060   3.91975   2.09600
+##   107029           .   2.80910   3.30759   1.56104
+##   -------
+##   seqinfo: 595 sequences (1 circular) from hg38 genome
 ## 
 ## SRX1025890: 
 ##   Mode: DRIP 
@@ -394,7 +397,7 @@ Plot of permutation test results (S9.6 -RNaseH1).
 <a href="#session" class="anchor"></a>Session</h1>
 <details><summary>
 Session info
-</summary><div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+</summary><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.1.1 (2021-08-10)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -417,98 +420,99 @@ Session info
 ## [8] base     
 ## 
 ## other attached packages:
-##  [1] GenomicFeatures_1.45.2 AnnotationDbi_1.55.1   Biobase_2.53.0        
-##  [4] GenomicRanges_1.45.0   RLHub_0.99.4           GenomeInfoDb_1.29.8   
-##  [7] IRanges_2.27.2         S4Vectors_0.31.3       BiocGenerics_0.39.2   
-## [10] dplyr_1.0.7            RLSeq_0.99.7           BiocStyle_2.21.3      
+##  [1] GenomicFeatures_1.45.2 AnnotationDbi_1.55.2   Biobase_2.53.0        
+##  [4] GenomicRanges_1.45.0   RLHub_0.99.6           GenomeInfoDb_1.29.10  
+##  [7] IRanges_2.27.2         S4Vectors_0.31.5       BiocGenerics_0.39.2   
+## [10] dplyr_1.0.7            RLSeq_0.99.9           BiocStyle_2.21.4      
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] utf8_1.2.2                    tidyselect_1.1.1             
 ##   [3] RSQLite_2.2.8                 htmlwidgets_1.5.4            
-##   [5] grid_4.1.1                    BiocParallel_1.27.10         
-##   [7] aws.signature_0.6.0           pROC_1.18.0                  
+##   [5] grid_4.1.1                    BiocParallel_1.27.17         
+##   [7] pROC_1.18.0                   aws.signature_0.6.0          
 ##   [9] munsell_0.5.0                 codetools_0.2-18             
 ##  [11] ragg_1.1.3                    DT_0.19                      
 ##  [13] future_1.22.1                 withr_2.4.2                  
 ##  [15] colorspace_2.0-2              filelock_1.0.2               
-##  [17] highr_0.9                     knitr_1.34                   
+##  [17] highr_0.9                     knitr_1.36                   
 ##  [19] rstudioapi_0.13               listenv_0.8.0                
 ##  [21] MatrixGenerics_1.5.4          labeling_0.4.2               
 ##  [23] GenomeInfoDbData_1.2.7        bit64_4.0.5                  
 ##  [25] farver_2.1.0                  rprojroot_2.0.2              
 ##  [27] parallelly_1.28.1             vctrs_0.3.8                  
 ##  [29] generics_0.1.0                lambda.r_1.2.4               
-##  [31] ipred_0.9-12                  xfun_0.26                    
+##  [31] ipred_0.9-12                  xfun_0.27                    
 ##  [33] BiocFileCache_2.1.1           randomForest_4.6-14          
 ##  [35] regioneR_1.25.1               R6_2.5.1                     
-##  [37] doParallel_1.0.16             clue_0.3-59                  
+##  [37] doParallel_1.0.16             clue_0.3-60                  
 ##  [39] gridGraphics_0.5-1            bitops_1.0-7                 
 ##  [41] cachem_1.0.6                  DelayedArray_0.19.4          
 ##  [43] assertthat_0.2.1              promises_1.2.0.1             
 ##  [45] BiocIO_1.3.0                  scales_1.1.1                 
 ##  [47] nnet_7.3-16                   gtable_0.3.0                 
 ##  [49] valr_0.6.3                    globals_0.14.0               
-##  [51] timeDate_3043.102             rlang_0.4.11                 
-##  [53] systemfonts_1.0.2             GlobalOptions_0.1.2          
-##  [55] splines_4.1.1                 rtracklayer_1.53.1           
-##  [57] ModelMetrics_1.2.2.2          broom_0.7.9                  
-##  [59] BiocManager_1.30.16           yaml_2.2.1                   
-##  [61] reshape2_1.4.4                backports_1.2.1              
-##  [63] httpuv_1.6.3                  caret_6.0-88                 
-##  [65] tools_4.1.1                   lava_1.6.10                  
-##  [67] bookdown_0.24                 ggplotify_0.1.0              
-##  [69] ggplot2_3.3.5                 ellipsis_0.3.2               
-##  [71] jquerylib_0.1.4               RColorBrewer_1.1-2           
-##  [73] Rcpp_1.0.7                    plyr_1.8.6                   
-##  [75] base64enc_0.1-3               progress_1.2.2               
-##  [77] zlibbioc_1.39.0               purrr_0.3.4                  
-##  [79] RCurl_1.98-1.5                prettyunits_1.1.1            
-##  [81] rpart_4.1-15                  pbapply_1.5-0                
-##  [83] GetoptLong_1.0.5              SummarizedExperiment_1.23.4  
-##  [85] cluster_2.1.2                 fs_1.5.0                     
-##  [87] magrittr_2.0.1                futile.options_1.0.1         
-##  [89] data.table_1.14.0             magick_2.7.3                 
-##  [91] caretEnsemble_2.0.1           circlize_0.4.13              
-##  [93] matrixStats_0.61.0            hms_1.1.0                    
-##  [95] mime_0.12                     evaluate_0.14                
-##  [97] xtable_1.8-4                  XML_3.99-0.8                 
-##  [99] VennDiagram_1.6.20            gridExtra_2.3                
-## [101] shape_1.4.6                   compiler_4.1.1               
-## [103] biomaRt_2.49.4                tibble_3.1.4                 
-## [105] crayon_1.4.1                  htmltools_0.5.2              
-## [107] later_1.3.0                   tzdb_0.1.2                   
-## [109] ggprism_1.0.3                 tidyr_1.1.3                  
-## [111] aws.s3_0.3.21                 lubridate_1.7.10             
-## [113] DBI_1.1.1                     formatR_1.11                 
-## [115] ExperimentHub_2.1.4           dbplyr_2.1.1                 
-## [117] ComplexHeatmap_2.9.4          MASS_7.3-54                  
-## [119] rappdirs_0.3.3                Matrix_1.3-4                 
-## [121] readr_2.0.1                   cli_3.0.1                    
-## [123] parallel_4.1.1                gower_0.2.2                  
-## [125] pkgconfig_2.0.3               pkgdown_1.6.1                
-## [127] GenomicAlignments_1.29.0      recipes_0.1.16               
-## [129] xml2_1.3.2                    foreach_1.5.1                
-## [131] bslib_0.3.0                   XVector_0.33.0               
-## [133] prodlim_2019.11.13            yulab.utils_0.0.2            
-## [135] stringr_1.4.0                 digest_0.6.28                
-## [137] Biostrings_2.61.2             rmarkdown_2.11               
-## [139] restfulr_0.0.13               curl_4.3.2                   
-## [141] kernlab_0.9-29                shiny_1.7.0                  
-## [143] Rsamtools_2.9.1               rjson_0.2.20                 
-## [145] lifecycle_1.0.1               nlme_3.1-153                 
-## [147] jsonlite_1.7.2                futile.logger_1.4.3          
-## [149] desc_1.3.0                    BSgenome_1.61.0              
-## [151] fansi_0.5.0                   pillar_1.6.2                 
-## [153] lattice_0.20-44               KEGGREST_1.33.0              
-## [155] fastmap_1.1.0                 httr_1.4.2                   
-## [157] survival_3.2-13               interactiveDisplayBase_1.31.2
-## [159] glue_1.4.2                    png_0.1-7                    
-## [161] iterators_1.0.13              BiocVersion_3.14.0           
-## [163] bit_4.0.4                     class_7.3-19                 
-## [165] stringi_1.7.4                 sass_0.4.0                   
-## [167] blob_1.2.2                    textshaping_0.3.5            
-## [169] AnnotationHub_3.1.5           memoise_2.0.0                
-## [171] future.apply_1.8.1</code></pre>
+##  [51] processx_3.5.2                timeDate_3043.102            
+##  [53] rlang_0.4.12                  systemfonts_1.0.3            
+##  [55] GlobalOptions_0.1.2           splines_4.1.1                
+##  [57] rtracklayer_1.53.1            ModelMetrics_1.2.2.2         
+##  [59] broom_0.7.9                   BiocManager_1.30.16          
+##  [61] yaml_2.2.1                    reshape2_1.4.4               
+##  [63] backports_1.2.1               httpuv_1.6.3                 
+##  [65] caret_6.0-90                  tools_4.1.1                  
+##  [67] lava_1.6.10                   bookdown_0.24                
+##  [69] ggplotify_0.1.0               ggplot2_3.3.5                
+##  [71] ellipsis_0.3.2                jquerylib_0.1.4              
+##  [73] RColorBrewer_1.1-2            Rcpp_1.0.7                   
+##  [75] plyr_1.8.6                    base64enc_0.1-3              
+##  [77] progress_1.2.2                zlibbioc_1.39.0              
+##  [79] purrr_0.3.4                   RCurl_1.98-1.5               
+##  [81] ps_1.6.0                      prettyunits_1.1.1            
+##  [83] rpart_4.1-15                  GetoptLong_1.0.5             
+##  [85] pbapply_1.5-0                 cluster_2.1.2                
+##  [87] SummarizedExperiment_1.23.5   fs_1.5.0                     
+##  [89] magrittr_2.0.1                futile.options_1.0.1         
+##  [91] magick_2.7.3                  data.table_1.14.2            
+##  [93] caretEnsemble_2.0.1           circlize_0.4.13              
+##  [95] matrixStats_0.61.0            hms_1.1.1                    
+##  [97] mime_0.12                     evaluate_0.14                
+##  [99] xtable_1.8-4                  XML_3.99-0.8                 
+## [101] VennDiagram_1.6.20            gridExtra_2.3                
+## [103] shape_1.4.6                   compiler_4.1.1               
+## [105] biomaRt_2.49.7                tibble_3.1.5                 
+## [107] crayon_1.4.1                  htmltools_0.5.2              
+## [109] later_1.3.0                   tzdb_0.1.2                   
+## [111] ggprism_1.0.3                 tidyr_1.1.4                  
+## [113] lubridate_1.8.0               aws.s3_0.3.21                
+## [115] DBI_1.1.1                     formatR_1.11                 
+## [117] ExperimentHub_2.1.4           dbplyr_2.1.1                 
+## [119] ComplexHeatmap_2.9.4          MASS_7.3-54                  
+## [121] rappdirs_0.3.3                Matrix_1.3-4                 
+## [123] readr_2.0.2                   cli_3.0.1                    
+## [125] parallel_4.1.1                gower_0.2.2                  
+## [127] pkgconfig_2.0.3               pkgdown_1.6.1                
+## [129] GenomicAlignments_1.29.0      recipes_0.1.17               
+## [131] xml2_1.3.2                    foreach_1.5.1                
+## [133] bslib_0.3.1                   XVector_0.33.0               
+## [135] prodlim_2019.11.13            yulab.utils_0.0.4            
+## [137] stringr_1.4.0                 callr_3.7.0                  
+## [139] digest_0.6.28                 Biostrings_2.61.2            
+## [141] rmarkdown_2.11                restfulr_0.0.13              
+## [143] curl_4.3.2                    kernlab_0.9-29               
+## [145] shiny_1.7.1                   Rsamtools_2.9.1              
+## [147] rjson_0.2.20                  lifecycle_1.0.1              
+## [149] nlme_3.1-153                  jsonlite_1.7.2               
+## [151] futile.logger_1.4.3           desc_1.4.0                   
+## [153] BSgenome_1.61.0               fansi_0.5.0                  
+## [155] pillar_1.6.4                  lattice_0.20-44              
+## [157] KEGGREST_1.33.0               fastmap_1.1.0                
+## [159] httr_1.4.2                    survival_3.2-13              
+## [161] interactiveDisplayBase_1.31.2 glue_1.4.2                   
+## [163] png_0.1-7                     iterators_1.0.13             
+## [165] BiocVersion_3.14.0            bit_4.0.4                    
+## [167] class_7.3-19                  stringi_1.7.5                
+## [169] sass_0.4.0                    blob_1.2.2                   
+## [171] textshaping_0.3.6             AnnotationHub_3.1.6          
+## [173] memoise_2.0.0                 future.apply_1.8.1</code></pre>
 </details>
 </div>
 <div id="references" class="section level1 unnumbered">

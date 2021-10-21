@@ -1,7 +1,7 @@
 Package: RLSeq
 Type: Package
 Title: RLSeq: An analysis package for R-loop mapping data
-Version: 0.99.7
+Version: 0.99.9
 Authors@R: c(
     person(given = "Henry",
            family = "Miller",

@@ -21,8 +21,6 @@ urlExists <- function(urlcon) {
 #' Helper function which extracts chrom sizes from an RLRanges object.
 #' @param object An RLRanges object.
 #' @return A tibble containing chrom sizes
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 getChromSizes <- function(object) {
     cs <- GenomeInfoDb::seqinfo(object) %>%
         as.data.frame()
@@ -83,8 +81,6 @@ getRLFSAnno <- function(object) {
 #' @param coverage The path to a .bigWig file (can be a URL)
 #' @param gssignal The GS signal obtained from RLHub.
 #' @return A named list containing the results of correlation analysis.
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 getGSSignal <- function(coverage, gssignal) {
     # Get the locations of the gs sites
     positions <- gssignal$location
@@ -119,8 +115,6 @@ getGSSignal <- function(coverage, gssignal) {
 #' Helper function to Convert "table" format to "regions" format.
 #' @param table A tibble in "Table" format from RLHub.
 #' @return A tibble in "regions" format.
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 tableToRegions <- function(table) {
     locpat <- "(.+):(.+)\\-(.+):(.+)"
     table %>%

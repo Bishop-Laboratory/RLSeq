@@ -43,6 +43,25 @@
 #'     skip=c('featureEnrich', 'corrAnalyze', 'geneAnnotation', 'rlRegionTest')
 #' )
 #' 
+#' @importFrom utils data globalVariables
+#' @importFrom dplyr %>% .data bind_rows tibble relocate as_tibble mutate select
+#' @importFrom dplyr filter distinct sample_n bind_cols
+#' @importFrom stats fft acf predict ks.test
+#' @importFrom RLHub prep_features fft_model rlregions_meta
+#' @importFrom RLHub annots_primary_hg38 annots_primary_mm10
+#' @importFrom RLHub annots_full_hg38 annots_full_mm10
+#' @import caretEnsemble
+#' @importClassesFrom GenomicRanges GenomicRanges 
+#' @importFrom GenomeInfoDb genome seqinfo seqlevelsStyle getChromInfoFromUCSC
+#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom GenomicRanges trim show strand reduce GRanges
+#' @importFrom methods slotNames slot new is prototype
+#' @importFrom regioneR toGRanges randomizeRegions
+#' @importFrom aws.s3 s3readRDS
+#' @importFrom callr r
+#' @importFrom valr bed_intersect bed_fisher bed_merge bed_reldist
+#' @importFrom AnnotationHub AnnotationHub query
+#' @importFrom GenomicFeatures genes
 #' @export
 RLSeq <- function(object, quiet = FALSE, skip=NULL, ...) {
     if (!quiet) message("[1/6] RLFS Perm Test")
