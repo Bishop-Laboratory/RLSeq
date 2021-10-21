@@ -2,8 +2,6 @@
 #' @param envName name for new conda env
 #' @param ... other arguments passed to reticulate::conda_create()
 #' @return File path to created environment
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 buildCondaEnv <- function(envName, ...) {
 
 
@@ -25,8 +23,6 @@ buildCondaEnv <- function(envName, ...) {
 #' @param genome the UCSC genome name to check
 #' @param envPath the path to conda env containing "khmer"
 #' @return A data frame containing the effective genome sizes.
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 getEffectiveGenomeSizes <- function(genome,
     envPath,
     lengths = c(
@@ -64,8 +60,6 @@ getEffectiveGenomeSizes <- function(genome,
 #' @param condaPath The path to the conda binary. 
 #' Default = reticulate::conda_binary()
 #' @return A data frame containing the effective genome sizes.
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 getEffGenSize <- function(len,
     faFile,
     envPath) {
@@ -106,8 +100,6 @@ getEffGenSize <- function(len,
 #' @param test if TRUE, will only build info set for first 2 genomes in UCSC.
 #' @param ... arguments passed to `getEffectiveGenomeSizes()`
 #' @return A data frame of avaialable genomes and corresponding info.
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 buildAvailableGenomes <- function(test = FALSE, ...) {
     envName <- buildCondaEnv(
         packages = "khmer",

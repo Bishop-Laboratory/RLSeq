@@ -40,8 +40,6 @@
 #'
 #' # RL Region Test
 #' rlRegionTest(rlr)
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 rlRegionTest <- function(object) {
 

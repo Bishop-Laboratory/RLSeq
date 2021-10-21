@@ -52,8 +52,6 @@
 #'     library(TxDb.Hsapiens.UCSC.hg19.knownGene)
 #'     rlr <- geneAnnotation(rlr, txdb = TxDb.Hsapiens.UCSC.hg19.knownGene)
 #' }
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 geneAnnotation <- function(object, txdb = NULL) {
 

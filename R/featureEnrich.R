@@ -54,8 +54,6 @@
 #'     )
 #' )
 #' featureEnrich(rlr, annotations = small_anno)
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 featureEnrich <- function(object,
     annotype = c("primary", "full"),
@@ -74,9 +72,13 @@ featureEnrich <- function(object,
             "Please supply custom ones of use one of hg38, mm10"
         )
     } else if (is.null(annotations)) {
-        annotations <- utils::getFromNamespace(
-            paste0("annots_", annotype[1], "_", genome), "RLHub"
-        )(quiet = TRUE)
+        annotations <- switch(
+            paste0(annotype[1], "_", genome),
+            "primary_hg38" = RLHub::annots_primary_hg38(quiet = TRUE),
+            "primary_mm10" = RLHub::annots_primary_mm10(quiet = TRUE),
+            "full_hg38" = RLHub::annots_full_hg38(quiet = TRUE),
+            "full_mm10" = RLHub::annots_full_mm10(quiet = TRUE)
+        )
     }
 
     # Get annotations
@@ -98,25 +100,12 @@ featureEnrich <- function(object,
     }
 
     # Get shuffle
-    # there's an issue in the shuffle for valr that necessitates this pattern...
-    # Returns "maximum iterations exceeded in bed_shuffle" error
-    # However, increasing number of attempts does nothing to fix this.
-    # Only changing the seed seems to provide any workaround.
-    seeds <- seq(1000)
-    while (TRUE) {
-        seed <- seeds[1]
-        toTestShuff <- try(
-            valr::bed_shuffle(
-                x = toTest,
-                genome = chromSizes,
-                seed = seed
-            ),
-            silent = TRUE
-        )
-        if (!methods::is(toTestShuff, "try-error")) break
-        seeds <- seeds[-1]
-    }
-
+    toTestShuff <- regioneR::randomizeRegions(
+        A = as.data.frame(toTest), genome = as.data.frame(chromSizes)
+    ) %>%
+        dplyr::as_tibble() %>%
+        dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
+    
     # Only keep annotations above cutoff
     annots <- annotations[vapply(annotations, nrow, numeric(1)) > MIN_ROWS]
 

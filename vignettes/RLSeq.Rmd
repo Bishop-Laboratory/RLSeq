@@ -89,11 +89,6 @@ install_github("Bishop-Laboratory/RLSeq")
 
 ## Obtaining data
 
-<br>
-
-<details>
-<summary>Obtaining data from raw files with `RLPipes`</summary>
-
 RLSeq is compatible with R-loop data generated from a variety of pipelines and tools. *However*, it is strongly recommended that you use [RLPipes](https://github.com/Bishop-Laboratory/RLPipes){target="_blank"}, a snakemake-based CLI pipeline tool built specifically for upstream processing of R-loop datasets. 
 
 RLPipes can be installed using [mamba](https://anaconda.org/conda-forge/mamba){target="_blank"} or [conda](https://docs.conda.io/en/latest/miniconda.html){target="_blank"} (slower).
@@ -122,15 +117,12 @@ The resulting directory will contain `peaks/`, `coverage/`, `bam/`, and other pr
 
 *Note*: If you choose to use a different pipeline, use [macs2/macs3](https://github.com/macs3-project/MACS){target="_blank"} for peak calling to ensure compatibility with RLBase.
 
-</details>
-
-<br>
 
 # End-to-end RLSeq
 
 Here, we describe each step of the analysis pipeline which is run as part of the `RLSeq()` command.
 
-```{r library, echo=FALSE}
+```{r library, message=FALSE, warning=FALSE}
 library(RLSeq)
 library(dplyr)
 ```

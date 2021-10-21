@@ -19,8 +19,6 @@
 #'
 #' # Generate the report
 #' report(rlr, reportPath = tmp)
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 report <- function(object,
     reportPath = "rlreport.html",
