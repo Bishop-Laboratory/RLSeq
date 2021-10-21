@@ -61,8 +61,6 @@
 #'
 #' # Perform RLFS analysis (remove ntimes=2 and noZ=TRUE for a typical analysis)
 #' rlr <- analyzeRLFS(rlr, ntimes = 2, noZ = TRUE)
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 analyzeRLFS <- function(object,
     mask = NULL,
@@ -131,6 +129,7 @@ analyzeRLFS <- function(object,
             evaluate.function = regioneR::numOverlaps,
             alternative = "greater",
             ntimes = ntimes,
+            min.parallel = Inf,
             ...
         )
     } else {
@@ -141,10 +140,10 @@ analyzeRLFS <- function(object,
             evaluate.function = regioneR::numOverlaps,
             alternative = "greater",
             ntimes = ntimes,
+            min.parallel = Inf,
             ...
         )
     }
-
 
     if (!quiet) message(" - Extracting pileup...")
 

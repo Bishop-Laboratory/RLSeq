@@ -1,5 +1,4 @@
 #' @rdname RLRanges
-#' @importClassesFrom GenomicRanges GenomicRanges
 setClass(
     "RLRanges",
     contains = "GRanges",
@@ -81,8 +80,7 @@ setMethod(
         ]
         if (!length(fld)) fld <- "None"
 
-        sgr <- utils::getFromNamespace("show_GenomicRanges", "GenomicRanges")
-        sgr(object)
+        GenomicRanges::show(GenomicRanges::GRanges(object))
         cat(
             paste0("\n", object@metadata$sampleName, ":"),
             "\n  Mode:", object@metadata$mode,

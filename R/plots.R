@@ -281,8 +281,6 @@ corrHeatmap <- function(object,
 #' # Make plots, split by prediction
 #' plotEnrichment(rlr, pred_POS_only = FALSE, splitby = "prediction")
 #'
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 plotEnrichment <- function(object,
     pred_POS_only = TRUE,
@@ -588,8 +586,6 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 #'
 #' # Return data only
 #' plotRLRegionOverlap(rlr, returnData = TRUE)
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 plotRLRegionOverlap <- function(object, returnData = FALSE,
     rlregions_table = NULL, ...) {

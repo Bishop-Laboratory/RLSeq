@@ -96,10 +96,6 @@
 #'
 #' # With rlfsRes
 #' predRes <- predictCondition(rlfsRes = rlresult(rlr, "rlfsRes"))
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
-#' @importFrom stats fft acf
-#' @import caretEnsemble
 #' @export
 predictCondition <- function(object, rlfsRes = NULL, ...) {
 
@@ -187,12 +183,10 @@ predictCondition <- function(object, rlfsRes = NULL, ...) {
     )
 
     # Standardize features
-    predict.prp <- utils::getFromNamespace("predict.preProcess", "caret")
-    features <- predict.prp(prepFeatures, featuresRaw)
+    features <- stats::predict(prepFeatures, featuresRaw)
 
     # Predict using stacked model
-    predict.cs <- utils::getFromNamespace("predict.caretStack", "caretEnsemble")
-    pred <- predict.cs(fftModel, features)
+    pred <- stats::predict(fftModel, features)
 
     # Test each criteria for labeling "POS"
     criteriaOne <- pval < .05

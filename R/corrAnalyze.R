@@ -49,8 +49,6 @@
 #'     # run corrAnalyze
 #'     rlr <- corrAnalyze(rlr)
 #' }
-#' @importFrom dplyr %>%
-#' @importFrom dplyr .data
 #' @export
 corrAnalyze <- function(object, force = FALSE) {
 
