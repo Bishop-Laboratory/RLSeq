@@ -43,7 +43,6 @@
 #'     skip=c('featureEnrich', 'corrAnalyze', 'geneAnnotation', 'rlRegionTest')
 #' )
 #' 
-#' @importFrom utils data globalVariables
 #' @importFrom dplyr %>% .data bind_rows tibble relocate as_tibble mutate select
 #' @importFrom dplyr filter distinct sample_n bind_cols
 #' @importFrom stats fft acf predict ks.test
