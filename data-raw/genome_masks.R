@@ -30,6 +30,7 @@ buildGenomeMasks <- function() {
 #' Adapted from `regioneR::getMask()` in the
 #' @return A GRanges object with the masked chrom sizes.
 getMask2 <- function(genome) {
+    message(genome)
     gn <- regioneR::characterToBSGenome(genome)
     chrs <- as.character(
         GenomicRanges::seqnames(GRanges(GenomeInfoDb::seqinfo(gn)))
@@ -59,13 +60,14 @@ getMask2 <- function(genome) {
         }
     })
     # Combine the mask for each chromosome into a single mask
-    mask <- GenomicRanges::GRanges(seqinfo = seqinfo(bsgenome))
+    mask <- GenomicRanges::GRanges(seqinfo = seqinfo(chr.masks[[1]]))
     for (chr in chrs) {
         if (!is.null(chr.masks[[chr]])) {
             mask <- c(mask, chr.masks[[chr]])
         }
     }
-
+    seqlevels(mask) <- seqlevels(bsgenome)
+    seqinfo(mask) <- seqinfo(bsgenome)
     return(mask)
 }
 

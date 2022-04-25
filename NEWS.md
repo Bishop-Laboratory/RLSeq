@@ -1,4 +1,15 @@
+# RLSeq 1.0.1
+
+Updated with RLHub update. Added 118 new samples to the database. 
+
+# RLSeq 1.0.0
+
+First official release on bioconductor -- [link](https://bioconductor.org/packages/release/bioc/html/RLSeq.html).
+
 # RLSeq 0.99.11
+
+Pre-release. This version is prior to the first
+official release (v1.0.0), anticipated in Oct. 2021.
 
 ## Package
 
@@ -12,8 +23,3 @@
   updated to the latest version, incorporating 231 samples
   in training. This model showed high accuracy (.9304) on a 
   test set of 115 samples. 
-
-## Status
-
-Pre-release. This version is prior to the first
-official release (v1.0.0), anticipated in Oct. 2021.
