@@ -1,7 +1,7 @@
 .Rproj.user
 .Rhistory
 .Rdata
-VennDiagram*
+*VennDiagram*
 tests/**/*.html
 misc/**/*.rda
 data-raw/**/*.rda
@@ -21,11 +21,6 @@ tests/testthat/rlreport.html
 tests/testthat/rlreport_files
 *report.html
 *annotated_peaks.csv
-*broadPeak
+logo.png
 *.bed
-docs/
-doc/
-README.md
-RLSeq.Rproj
-.github
-_pkgdown.yml
+misc/
