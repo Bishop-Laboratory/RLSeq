@@ -24,5 +24,3 @@ tests/testthat/rlreport_files
 logo.png
 *.bed
 misc/
-docs
-pkgdown
