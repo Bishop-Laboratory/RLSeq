@@ -9,7 +9,7 @@ test_that(desc = "Test that RLSeq works", {
             object = rlr,
             quiet = TRUE,
             useMask = FALSE,
-            ntimes = 10
+            ntimes = 30
         ),
         "RLRanges"
     )
