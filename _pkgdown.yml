@@ -1,7 +1,0 @@
-template:
-  params:
-    bootswatch: flatly
-
-home:
-  title: RLSeq
-  description: An analysis package for R-loop mapping data.
