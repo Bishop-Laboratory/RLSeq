@@ -54,7 +54,7 @@ plotRLFSRes <- function(object,
         fft, "Fourier-transformed Z-Score around RLFS", "Z-score around RLFS"
     )
     pltylab <- ifelse(fft, "FFT of Z-score", "Peak Enrichment (Z-Score)")
-    pltxlab <- ifelse(fft, "Frequency", "Distance to RLFS (bp)")
+    pltxlab <- ifelse(fft, "Frequency Domain", "Distance to RLFS (bp)")
     # Make plot
     pltbase <- ggplot2::ggplot(
         data = pltdat,
@@ -71,7 +71,7 @@ plotRLFSRes <- function(object,
             linetype = "dashed"
         ) + ggplot2::scale_y_continuous(expand = c(0, 0))
     }
-    pltbase +
+    pltbase <- pltbase +
         ggplot2::geom_line(size = 1) +
         ggplot2::ggtitle(plttitle) +
         ggplot2::labs(caption = paste0("p < ", round(pval, digits = 5))) +
@@ -79,6 +79,15 @@ plotRLFSRes <- function(object,
         ggplot2::xlab(pltxlab) +
         ggprism::theme_prism(base_size = 14) +
         ggplot2::labs(subtitle = plotName)
+    if (fft) {
+        # Remove xaxis ticks / numbers if plotting fourier frequency
+        pltbase <- pltbase + 
+            ggplot2::theme(
+                axis.text.x = ggplot2::element_blank(),
+                axis.ticks.x = ggplot2::element_blank()
+            )
+    }
+    return(pltbase)
 }
 
 
