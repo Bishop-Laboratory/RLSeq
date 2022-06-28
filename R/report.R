@@ -6,6 +6,9 @@
 #' @param object An RLRanges object.
 #' @param reportPath A path indicating the report output HTML file.
 #'  Default: "rlreport.html"
+#' @param intermediates_dir A directory indicating where intermediate
+#'  files should be stored during report building. If not set, 
+#'  a random directory in `tmp/` will be used. Default: NULL.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `rmarkdown::render()`
 #' @return TRUE
@@ -22,6 +25,7 @@
 #' @export
 report <- function(object,
     reportPath = "rlreport.html",
+    intermediates_dir = NULL,
     quiet = FALSE,
     ...) {
 
@@ -48,8 +52,13 @@ report <- function(object,
     # this issue:
     # https://community.rstudio.com/t/
     # rmarkdown-displays-a-plot-when-its-not-supposed-to/93757/2
+    intermediates_dir <- ifelse(
+        is.null(intermediates_dir), 
+        tempdir(check = TRUE), 
+        intermediates_dir
+    )
     callr::r(
-        function(template, object, reportPath, quiet, ...) {
+        function(template, object, reportPath, intermediates_dir, quiet, ...) {
             rmarkdown::render(
                 template,
                 params = list(
@@ -57,6 +66,7 @@ report <- function(object,
                 ),
                 output_format = "html_document",
                 output_dir = normalizePath(dirname(reportPath)),
+                intermediates_dir = intermediates_dir,
                 output_file = reportPath,
                 quiet = quiet,
                 ...
@@ -66,12 +76,13 @@ report <- function(object,
             template = template,
             object = object,
             reportPath = reportPath,
+            intermediates_dir=intermediates_dir,
             quiet = quiet,
             ...
         ),
         show = !quiet
     )
-
+    
     # Return
     return(TRUE)
 }
