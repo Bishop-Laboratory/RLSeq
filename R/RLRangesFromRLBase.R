@@ -19,5 +19,15 @@ RLRangesFromRLBase <- function(acc,
     rlsamples = NULL) {
     if (is.null(rlsamples)) rlsamples <- RLHub::rlbase_samples(quiet = TRUE)
     i <- which(rlsamples$rlsample == acc)[1]
-    aws.s3::s3readRDS(object = rlsamples$rlranges_rds_s3[i], bucket = RLBASE_S3)
+    rlr <- aws.s3::s3readRDS(object = rlsamples$rlranges_rds_s3[i], bucket = RLBASE_S3)
+    rlres <- rlr@metadata$results
+    
+    # Fix issue whereby older rlranges are missing some slots
+    if (is.null(attr(rlres, "txFeatureOverlap"))) {
+        attr(rlres, "txFeatureOverlap") <- dplyr::tibble()
+        rlr@metadata$results <- rlres
+        rlr <- txFeatureOverlap(rlr, quiet = TRUE)
+    }
+    
+    return(rlr)
 }
