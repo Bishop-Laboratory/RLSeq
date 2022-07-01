@@ -246,6 +246,42 @@ A limitation of this approach is that Fisher's exact test sometimes returns `Inf
 
 <br>
 
+## Transcript Feature Overlap Analysis
+
+Transcript feature overlap analysis is a method for determining the proportion 
+of peaks overlapping various transcript features (e.g., "Exon"). 
+
+```{r txfeatoverlap}
+rlr <- txFeatureOverlap(
+  object = rlr,
+  quiet = TRUE
+)
+```
+The results (downsampled):
+
+```{r}
+# View a random sample of results
+txResS96 <- rlresult(rlr, "txFeatureOverlap")
+txResS96 %>% 
+    slice_sample(n = 10) %>% 
+    mutate(name = gsub(name, pattern = ".+__", replacement = ""))
+```
+
+From the results, we can see the peaks from our peakset and the feature which they overlap with. **Of note**: this type of analysis uses a priority order such that when a peak overlaps two features, the one with the top priority is selected. The order is "TSS", "TTS", "5'UTR", "3'UTR", "Exon", "Intron", "Intergenic".
+
+### Visualization of transcript overlap results
+
+RLSeq provides `plotTxFeatureOverlap` for plotting the results from the transcript feature overlap results. 
+
+A powerful feature of RLSeq is the capability to visualize user-supplied data in the context of hundreds of publicly-available datasets. This capability is utilized in the visualization of transcript feature overlap results by plotting the results alongside the average for all high quality peaksets from the same R-loop mapping modality. **Of note**: "high quality" peaksets are those which have at least 5000 peaks, a positive label, and a positive prediction.
+
+
+```{r}
+plotTxFeatureOverlap(rlr)
+```
+
+From the above result, we observe that R-loops in TC32 cells tend to localize more often in gene bodies compared to the average for high-quality DRIP-Seq datasets.
+
 ## Correlation analysis
 
 Correlation analysis finds inter-sample correlation coefficients of bin-level R-loop signal around gold-standard R-loop sites (sites profiled using ultra-long-read R-loop mapping -- "SMRF-Seq") [@Chédin2021]. This analysis helps to answer the question "how well does my data agree with previous results in public datasets?" For greater detail, please refer to the documentation for `corrAnalyze()`.

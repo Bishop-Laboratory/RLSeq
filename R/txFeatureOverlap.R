@@ -84,11 +84,11 @@ txFeatureOverlap <- function(object,
         dplyr::mutate(
             feature = dplyr::case_when(
                 grepl(.data$feats, pattern = "TSS") ~ "TSS",
+                grepl(.data$feats, pattern = "TTS") ~ "TTS",
                 grepl(.data$feats, pattern = "fiveUTR") ~ "fiveUTR",
-                grepl(.data$feats, pattern = "Exon") ~ "Exon",
-                grepl(.data$feats, pattern = "Intron") ~ "Intron",
                 grepl(.data$feats, pattern = "threeUTR") ~ "threeUTR",
-                grepl(.data$feats, pattern = "TTS") ~ "TTS"
+                grepl(.data$feats, pattern = "Exon") ~ "Exon",
+                grepl(.data$feats, pattern = "Intron") ~ "Intron"
             )
         ) %>%
         dplyr::select(name = .data$name.x, .data$feature)
