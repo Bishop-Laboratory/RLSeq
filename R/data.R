@@ -1,21 +1,21 @@
 #' Auxiliary Data
-#' 
+#'
 #' A list containing data used by RLSeq functions. It can also be useful
 #' for checking the available modes and genomes in RLSeq. See also the
 #' `data-raw/auxdata.R` script that was used to create it.
-#' 
+#'
 #' ## Structure
-#' 
+#'
 #' A named list containing the following entries:
-#' 
+#'
 #' * `db_cols`
-#'   - A `tbl` with colors associated with each database in RLHub 
+#'   - A `tbl` with colors associated with each database in RLHub
 #'   useful for plotting. See also [RLHub::annotations].
 #' * `annotypes`
-#'   - A `tbl` containing the annotation databases and annotation types 
+#'   - A `tbl` containing the annotation databases and annotation types
 #'   available from RLBase. See also [RLHub::annotations].
 #' * `ip_cols`
-#'   - A `tbl` containing the colors associated with each "Immunoprecipitation 
+#'   - A `tbl` containing the colors associated with each "Immunoprecipitation
 #'   type" (ip_type) in RLBase. See also [RLHub::rlbase_samples].
 #' * `mode_cols`
 #'   - A `tbl` containing the colors associated with each R-loop mapping
@@ -24,11 +24,11 @@
 #'   - A `tbl` containing the colors associated with user-supplied data and
 #'   RLBase data when running [corrHeatmap].
 #' * `label_cols`
-#'   - A `tbl` containing the colors associated with the labels in 
+#'   - A `tbl` containing the colors associated with the labels in
 #'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
 #' * `prediction_cols`
-#'   - A `tbl` containing the colors associated with the predictions in 
+#'   - A `tbl` containing the colors associated with the predictions in
 #'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
 #' * `available_modes`
@@ -40,23 +40,23 @@
 #' * `misc_modes`
 #'   - A `character` showing the R-loop mapping modes that are lumped into
 #'   the 'misc' category for simplification of plotting.
-#'   
-#' @examples 
+#'
+#' @examples
 #' auxdata
-#' 
+#'
 #' @export
 "auxdata"
 
 #' Available Genomes
-#' 
+#'
 #' Contains metadata about all the genomes available in UCSC. It contains
 #' derived metadata, such as the effective genome sizes as well. See also
 #' the `data-raw/available_genomes.R` script to see processing steps.
-#' 
+#'
 #' ## Structure
-#' 
+#'
 #' `available_genomes` is a `data.frame` with the following columns:
-#' 
+#'
 #' * `UCSC_orgID`
 #'   - Official UCSC ID of the genome
 #' * `description`
@@ -82,48 +82,48 @@
 #' * `hgPbOk`
 #'   - Description not available.
 #' * `sourceName`
-#'   - Name of organization providing the genome. 
+#'   - Name of organization providing the genome.
 #' * `taxId`
-#'   - The taxonomy ID of the organism. 
+#'   - The taxonomy ID of the organism.
 #' * `genes_available`
 #'   - If `TRUE`, the gene annotations are available in GTF format.
 #' * `year`
 #'   - The year the genome assembly was added.
 #' * `eff_genome_size_XXbp`
-#'   - The effective genome size of this genome. Calculated at various read 
+#'   - The effective genome size of this genome. Calculated at various read
 #'   lengths with [khmer](https://khmer.readthedocs.io/en/latest/)
 #'   and used to improve the accuracy of analysis. See
-#'   the `data-raw/available_genomes.R` script to see how this calculation 
+#'   the `data-raw/available_genomes.R` script to see how this calculation
 #'   was performed.
 #' * `genome_length`
 #'   - The total length of the genome.
 #' * `rlfs_available`
-#'   - If `TRUE`, R-loop forming sequences annotations are available in the 
+#'   - If `TRUE`, R-loop forming sequences annotations are available in the
 #'   RLBase AWS S3 repository.
-#' 
+#'
 #' @examples
 #' available_genomes
-#' 
+#'
 #' @export
 "available_genomes"
 
 
 #' Genome Masks
-#' 
-#' A collection of genome masks for use with [analyzeRLFS]. See the 
+#'
+#' A collection of genome masks for use with [analyzeRLFS]. See the
 #' `data-raw/genome_masks.R` script for the processing steps.
-#' 
+#'
 #' ## Structure
-#' 
-#' `genomeMasks` is a named list of `GRanges` objects. Each entry in the 
+#'
+#' `genomeMasks` is a named list of `GRanges` objects. Each entry in the
 #' list follows the naming convention: `<genome>.masked`, where `<genome>`
 #' is an official UCSC genome ID. Each entry contains
 #' a `GRanges` object with the masked ranges from `<genome>`. The genomes
 #' provided correspond to the masked genomes available in
 #' [BSgenome::available.genomes].
-#' 
-#' @examples 
+#'
+#' @examples
 #' genomeMasks
-#' 
+#'
 #' @export
 "genomeMasks"

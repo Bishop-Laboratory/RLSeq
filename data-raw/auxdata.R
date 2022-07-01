@@ -1,4 +1,4 @@
-#' This script is used to generate auxdatailiary information used by 
+#' This script is used to generate auxdatailiary information used by
 #' RLSeq and RLBase.
 #' This includes color pallets, metadata, and other small items.
 #' The result is a named list which RLSeq depends upon.
@@ -37,8 +37,10 @@ genomes <- available_genomes %>%
 
 # Get the available modes (no bisulfite currently supported)
 available_modes <- rlsamples %>%
-    dplyr::select(mode, family, ip_type, strand_specific, moeity,
-                  bisulfite_seq) %>%
+    dplyr::select(
+        mode, family, ip_type, strand_specific, moeity,
+        bisulfite_seq
+    ) %>%
     distinct()
 
 
@@ -85,10 +87,10 @@ modes <- unique(rlsamples$mode)
 misc <- names(which(table(rlsamples$mode) <= 12))
 set.seed(6)
 mode_cols <- tibble(
-    mode = sample(modes[! modes %in% misc], size = length(modes[! modes %in% misc])),
+    mode = sample(modes[!modes %in% misc], size = length(modes[!modes %in% misc])),
     col = gg_color_hue(
         length(
-            modes[! modes %in% misc]
+            modes[!modes %in% misc]
         )
     )
 )
@@ -134,5 +136,3 @@ auxdata <- list(
     misc_modes = misc
 )
 usethis::use_data(auxdata, overwrite = TRUE, compress = "xz")
-
-
