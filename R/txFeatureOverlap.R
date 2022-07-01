@@ -77,9 +77,9 @@ txFeatureOverlap <- function(object,
 
     # Get summarization
     olsum <- olfeats %>%
-        dplyr::group_by(name.x) %>%
+        dplyr::group_by(.data$name.x) %>%
         dplyr::summarise(
-            feats = paste0(feature.y, collapse = ", ")
+            feats = paste0(.data$feature.y, collapse = ", ")
         ) %>%
         dplyr::mutate(
             feature = dplyr::case_when(
