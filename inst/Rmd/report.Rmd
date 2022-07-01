@@ -47,16 +47,19 @@ rlreslst <- lapply(slotNames(rlres), function(sn) {
 names(rlreslst) <- slotNames(rlres)
 res_order <- c(
   "rlfsRes", "predictRes", "featureEnrichment", 
+  "txFeatureOverlap",
   "correlationMat", "geneAnnoRes", "rlRegionRes"
 )
 funcs <- c(
   "analyzeRLFS", "predictCondition", "featureEnrich", 
+  "txFeatureOverlap",
   "corrAnalyze", "geneAnnotation", "rlRegionTest"
 )
 names(res_order) <- c(
   "RLFS Analysis", 
   "Sample classification",
   "Feature enrichment test",
+  "Transcript feature overlap",
   "Correlation analysis",
   "Gene Annotations",
   "RL-Regions Test"

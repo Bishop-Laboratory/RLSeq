@@ -1,0 +1,11 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+### Transcript feature overlap plot {.tabset}
+
+The results were then visualized with the `plotTxFeatureOverlap()` function:
+
+```{r childTxOverlap}
+plotTxFeatureOverlap(object)
+```
+
+***
