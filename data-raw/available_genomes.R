@@ -11,8 +11,10 @@ buildCondaEnv <- function(envName, ...) {
     # Get Env Path
     envPath <- reticulate::conda_list() %>%
         dplyr::filter(name == envName) %>%
-        dplyr::mutate(python = gsub(python, pattern = "/bin/python",
-                                    replacement = "")) %>%
+        dplyr::mutate(python = gsub(python,
+            pattern = "/bin/python",
+            replacement = ""
+        )) %>%
         dplyr::pull(python)
 
     return(envPath)
@@ -57,7 +59,7 @@ getEffectiveGenomeSizes <- function(genome,
 #' @param len The read length for which to obtain genome sizes
 #' @param faFile The genome fasta file to analyze
 #' @param envPath The path to the conda env with khmer installed
-#' @param condaPath The path to the conda binary. 
+#' @param condaPath The path to the conda binary.
 #' Default = reticulate::conda_binary()
 #' @return A data frame containing the effective genome sizes.
 getEffGenSize <- function(len,
@@ -126,8 +128,10 @@ buildAvailableGenomes <- function(test = FALSE, ...) {
     # If testing, only use small genomes
     smallgen <- c("eboVir3", "wuhCor1")
     if (test) {
-        available_genomes <- dplyr::filter(available_genomes,
-                                           .data$UCSC_orgID %in% smallgen)
+        available_genomes <- dplyr::filter(
+            available_genomes,
+            .data$UCSC_orgID %in% smallgen
+        )
     }
 
     # Get the effective genome sizes

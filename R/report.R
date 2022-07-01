@@ -1,13 +1,13 @@
 #' RLSeq Report
 #'
 #' Builds an HTML report to showcase the results available in the supplied
-#' [RLRanges] object (see also [RLResults]). 
-#' 
+#' [RLRanges] object (see also [RLResults]).
+#'
 #' @param object An RLRanges object.
 #' @param reportPath A path indicating the report output HTML file.
 #'  Default: "rlreport.html"
 #' @param intermediates_dir A directory indicating where intermediate
-#'  files should be stored during report building. If not set, 
+#'  files should be stored during report building. If not set,
 #'  a random directory in `tmp/` will be used. Default: NULL.
 #' @param quiet If TRUE, messages are suppressed. Default: FALSE.
 #' @param ... Arguments passed to `rmarkdown::render()`
@@ -53,8 +53,8 @@ report <- function(object,
     # https://community.rstudio.com/t/
     # rmarkdown-displays-a-plot-when-its-not-supposed-to/93757/2
     intermediates_dir <- ifelse(
-        is.null(intermediates_dir), 
-        tempdir(check = TRUE), 
+        is.null(intermediates_dir),
+        tempdir(check = TRUE),
         intermediates_dir
     )
     callr::r(
@@ -76,13 +76,13 @@ report <- function(object,
             template = template,
             object = object,
             reportPath = reportPath,
-            intermediates_dir=intermediates_dir,
+            intermediates_dir = intermediates_dir,
             quiet = quiet,
             ...
         ),
         show = !quiet
     )
-    
+
     # Return
     return(TRUE)
 }

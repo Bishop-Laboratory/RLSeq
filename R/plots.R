@@ -1,9 +1,9 @@
 #' Plot RLFS analysis results
 #'
-#' Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a 
-#' metaplot of the Z score distribution around RLFS with the p value from 
+#' Plots the results of the R-loop-forming sequences (RLFS) analysis. The plot is a
+#' metaplot of the Z score distribution around RLFS with the p value from
 #' permutation testing annotated. See also [analyzeRLFS].
-#' 
+#'
 #' @param object An RLRanges object with [analyzeRLFS] already run.
 #' Alternatively, can be the RLFS results object from an RLRanges (from
 #' `rlresult(object, "rlfsRes")`).
@@ -81,7 +81,7 @@ plotRLFSRes <- function(object,
         ggplot2::labs(subtitle = plotName)
     if (fft) {
         # Remove xaxis ticks / numbers if plotting fourier frequency
-        pltbase <- pltbase + 
+        pltbase <- pltbase +
             ggplot2::theme(
                 axis.text.x = ggplot2::element_blank(),
                 axis.ticks.x = ggplot2::element_blank()
@@ -92,7 +92,7 @@ plotRLFSRes <- function(object,
 
 
 #' Plot Correlation Results
-#' 
+#'
 #' Plots a heatmap to visualize the pairwise Pearson correlation matrix
 #' generated via [corrAnalyze].
 #'
@@ -141,7 +141,8 @@ corrHeatmap <- function(object,
     annoCorr <- rlsamples %>%
         dplyr::mutate(Selected = "RLBase") %>%
         dplyr::select(
-            .data$rlsample, Mode = .data$mode,
+            .data$rlsample,
+            Mode = .data$mode,
             Label = .data$label,
             Prediction = .data$prediction, .data$Selected
         ) %>%
@@ -261,26 +262,26 @@ corrHeatmap <- function(object,
 #'
 #' Creates a list of plots, one for each annotation database
 #' (see [RLHub::annotations]).
-#' These plots show the feature enrichment for the user-supplied sample in 
-#' comparison to the samples in 
+#' These plots show the feature enrichment for the user-supplied sample in
+#' comparison to the samples in
 #' [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/). This
 #' will only work if you did not use custom annotations with [featureEnrich].
-#' 
+#'
 #' @param object An RLRanges object with [featureEnrich] already run.
-#' @param pred_POS_only If TRUE, only "POS" predicted samples included (see 
-#' also [predictCondition]). Default: TRUE. 
+#' @param pred_POS_only If TRUE, only "POS" predicted samples included (see
+#' also [predictCondition]). Default: TRUE.
 #' @param label_POS_only If TRUE, only "POS" labeled samples included (samples
 #' which are expected to robustly map R-loops,
 #' e.g., "D210N" condition R-ChIP data). Default: FALSE.
 #' @param splitby Metadata by which to split plots. Can be "none", "prediction",
 #'  or "label".
-#' @param limits Specify limits on data range. This is used for controlling 
-#' the infinite estimation of odds ratio resulting from fisher's exact test. 
+#' @param limits Specify limits on data range. This is used for controlling
+#' the infinite estimation of odds ratio resulting from fisher's exact test.
 #' To remove limits, set c(-Inf, Inf). Default: c(-10, 15).
 #' @param returnData If TRUE, plot data is returned instead of plot objects.
 #'  Default: FALSE
 #' @param ... For internal use.
-#' @return A named list of [ggplot2::ggplot] objects. Names correspond to 
+#' @return A named list of [ggplot2::ggplot] objects. Names correspond to
 #' the annotations provided. See also [featureEnrich].
 #' @examples
 #'
@@ -384,7 +385,8 @@ plotEnrichment <- function(object,
     # Make selected explicit
     input_data$selected <- ifelse(input_data$experiment == usamp, usamp, "")
     input_data <- dplyr::distinct(
-        input_data, .data$db, .data$type, .data$experiment, .keep_all = TRUE
+        input_data, .data$db, .data$type, .data$experiment,
+        .keep_all = TRUE
     )
 
     # Build plots
@@ -583,7 +585,7 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 #' Obtained from RLHUb using [RLHub::rlregions_meta]. Loaded from RLHub if
 #' not supplied. Default: NULL.
 #' @param ... Additional arguments passed to [VennDiagram::venn.diagram]
-#' @return A [ggplot2::ggplot] object containing the venn diagram. Built 
+#' @return A [ggplot2::ggplot] object containing the venn diagram. Built
 #' using [ggplotify::as.ggplot].
 #' @examples
 #'
@@ -655,10 +657,11 @@ plotRLRegionOverlap <- function(object, returnData = FALSE,
     # Suppress output log from venn.diagram if futile logger available
     if (requireNamespace("futile.logger", quietly = TRUE)) {
         futile.logger::flog.threshold(
-            futile.logger::ERROR, name = "VennDiagramLogger"
+            futile.logger::ERROR,
+            name = "VennDiagramLogger"
         )
     }
-    
+
     # Make the plot
     gt <- pltdata %>%
         VennDiagram::venn.diagram(

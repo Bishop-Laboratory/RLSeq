@@ -7,8 +7,8 @@
     # Data
     utils::data("auxdata", package = "RLSeq", envir = parent.env(environment()))
     utils::data(
-        "genomeMasks", 
-        package = "RLSeq", 
+        "genomeMasks",
+        package = "RLSeq",
         envir = parent.env(environment())
     )
     utils::data(

@@ -123,7 +123,7 @@ setMethod(
 #' @param sampleName A unique name for identifying this sample.
 #' Can be unspecified.
 #' @param qcol The name of the metadata column which contains the score or
-#' significance of each peak. For broadPeak (preferred), this is the 
+#' significance of each peak. For broadPeak (preferred), this is the
 #' qvalue (column 11 after accounting for extra columns created during
 #' peakset building).
 #' If not specified, the last column will be chosen by default. **NOTE**:
@@ -131,7 +131,7 @@ setMethod(
 #' and QCol should be specified as `11`.
 #' If FALSE or if no metadata columns exist, it will be left blank and some
 #' operations in `report()` will not fully run.
-#' @return An object of class `RLRanges`. These objects are an extension of 
+#' @return An object of class `RLRanges`. These objects are an extension of
 #' `GRanges` with the addition of sample metadata entries and [RLResults].
 #' @aliases RLRanges RLRanges-class
 #' @rdname RLRanges
@@ -140,14 +140,14 @@ setMethod(
 #' # Example dataset
 #' rlbase <- "https://rlbase-data.s3.amazonaws.com"
 #' cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
-#' pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package="RLSeq")
+#' pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package = "RLSeq")
 #'
 #' # Get RLRanges object
 #' rlr <- RLRanges(pks,
 #'     coverage = cvg, genome = "hg38", label = "NEG",
 #'     mode = "RDIP", sampleName = "RDIP-Seq +RNH1", qcol = 9
 #' )
-#' 
+#'
 #' @export
 RLRanges <- function(peaks = GenomicRanges::GRanges(),
     coverage = character(1),
@@ -167,10 +167,12 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
             qcol <- colnames(md)[ncol(md)]
         } else if (is.numeric(qcol)) {
             qcol <- colnames(as.data.frame(peaks))[qcol]
-            message("Column ", qcol, " out of ", 
-                    length(colnames(as.data.frame(peaks))),
-                    " chosen as 'qcol'. Are you sure this is correct? View",
-                    " available columns with `colnames(as.data.frame(rlranges))`")
+            message(
+                "Column ", qcol, " out of ",
+                length(colnames(as.data.frame(peaks))),
+                " chosen as 'qcol'. Are you sure this is correct? View",
+                " available columns with `colnames(as.data.frame(rlranges))`"
+            )
         }
         colnames(
             methods::slot(peaks, "elementMetadata")
@@ -236,11 +238,11 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 
 
 #' RLSeq Results
-#' 
+#'
 #' Functions for creating and accessing the R-loop results (RL Results). These
 #' are a type of object used for holding the results of the tests implemented
-#' in RLSeq. They can be accessed using the `rlresult` function. 
-#' 
+#' in RLSeq. They can be accessed using the `rlresult` function.
+#'
 #' @aliases rlresult RLResults RLResults-class
 #' @rdname RLResults
 #' @param object [RLRanges] object.
@@ -250,14 +252,14 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 #'
 #' ## Slot descriptions
 #'
-#' * `featureEnrichment` 
+#' * `featureEnrichment`
 #'   - The `tbl` generated from running [featureEnrich].
 #'   - The structure and column descriptions are provided in detail within
 #'   [RLHub::feat_enrich_samples].
 #' * `correlationMat`
 #'   - The `matrix` generated from running [corrAnalyze].
-#'   - Contains pairwise pearson correlations between all samples in 
-#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/) 
+#'   - Contains pairwise pearson correlations between all samples in
+#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/)
 #'   and the supplied RLRanges object.
 #' * `rlfsRes`
 #'   - The `list` generated from running [analyzeRLFS].
@@ -291,12 +293,13 @@ rlresult <- function(object, resultName) {
 
 
 #' RLResults-class
-#' 
+#'
 #' @rdname RLResults
 setClass(
     "RLResults",
     slots = c(
         featureEnrichment = "tbl",
+        txFeatureOverlap = "tbl",
         correlationMat = "matrix",
         rlfsRes = "list",
         geneAnnoRes = "tbl",
@@ -305,6 +308,7 @@ setClass(
     ),
     prototype = methods::prototype(
         featureEnrichment = dplyr::tibble(),
+        txFeatureOverlap = dplyr::tibble(),
         correlationMat = matrix(),
         rlfsRes = list(),
         geneAnnoRes = dplyr::tibble(),
