@@ -617,8 +617,7 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 #' # Return data only
 #' plotRLRegionOverlap(rlr, returnData = TRUE)
 #' @export
-plotTxFeatureOverlap <- function(object, mode = "auto", returnData = FALSE,
-    rlregions_table = NULL, ...) {
+plotTxFeatureOverlap <- function(object, mode = "auto", returnData = FALSE) {
 
     # Retrieve results
     txfeatres <- rlresult(object, "txFeatureOverlap")
