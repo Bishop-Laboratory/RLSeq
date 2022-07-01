@@ -70,7 +70,7 @@ featureEnrich(rlr)
 # With custom annotations
 small_anno <- list(
     "Centromeres" = readr::read_csv(
-        system.file("extdata", "Centromeres.csv.gz", package="RLSeq"),
+        system.file("extdata", "Centromeres.csv.gz", package = "RLSeq"),
         show_col_types = FALSE
     )
 )

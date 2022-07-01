@@ -24,8 +24,7 @@
 #'
 #' @return An RLRanges object containing the results of the enrichment test
 #' accessed via `rlresult(object, "txFeatureOverlap")`. The results
-#' are in `tbl` format. For a full description of all columns in the output
-#' table see [RLHub::???????????????????].
+#' are in `tbl` format.
 #'
 #' @examples
 #'
@@ -47,7 +46,7 @@ txFeatureOverlap <- function(object,
             "Please supply custom ones of use one of hg38, mm10"
         )
     } else {
-        annotations <- switch(paste0(genome),
+        annotations <- switch(genome,
             "hg38" = RLHub::annots_primary_hg38(quiet = TRUE),
             "mm10" = RLHub::annots_primary_mm10(quiet = TRUE)
         )
@@ -56,25 +55,25 @@ txFeatureOverlap <- function(object,
     # Get TX annotations
     txfeat <- annotations[vapply(X = names(annotations), FUN = grepl, pattern = "Transcript_Features", FUN.VALUE = logical(1))]
     txfeat <- txfeat %>%
-        bind_rows(.id = "feature") %>%
-        mutate(
-            feature = gsub(feature, pattern = ".+__", replacement = "")
+        dplyr::bind_rows(.id = "feature") %>%
+        dplyr::mutate(
+            feature = gsub(.data$feature, pattern = ".+__", replacement = "")
         )
 
     # Convert to valr bed format
     rlbed <- object %>%
-        as_tibble() %>%
-        dplyr::mutate(seqnames = as.character(seqnames)) %>%
+        dplyr::as_tibble() %>%
+        dplyr::mutate(seqnames = as.character(.data$seqnames)) %>%
         dplyr::rename(
-            chrom = seqnames,
+            chrom = .data$seqnames,
             name = 6
         ) %>%
         dplyr::select(
-            chrom, start, end, name
+            .data$chrom, .data$start, .data$end, .data$name
         )
 
     # Overlap with features
-    olfeats <- valr::bed_intersect(rlbed, feats)
+    olfeats <- valr::bed_intersect(rlbed, txfeat)
 
     # Get summarization
     olsum <- olfeats %>%
@@ -83,16 +82,16 @@ txFeatureOverlap <- function(object,
             feats = paste0(feature.y, collapse = ", ")
         ) %>%
         dplyr::mutate(
-            feature = case_when(
-                grepl(feats, pattern = "TSS") ~ "TSS",
-                grepl(feats, pattern = "fiveUTR") ~ "fiveUTR",
-                grepl(feats, pattern = "Exon") ~ "Exon",
-                grepl(feats, pattern = "Intron") ~ "Intron",
-                grepl(feats, pattern = "threeUTR") ~ "threeUTR",
-                grepl(feats, pattern = "TTS") ~ "TTS"
+            feature = dplyr::case_when(
+                grepl(.data$feats, pattern = "TSS") ~ "TSS",
+                grepl(.data$feats, pattern = "fiveUTR") ~ "fiveUTR",
+                grepl(.data$feats, pattern = "Exon") ~ "Exon",
+                grepl(.data$feats, pattern = "Intron") ~ "Intron",
+                grepl(.data$feats, pattern = "threeUTR") ~ "threeUTR",
+                grepl(.data$feats, pattern = "TTS") ~ "TTS"
             )
         ) %>%
-        dplyr::select(name = name.x, feature)
+        dplyr::select(name = .data$name.x, .data$feature)
 
     # Add the intergenic
     olsum_final <- rlbed %>%

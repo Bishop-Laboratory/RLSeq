@@ -4,13 +4,23 @@
 \alias{report}
 \title{RLSeq Report}
 \usage{
-report(object, reportPath = "rlreport.html", quiet = FALSE, ...)
+report(
+  object,
+  reportPath = "rlreport.html",
+  intermediates_dir = NULL,
+  quiet = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{An RLRanges object.}
 
 \item{reportPath}{A path indicating the report output HTML file.
 Default: "rlreport.html"}
+
+\item{intermediates_dir}{A directory indicating where intermediate
+files should be stored during report building. If not set,
+a random directory in \verb{tmp/} will be used. Default: NULL.}
 
 \item{quiet}{If TRUE, messages are suppressed. Default: FALSE.}
 

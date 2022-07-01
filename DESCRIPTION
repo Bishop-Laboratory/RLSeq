@@ -34,7 +34,7 @@ Description: RLSeq is a toolkit for analyzing and evaluating R-loop mapping data
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 Suggests: 
     AnnotationDbi,
     BiocStyle,
@@ -86,9 +86,11 @@ Imports:
     stats,
     RLHub,
     aws.s3,
-    pheatmap
+    pheatmap,
+    magrittr
 VignetteBuilder: knitr
 biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics, Classification
 URL: https://github.com/Bishop-Laboratory/RLSeq, https://bishop-laboratory.github.io/RLSeq/
 BugReports: https://github.com/Bishop-Laboratory/RLSeq/issues
 BiocType: Software
+LazyData: true
