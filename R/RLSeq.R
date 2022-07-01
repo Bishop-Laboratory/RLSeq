@@ -21,13 +21,15 @@
 #' 3. **Feature enrichment test**. Runs the [featureEnrich] function to
 #'   test the enrichment of user-supplied ranges within R-loop-relevant
 #'   genomic features. Skip with `skip="featureEnrich"`.
-#' 4. **Correlation Analysis**. Runs the [corrAnalyze] function to test
+#' 4. **Transcript Feature Overlap**. Runs the [txFeatureOverlap] function to
+#'   get the overlap of transcript features and user-supplied peaks.
+#' 5. **Correlation Analysis**. Runs the [corrAnalyze] function to test
 #'   the correlation of user-supplied R-loop signal with other samples in
 #'   RLBase around "gold-standard" R-loop regions.
 #'   Skip with `skip="corrAnalyze"`.
-#' 5. **Gene annotation**. Runs the [geneAnnotation] function to find the overlap
+#' 6. **Gene annotation**. Runs the [geneAnnotation] function to find the overlap
 #'   of genes with the user-supplied ranges. Skip with `skip="geneAnnotation"`.
-#' 6. **R-loop Region Analysis**. Runs the [rlRegionTest] function to find
+#' 7. **R-loop Region Analysis**. Runs the [rlRegionTest] function to find
 #'   the overlap of user-supplied ranges with consensus R-loop sites
 #'   (RL-Regions). Skip with `skip="rlRegionTest"`.
 #'
@@ -64,13 +66,13 @@
 #' @importFrom GenomicFeatures genes
 #' @export
 RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
-    if (!quiet) message("[1/6] RLFS Perm Test")
+    if (!quiet) message("[1/7] RLFS Perm Test")
     object <- analyzeRLFS(object, quiet = TRUE, ...)
 
-    if (!quiet) message("[2/6] Predict Condition")
+    if (!quiet) message("[2/7] Predict Condition")
     object <- predictCondition(object)
 
-    if (!quiet) message("[3/6] Feature Enrichment Test")
+    if (!quiet) message("[3/7] Feature Enrichment Test")
     if (!"featureEnrich" %in% skip) {
         if (GenomeInfoDb::genome(object)[1] %in% c("hg38", "mm10")) {
             object <- featureEnrich(object, quiet = TRUE)
@@ -83,7 +85,20 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
         }
     }
 
-    if (!quiet) message("[4/6] Correlation Analysis")
+    if (!quiet) message("[4/7] Transcript Feature Overlap Analysis")
+    if (!"featureEnrich" %in% skip) {
+        if (GenomeInfoDb::genome(object)[1] %in% c("hg38", "mm10")) {
+            object <- txFeatureOverlap(object, quiet = TRUE)
+        } else {
+            warning(
+                "RLSeq only contains built-in annotations for 'hg38' and",
+                "'mm10' genomes. Please lift-over or run featureEnrich() ",
+                "separately with custom annotations. Skipping."
+            )
+        }
+    }
+
+    if (!quiet) message("[5/7] Correlation Analysis")
     if (object@metadata$coverage != "" & !"corrAnalyze" %in% skip) {
         if (GenomeInfoDb::genome(object)[1] == "hg38") {
             if (.Platform$OS.type != "windows") {
@@ -108,7 +123,7 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
         corrRes <- NA
     }
 
-    if (!quiet) message("[5/6] Gene Annotation")
+    if (!quiet) message("[6/7] Gene Annotation")
     if (!"geneAnnotation" %in% skip) {
         objectanno <- try(geneAnnotation(object), silent = TRUE)
         if ("try-error" %in% class(objectanno)) {
@@ -118,7 +133,7 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
         }
     }
 
-    if (!quiet) message("[6/6] R-loop Region Analysis")
+    if (!quiet) message("[7/7] R-loop Region Analysis")
     if (!"rlRegionTest" %in% skip) {
         if (GenomeInfoDb::genome(object)[1] == "hg38") {
             object <- rlRegionTest(object)

@@ -29,7 +29,9 @@ RLRanges with gene IDs by overlap.
 
 First. gene annotations are
 automatically downloaded using \link[AnnotationHub:AnnotationHub-class]{AnnotationHub::query} with the following
-pattern:\if{html}{\out{<div class="sourceCode r">}}\preformatted{AnnotationHub::query(
+pattern:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{AnnotationHub::query(
     x = ah,
     pattern = c("TxDb", "UCSC", "knownGene", genome)
 )

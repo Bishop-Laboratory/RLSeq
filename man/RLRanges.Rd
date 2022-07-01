@@ -61,7 +61,7 @@ the analyses in \link{RLSeq}.
 # Example dataset
 rlbase <- "https://rlbase-data.s3.amazonaws.com"
 cvg <- file.path(rlbase, "coverage", "SRX7671349_hg38.bw")
-pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package="RLSeq")
+pks <- system.file("extdata", "SRX7671349_hg38.broadPeak", package = "RLSeq")
 
 # Get RLRanges object
 rlr <- RLRanges(pks,
