@@ -127,3 +127,31 @@
 #'
 #' @export
 "genomeMasks"
+
+
+#' RLBase Sample Transcript Feature Overlaps
+#'
+#' Summary statistics from transcript feature overlap analysis of peaks
+#' from all RLBase samples.
+#'
+#' ## Structure
+#'
+#' `rlsampleTxOl` is a `tbl` with the following columns:
+#'
+#' - `rlsample`
+#'   + The RLBase sample identifier for the sample.
+#'   + Matches the `rlsample` column in [RLHub::rlbase_samples]
+#' - `feature`
+#'   + The transcript feature for which overlap analysis was performed.
+#'   + These features were derived from the Transcript Features collection
+#'   described in [RLHub::annotations]
+#' - `n`
+#'   + The raw number of peaks from the sample overlapping a feature.
+#' - `pct`
+#'   + The proportion of peaks fro the sample overlapping a feature.
+#'
+#' @examples
+#' rlsampleTxOl
+#'
+#' @export
+"rlsampleTxOl"

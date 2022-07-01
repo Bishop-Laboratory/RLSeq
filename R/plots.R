@@ -573,6 +573,127 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 }
 
 
+#' Plot Transcript Feature Overlap
+#'
+#' Plots the results of [txFeatureOverlap] alongside the average from
+#' public R-loop datasets. This allows comparison of user-supplied
+#' samples with data that is expected to be simialr.
+#'
+#' @param object An RLRanges object with [txFeatureOverlap] already run.
+#' @param mode A `character` containing the R-loop data mode to compare
+#' against. See details for more information.
+#' @param returnData If TRUE, plot data is returned instead of plotting.
+#'  Default: FALSE
+#' @return A [ggplot2::ggplot] object or a `tbl` if `returnData` is `TRUE`.
+#' @details
+#'
+#' ## Mode
+#'
+#' The `mode` parameter specifies the R-loop modality to compare the
+#' user-supplied sample against in the plot. The default, `"auto"`
+#' specifies that the `mode` from the supplied `RLRanges` object will
+#' be used. Only one mode can be specified. For a list of applicable modes,
+#' see `auxdata$available_modes`.
+#'
+#' ## Plot
+#'
+#' The plot is a stacked bar chart showing the proportion of peaks overlapping
+#' transcript features for the supplied `RLRanges` object. Additionally, the
+#' average of the [txFeatureOverlap] analysis for all samples within the
+#' specified modes are also shown as a background comparison.
+#'
+#' This style of analysis enables a user to see the transcript features
+#' overlapping their peaks and compare those results to the average within
+#' relevant public datasets.
+#'
+#' @examples
+#'
+#' # Example dataset with rlRegionTest() already run.
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
+#'
+#' # Plot RL-Region overlap
+#' plotTxFeatureOverlap(rlr)
+#'
+#' # Return data only
+#' plotRLRegionOverlap(rlr, returnData = TRUE)
+#' @export
+plotTxFeatureOverlap <- function(object, mode = "auto", returnData = FALSE,
+    rlregions_table = NULL, ...) {
+
+    # Retrieve results
+    txfeatres <- rlresult(object, "txFeatureOverlap")
+
+    # Get genome
+    genome <- GenomeInfoDb::genome(object)[1]
+
+    # Get rlbase samps
+    rlsamples <- RLHub::rlbase_samples()
+
+    # Get the mode
+    if (mode == "auto") mode <- object@metadata$mode
+
+    # Get the rlbase tx feat overlap
+    rlspos <- rlsampleTxOl %>%
+        dplyr::inner_join(rlsamples, by = "rlsample") %>%
+        dplyr::filter(
+            .data$label == "POS",
+            .data$mode == {{ mode }},
+            .data$numPeaks > 5000,
+            .data$prediction == "POS",
+            .data$genome == {{ genome }}
+        ) %>%
+        dplyr::group_by(.data$feature) %>%
+        dplyr::summarise(
+            pct = mean(.data$pct),
+        ) %>%
+        dplyr::mutate(group = paste0({{ mode }}, "-avg"))
+
+    # Get stats for the user-supplied sample
+    olstat <- txfeatres %>%
+        dplyr::group_by(.data$feature) %>%
+        dplyr::tally() %>%
+        dplyr::mutate(
+            pct = .data$n / sum(.data$n),
+            group = object@metadata$sampleName
+        ) %>%
+        dplyr::select(-.data$n)
+    toplt <- olstat %>%
+        dplyr::bind_rows(rlspos) %>%
+        dplyr::mutate(
+            feature = factor(.data$feature, levels = rev(c(
+                "TSS", "fiveUTR", "Exon", "Intron",
+                "threeUTR", "TTS", "Intergenic"
+            )))
+        )
+    if (returnData) {
+        return(toplt)
+    }
+
+    # Plot
+    plt <- toplt %>%
+        ggplot2::ggplot(ggplot2::aes_string(x = "group", y = "pct", fill = "feature")) +
+        ggplot2::geom_col(color = "black") +
+        ggplot2::coord_flip() +
+        ggplot2::theme_bw(base_size = 14) +
+        ggplot2::theme(
+            axis.title.y = ggplot2::element_blank()
+        ) +
+        ggplot2::ylab("Proportion of peaks") +
+        ggplot2::ggtitle(
+            "Transcript Feature Overlap",
+            subtitle = paste0(
+                object@metadata$sampleName,
+                " (user-supplied data) vs RLBase ",
+                paste0(mode, "-avg")
+            )
+        ) +
+        ggplot2::scale_fill_discrete(guide = ggplot2::guide_legend(reverse = TRUE))
+
+    # Return plt
+    return(plt)
+}
+
+
 #' Plot RL-Region overlap with RLRanges
 #'
 #' Convenience function for plotting the overlap between RLRanges and R-loop

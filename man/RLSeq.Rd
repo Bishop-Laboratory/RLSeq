@@ -34,6 +34,8 @@ predict whether the user-supplied sample robustly maps R-loops or not.
 \item \strong{Feature enrichment test}. Runs the \link{featureEnrich} function to
 test the enrichment of user-supplied ranges within R-loop-relevant
 genomic features. Skip with \code{skip="featureEnrich"}.
+\item \strong{Transcript Feature Overlap}. Runs the \link{txFeatureOverlap} function to
+get the overlap of transcript features and user-supplied peaks.
 \item \strong{Correlation Analysis}. Runs the \link{corrAnalyze} function to test
 the correlation of user-supplied R-loop signal with other samples in
 RLBase around "gold-standard" R-loop regions.
@@ -53,8 +55,9 @@ rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 # Run RLSeq
 # `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.
 rlr <- RLSeq(
-    rlr, useMask = FALSE, ntimes = 10,
-    skip=c('featureEnrich', 'corrAnalyze', 'geneAnnotation', 'rlRegionTest')
+    rlr,
+    useMask = FALSE, ntimes = 10,
+    skip = c("featureEnrich", "corrAnalyze", "geneAnnotation", "rlRegionTest")
 )
 
 }
