@@ -16,28 +16,28 @@
 #' @details
 #'
 #' ## Method
-#' 
-#' Annotations relevant to R-loops were curated as part of the 
+#'
+#' Annotations relevant to R-loops were curated as part of the
 #' [RLBase-data](https://github.com/Bishop-Laboratory/RLBase-data) workflow
 #' and are provided via [RLHub::annotations].
-#' 
+#'
 #' In `featureEnrich`, each annotation "type" (e.g., "Exons", "Introns", etc)
-#' is compared to the supplied RLRanges, yielding enrichment statistics with 
+#' is compared to the supplied RLRanges, yielding enrichment statistics with
 #' the following procedure:
-#' 
-#' 1. For each annotation type, the peaks are overlapped with the annotations. 
+#'
+#' 1. For each annotation type, the peaks are overlapped with the annotations.
 #' 2. Then, [valr::bed_reldist] is used to find the relative distance
-#' distribution between the peaks and the annotations for both the supplied 
+#' distribution between the peaks and the annotations for both the supplied
 #' RLRanges and shuffled RLRanges (via [valr::bed_shuffle]).
 #' Significance of the relative distance is calculated via [stats::ks.test].
-#' 3. Then, Fisher’s exact test is implemented via [valr::bed_fisher] 
+#' 3. Then, Fisher’s exact test is implemented via [valr::bed_fisher]
 #' to obtain the significance of the overlap and the odds ratio.
-#' 
-#' @return An RLRanges object containing the results of the enrichment test 
-#' accessed via `rlresult(object, "featureEnrichment")`. The results 
-#' are in `tbl` format. For a full description of all columns in the output 
-#' table see [RLHub::feat_enrich_samples]. 
-#' 
+#'
+#' @return An RLRanges object containing the results of the enrichment test
+#' accessed via `rlresult(object, "featureEnrichment")`. The results
+#' are in `tbl` format. For a full description of all columns in the output
+#' table see [RLHub::feat_enrich_samples].
+#'
 #' @examples
 #'
 #' # Example RLRanges dataset
@@ -49,7 +49,7 @@
 #' # With custom annotations
 #' small_anno <- list(
 #'     "Centromeres" = readr::read_csv(
-#'         system.file("extdata", "Centromeres.csv.gz", package="RLSeq"),
+#'         system.file("extdata", "Centromeres.csv.gz", package = "RLSeq"),
 #'         show_col_types = FALSE
 #'     )
 #' )
@@ -72,8 +72,7 @@ featureEnrich <- function(object,
             "Please supply custom ones of use one of hg38, mm10"
         )
     } else if (is.null(annotations)) {
-        annotations <- switch(
-            paste0(annotype[1], "_", genome),
+        annotations <- switch(paste0(annotype[1], "_", genome),
             "primary_hg38" = RLHub::annots_primary_hg38(quiet = TRUE),
             "primary_mm10" = RLHub::annots_primary_mm10(quiet = TRUE),
             "full_hg38" = RLHub::annots_full_hg38(quiet = TRUE),
@@ -105,7 +104,7 @@ featureEnrich <- function(object,
     ) %>%
         dplyr::as_tibble() %>%
         dplyr::select(chrom = .data$seqnames, .data$start, .data$end)
-    
+
     # Only keep annotations above cutoff
     annots <- annotations[vapply(annotations, nrow, numeric(1)) > MIN_ROWS]
 

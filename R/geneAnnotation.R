@@ -6,39 +6,39 @@
 #' @param txdb The TxDb or EnsDb object containing gene annotations. If not
 #' supplied, annotations will be automatically downloaded from AnnotationHub.
 #' See also [GenomicFeatures::TxDb].
-#' @return An RLRanges object with gene overlaps included. The results 
+#' @return An RLRanges object with gene overlaps included. The results
 #' are available via `rlresult(object, "geneAnnoRes")`. The result object
-#' is a `tbl` with a mapping of `peak_name` (peak names from `names(object)`) 
+#' is a `tbl` with a mapping of `peak_name` (peak names from `names(object)`)
 #' to `gene_id` (entrez gene IDs).
-#' @details 
-#' 
-#' The `geneAnnotation` function provides a simple procedure for annotating 
-#' RLRanges with gene IDs by overlap. 
-#' 
+#' @details
+#'
+#' The `geneAnnotation` function provides a simple procedure for annotating
+#' RLRanges with gene IDs by overlap.
+#'
 #' ### Annotations
-#' 
-#' First. gene annotations are 
+#'
+#' First. gene annotations are
 #' automatically downloaded using [AnnotationHub::query] with the following
 #' pattern:
-#' 
+#'
 #' ```r
 #' AnnotationHub::query(
 #'     x = ah,
 #'     pattern = c("TxDb", "UCSC", "knownGene", genome)
 #' )
 #' ```
-#' 
+#'
 #' Where `genome` is the UCSC genome id for the RLRanges object. If these
 #' annotations are unavailable, they should be provded using the `txdb`
 #' parameter. See also [GenomicFeatures::TxDb].
-#' 
+#'
 #' ### Overlaps
-#'    
-#' The annotations are subsequently overlapped with the ranges in the 
-#' supplied RLRanges object using [valr::bed_intersect] and saved in the 
-#' [RLResults] object as a `tbl` with a mapping of peak names to `gene_id` 
+#'
+#' The annotations are subsequently overlapped with the ranges in the
+#' supplied RLRanges object using [valr::bed_intersect] and saved in the
+#' [RLResults] object as a `tbl` with a mapping of peak names to `gene_id`
 #' (entrez gene IDs).
-#' 
+#'
 #' @examples
 #'
 #' # Example RLRanges data
