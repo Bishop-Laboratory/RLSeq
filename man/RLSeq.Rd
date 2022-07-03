@@ -31,6 +31,9 @@ enrichment of user-supplied ranges within R-loop-forming sequences.
 \item \strong{Predict Condition}. Runs the \link{predictCondition} function to
 predict whether the user-supplied sample robustly maps R-loops or not.
 \emph{Cannot be skipped.}
+\item \strong{Noise analysis}. Runs the \link{noiseAnalyze} function to analyze the
+signal-noise distribution within the supplied dataset. Skip with
+\code{skip="noiseAnalyze"}.
 \item \strong{Feature enrichment test}. Runs the \link{featureEnrich} function to
 test the enrichment of user-supplied ranges within R-loop-relevant
 genomic features. Skip with \code{skip="featureEnrich"}.
@@ -40,7 +43,7 @@ get the overlap of transcript features and user-supplied peaks.
 the correlation of user-supplied R-loop signal with other samples in
 RLBase around "gold-standard" R-loop regions.
 Skip with \code{skip="corrAnalyze"}.
-\item \strong{Gene annotation}. Runs the \link{geneAnnotation} function to find the overlap
+\item \strong{Gene annotation}. Runs the \link{geneAnnotation} function to find overlap
 of genes with the user-supplied ranges. Skip with \code{skip="geneAnnotation"}.
 \item \strong{R-loop Region Analysis}. Runs the \link{rlRegionTest} function to find
 the overlap of user-supplied ranges with consensus R-loop sites
@@ -57,7 +60,9 @@ rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 rlr <- RLSeq(
     rlr,
     useMask = FALSE, ntimes = 10,
-    skip = c("featureEnrich", "corrAnalyze", "geneAnnotation", "rlRegionTest")
+    skip = c(
+        "featureEnrich", "corrAnalyze", "geneAnnotation", "rlRegionTest"
+    )
 )
 
 }
