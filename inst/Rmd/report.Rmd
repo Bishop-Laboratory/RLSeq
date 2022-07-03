@@ -46,23 +46,28 @@ rlreslst <- lapply(slotNames(rlres), function(sn) {
 })
 names(rlreslst) <- slotNames(rlres)
 res_order <- c(
-  "rlfsRes", "predictRes", "featureEnrichment", 
+  "rlfsRes", "predictRes", 
+  "noiseAnalysis",
+  "featureEnrichment", 
   "txFeatureOverlap",
   "correlationMat", "geneAnnoRes", "rlRegionRes"
 )
 funcs <- c(
-  "analyzeRLFS", "predictCondition", "featureEnrich", 
+  "analyzeRLFS", "predictCondition", 
+  "noiseAnalyze",
+  "featureEnrich", 
   "txFeatureOverlap",
   "corrAnalyze", "geneAnnotation", "rlRegionTest"
 )
 names(res_order) <- c(
-  "RLFS Analysis", 
+  "RLFS analysis", 
   "Sample classification",
+  "Noise analysis",
   "Feature enrichment test",
   "Transcript feature overlap",
   "Correlation analysis",
-  "Gene Annotations",
-  "RL-Regions Test"
+  "Gene annotations",
+  "RL-Regions test"
 )
 rlreslst <- rlreslst[res_order]
 isnull <- vapply(rlreslst, is.null, FUN.VALUE = logical(1))

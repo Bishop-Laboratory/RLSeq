@@ -1,0 +1,22 @@
+## `r i`. `r names(resAnchor)` {#`r resAnchor`}
+
+### Fingerprint plot
+
+To visualize the results of `noiseAnalyze` we can use a "fingerprint plot" (named after the [deepTools implementation](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html) by the same name). 
+
+```{r fingerprint}
+plotFingerprint(object)
+```
+
+This plot shows the proportion of signal contained in the corresponding proportion of coverage bins. In the plot above, we can observe that relatively few bins contain nearly all the signal. This is exactly what we would expect to see when our sample has good signal-to-noise ratio, a sign of good quality in R-loop mapping datasets.
+
+### Noise comparison plot
+
+While a fingerprint plot is useful for getting a quick view of the dataset, it is also useful to compare the analyzed sample to publicly-available the datasets provided by RLBase. The `noiseComparisonPlot` enables this comparison.
+
+```{r noiseComparisonPlot}
+noiseComparisonPlot(object)
+```
+
+
+***
