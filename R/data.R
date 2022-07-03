@@ -129,6 +129,30 @@
 "genomeMasks"
 
 
+#' Random Genomic Windows
+#'
+#' A collection of random genomic windows for use with [noiseAnalyze]. See the
+#' `data-raw/genome_masks.R` script for the processing steps.
+#'
+#' ## Structure
+#'
+#' `randomWindows` is a named list of `tbl` objects containing ~1000 random 
+#' genomic regions. The names are the genomes to which the regions correspond.
+#' 
+#' Columns (mirrors 
+#' [bed3 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)).
+#' 
+#' 1. `chrom` - the chromosome in UCSC format
+#' 2. `start` - the starting position
+#' 3. `end` - the end position
+#'
+#' @examples
+#' randomWindows
+#'
+#' @export
+"randomWindows"
+
+
 #' RLBase Sample Transcript Feature Overlaps
 #'
 #' Summary statistics from transcript feature overlap analysis of peaks

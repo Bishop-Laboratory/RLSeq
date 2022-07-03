@@ -43,6 +43,14 @@ and the supplied RLRanges object.
 \item The \code{list} generated from running \link{analyzeRLFS}.
 \item See \link{analyzeRLFS} for description of structure.
 }
+\item \code{noiseAnalysis}
+\itemize{
+\item The \code{tbl} generated from running \link{noiseAnalysis}.
+}
+\item \code{txFeatureOverlap}
+\itemize{
+\item The \code{tbl} generated from running \link{txFeatureOverlap}.
+}
 \item \code{geneAnnoRes}
 \itemize{
 \item The \code{tbl} generated from running \link{geneAnnotation}.
