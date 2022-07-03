@@ -21,6 +21,11 @@
         package = "RLSeq",
         envir = parent.env(environment())
     )
+    utils::data(
+        "randomWindows",
+        package = "RLSeq",
+        envir = parent.env(environment())
+    )
 
     # Assign
     assign("BASE_UCSC", BASE_UCSC, envir = parent.env(environment()))

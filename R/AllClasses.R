@@ -264,6 +264,10 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 #' * `rlfsRes`
 #'   - The `list` generated from running [analyzeRLFS].
 #'   - See [analyzeRLFS] for description of structure.
+#' * `noiseAnalysis`
+#'   - The `tbl` generated from running [noiseAnalysis].
+#' * `txFeatureOverlap`
+#'   - The `tbl` generated from running [txFeatureOverlap].
 #' * `geneAnnoRes`
 #'   - The `tbl` generated from running [geneAnnotation].
 #' * `predictRes`
@@ -302,6 +306,7 @@ setClass(
         txFeatureOverlap = "tbl",
         correlationMat = "matrix",
         rlfsRes = "list",
+        noiseAnalysis = "tbl",
         geneAnnoRes = "tbl",
         predictRes = "list",
         rlRegionRes = "list"
@@ -311,6 +316,7 @@ setClass(
         txFeatureOverlap = dplyr::tibble(),
         correlationMat = matrix(),
         rlfsRes = list(),
+        noiseAnalysis = dplyr::tibble(),
         geneAnnoRes = dplyr::tibble(),
         predictRes = list(),
         rlRegionRes = list()

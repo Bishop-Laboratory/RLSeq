@@ -28,6 +28,11 @@ RLRangesFromRLBase <- function(acc,
         rlr@metadata$results <- rlres
         rlr <- txFeatureOverlap(rlr, quiet = TRUE)
     }
+    if (is.null(attr(rlres, "noiseAnalysis"))) {
+        attr(rlres, "noiseAnalysis") <- dplyr::tibble()
+        rlr@metadata$results <- rlres
+        rlr <- noiseAnalyze(rlr)
+    }
 
     return(rlr)
 }

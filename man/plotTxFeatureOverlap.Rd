@@ -4,13 +4,7 @@
 \alias{plotTxFeatureOverlap}
 \title{Plot Transcript Feature Overlap}
 \usage{
-plotTxFeatureOverlap(
-  object,
-  mode = "auto",
-  returnData = FALSE,
-  rlregions_table = NULL,
-  ...
-)
+plotTxFeatureOverlap(object, mode = "auto", returnData = FALSE)
 }
 \arguments{
 \item{object}{An RLRanges object with \link{txFeatureOverlap} already run.}
