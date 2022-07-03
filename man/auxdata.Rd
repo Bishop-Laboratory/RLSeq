@@ -5,7 +5,7 @@
 \alias{auxdata}
 \title{Auxiliary Data}
 \format{
-An object of class \code{list} of length 10.
+An object of class \code{list} of length 12.
 }
 \usage{
 auxdata
@@ -54,6 +54,13 @@ See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 \item \code{prediction_cols}
 \itemize{
 \item A \code{tbl} containing the colors associated with the predictions in
+\href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase}.
+See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
+}
+\item \code{prediction_label_cols}
+\itemize{
+\item A \code{tbl} containing the colors associated with the prediction-label
+combinations in
 \href{https://gccri.bishop-lab.uthscsa.edu/rlbase/}{RLBase}.
 See also \link[RLHub:rlbase_samples]{RLHub::rlbase_samples}.
 }

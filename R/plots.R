@@ -91,6 +91,210 @@ plotRLFSRes <- function(object,
 }
 
 
+#' Plot noise analysis results as a fingerprint plot
+#'
+#' Plots the results of the noise analysis in [noiseAnalyze]. Creates a 
+#' fingerprint plot like those developed by 
+#' [Diaz et al, 2012](https://pubmed.ncbi.nlm.nih.gov/22499706/) and those 
+#' provided by 
+#' [deepTools](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html). 
+#' 
+#' The term "Fingerprint plot" comes from deepTools.
+#'
+#' @param object An RLRanges object with [noiseAnalyze] already run.
+#' @return A ggplot object. See also [ggplot2::ggplot].
+#' 
+#' 2. `noiseComparisonPlot` 
+#'   - A plot showing the noise analysis
+#'   results from the user-supplied sample compared to similar samples from
+#'   RLBase.
+#' 
+#' @examples
+#'
+#' # Example RLRanges dataset with analyzeRLFS() already run.
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
+#'
+#' # Plot RLFS res
+#' plotFingerprint(rlr)
+#'
+#' @export
+plotFingerprint <- function(object) {
+    
+    # Get the noise analysis results
+    rlnoise <- rlresult(object, "noiseAnalysis")
+    
+    # Get sample name
+    sname <- object@metadata$sampleName
+    
+    # Create a fingerprint plot
+    fingerprint <- rlnoise %>% 
+        dplyr::mutate(
+            rank = .data$rank/max(.data$rank)
+        ) %>% 
+        ggplot2::ggplot(
+            ggplot2::aes_string(
+                x = "rank",
+                y = "value"
+            )
+        ) +
+        ggplot2::geom_abline(
+            slope = 1, intercept = 0,
+            color = "grey",
+            linetype = "dashed",
+            alpha = .5
+        ) +
+        ggplot2::geom_line() +
+        ggplot2::labs(
+            title = paste0("Fingerprint plot of ", sname)
+        ) +
+        ggplot2::xlab("Proportion of bins") +
+        ggplot2::ylab("Proportion of signal") +
+        ggplot2::theme_linedraw(
+            base_size = 14
+        ) +
+        ggplot2::theme(
+            plot.caption = ggplot2::element_text(size = 8)
+        )
+    
+    return(fingerprint)
+    
+}
+
+
+#' Creates a metaplot for comparing noise analysis results with RLBase
+#'
+#' Plots the average standardized signal from [noiseAnalyze] alongside the 
+#' samples in RLBase. For this plot, lower average signal indicates better
+#' signal to noise ratio. **Note**: This plot may be misleading if you supplied 
+#' custom windows when running [noiseAnalyze].
+#'
+#' @param object An RLRanges object with [noiseAnalyze] already run.
+#' @param mode A `character` containing the R-loop data mode to compare
+#' against. See details for more information.
+#' @param returnData If TRUE, plot data is returned instead of plotting.
+#'  Default: FALSE
+#' @return A [ggplot2::ggplot] object or a `tbl` if `returnData` is `TRUE`.
+#' @details
+#'
+#' ## Mode
+#'
+#' The `mode` parameter specifies the R-loop modality to compare the
+#' user-supplied sample against in the plot. The default, `"auto"`
+#' specifies that the `mode` from the supplied `RLRanges` object will
+#' be used. Only one mode can be specified. For a list of applicable modes,
+#' see `auxdata$available_modes`.
+#'
+#' ## Plot
+#'
+#' The plot is a violin / jitter plot showing the distribution of average values
+#' from the [noiseAnalyze] output across RLBase samples of the selected `mode`.
+#' The user-supplied sample is annotated on the plot.
+#'
+#' @examples
+#'
+#' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
+#'
+#' # Plot RL-Region overlap
+#' noiseComparisonPlot(rlr)
+#'
+#' # Return data only
+#' noiseComparisonPlot(rlr, returnData = TRUE)
+#' @export
+noiseComparisonPlot <- function(object, mode = "auto", returnData = FALSE) {
+    
+    # Retrieve results
+    noiseres <- rlresult(object, "noiseAnalysis")
+    
+    # Get the noise index
+    noiseindex <- mean(noiseres$value)
+    
+    # Wrangle along with sample info
+    userdata <- dplyr::tibble(
+        sample=object@metadata$sampleName,
+        noise_index=noiseindex,
+        label=object@metadata$label,
+        prediction=object@metadata$results@predictRes$prediction,
+        group="User-supplied"
+    )
+    
+    # Get genome
+    genome <- GenomeInfoDb::genome(object)[1]
+    
+    # Get rlbase samps
+    rlsamples <- RLHub::rlbase_samples()
+    
+    # Get the mode
+    if (mode == "auto") mode <- object@metadata$mode
+    
+    # Get the RLBase noise analysis results and wrangle them
+    toplt <- rlbaseNoiseAnalyze %>%
+        dplyr::inner_join(rlsamples, by = "rlsample") %>%
+        dplyr::filter(
+            .data$mode == {{ mode }},
+            .data$genome == {{ genome }}
+        ) %>%
+        dplyr::mutate(group = {{ mode }}) %>% 
+        dplyr::select(
+            sample=.data$rlsample, 
+            noise_index=.data$value,
+            .data$label, .data$prediction, .data$group
+        ) %>% 
+        dplyr::bind_rows(userdata)
+    
+    if (returnData) {
+        return(toplt)
+    }
+    
+    # Plot
+    plt <- toplt %>% 
+        dplyr::mutate(
+            cond = paste0(.data$label, "_", .data$prediction),
+            cond = factor(.data$cond, levels = c("NEG_NEG", "POS_NEG", "NEG_POS", "POS_POS"))
+        ) %>% 
+        ggplot2::ggplot(ggplot2::aes_string(x = "cond", fill = "cond", y = "noise_index")) +
+        ggplot2::geom_boxplot(
+            position = ggplot2::position_dodge(width = .9),
+            outlier.shape = NA
+        ) +
+        ggplot2::geom_point(
+            position = ggplot2::position_jitterdodge(
+                dodge.width = .9, jitter.width = 1,
+                seed = 42
+            )
+        ) +
+        ggplot2::geom_point(
+            alpha = ifelse(toplt$group == "User-supplied", 1, 0),
+            size = 4,
+            color = "black",
+            position = ggplot2::position_jitterdodge(
+                dodge.width = .9,
+                jitter.width = 0,
+                jitter.height = 0
+            ),
+            shape = 23,
+            stroke = 1.5
+        ) +
+        ggplot2::scale_y_log10(expand = ggplot2::expansion(mult = c(0, .2))) +
+        ggplot2::theme_bw(base_size = 14) +
+        ggplot2::scale_fill_manual(
+            values = auxdata$prediction_label_cols
+        ) +
+        ggplot2::ylab("Noise index (log scale)") +
+        ggplot2::xlab("Sample QC prediction/label (prediction_label)") +
+        ggplot2::labs(
+            title = "Noise index across prediction-label combinations",
+            subtitle = paste0("Data modality: ", mode, "-seq"),
+            caption = paste0(
+                "\u25C7 - User-supplied sample"
+            )
+        ) +
+        ggplot2::theme(legend.position = "none")
+    
+    # Return plt
+    return(plt)
+}
+
+
 #' Plot Correlation Results
 #'
 #' Plots a heatmap to visualize the pairwise Pearson correlation matrix
@@ -608,7 +812,6 @@ feature_ggplot <- function(x, usamp, limits, splitby) {
 #'
 #' @examples
 #'
-#' # Example dataset with rlRegionTest() already run.
 #' rlr <- readRDS(system.file("extdata", "rlrsmall.rds", package = "RLSeq"))
 #'
 #' # Plot RL-Region overlap
