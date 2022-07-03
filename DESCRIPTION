@@ -93,4 +93,3 @@ biocViews: Sequencing, Coverage, Epigenetics, Transcriptomics, Classification
 URL: https://github.com/Bishop-Laboratory/RLSeq, https://bishop-laboratory.github.io/RLSeq/
 BugReports: https://github.com/Bishop-Laboratory/RLSeq/issues
 BiocType: Software
-LazyData: true

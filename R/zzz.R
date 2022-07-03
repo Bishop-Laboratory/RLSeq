@@ -26,7 +26,12 @@
         package = "RLSeq",
         envir = parent.env(environment())
     )
-
+    utils::data(
+        "rlbaseNoiseAnalyze",
+        package = "RLSeq",
+        envir = parent.env(environment())
+    )
+    
     # Assign
     assign("BASE_UCSC", BASE_UCSC, envir = parent.env(environment()))
     assign("RLBASE_URL", RLBASE_URL, envir = parent.env(environment()))

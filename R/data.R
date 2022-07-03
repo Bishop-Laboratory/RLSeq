@@ -31,6 +31,11 @@
 #'   - A `tbl` containing the colors associated with the predictions in
 #'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
+#' * `prediction_label_cols`
+#'   - A `tbl` containing the colors associated with the prediction-label 
+#'   combinations in
+#'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
+#'   See also [RLHub::rlbase_samples].
 #' * `available_modes`
 #'   - A `tbl` containing the modes available in RLBase and associated metadata.
 #'   See also [RLHub::rlbase_samples].
@@ -179,3 +184,25 @@
 #'
 #' @export
 "rlsampleTxOl"
+
+
+#' RLBase Sample Noise Analysis Results
+#'
+#' Average signal from noise analysis of RLBase samples. See [noiseAnalyze] for
+#' more detail regarding how signal was initially calculated. 
+#'
+#' ## Structure
+#'
+#' `rlbaseNoiseAnalyze` is a `tbl` with the following columns:
+#'
+#' - `rlsample`
+#'   + The RLBase sample identifier for the sample.
+#'   + Matches the `rlsample` column in [RLHub::rlbase_samples]
+#' - `value`
+#'   + The mean signal from noise analysis. See [noiseAnalyze].
+#'
+#' @examples
+#' rlbaseNoiseAnalyze
+#'
+#' @export
+"rlbaseNoiseAnalyze"

@@ -22,8 +22,7 @@
 #' developed by [Diaz et al., 2012](https://pubmed.ncbi.nlm.nih.gov/22499706/)
 #' and also implemented by the 
 #' [deepTools](https://deeptools.readthedocs.io/en/develop/) function, 
-#' [plotFingerprint](https://deeptools.readthedocs.io/en/develop/
-#' content/tools/plotFingerprint.html). 
+#' [plotFingerprint](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html). 
 #' 
 #' Briefly, if user-supplied [RLRanges] contain a bigWig coverage file, 
 #' then the coverage is quantified within random genomic regions 

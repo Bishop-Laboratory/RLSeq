@@ -66,6 +66,16 @@ db_cols <- tibble(
     col = sample(pal_db, length(unique(annotypes$db)))
 )
 
+## Prediction_Label colors ##
+cols <- dplyr::tribble(
+    ~cond, ~col,
+    "NEG_NEG", "#8a2c2c",
+    "NEG_POS", "#A76767",
+    "POS_NEG", "#7aa4c4",
+    "POS_POS", "#2270ab"
+)
+pred_lab_cols <- cols %>% dplyr::pull(.data$col)
+names(pred_lab_cols) <- as.data.frame(cols)[, "cond"]
 
 ## S9.6 vs dRNaseH1 vs Other ##
 ip_cols <- tribble(
@@ -131,6 +141,7 @@ auxdata <- list(
     heat_cols = heatcols,
     label_cols = label_cols,
     prediction_cols = prediction_cols,
+    prediction_label_cols = pred_lab_cols,
     available_modes = available_modes,
     available_genomes = genomes,
     misc_modes = misc

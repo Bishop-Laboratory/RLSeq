@@ -33,8 +33,7 @@ The method used for noise analysis is a minor modification of the method
 developed by \href{https://pubmed.ncbi.nlm.nih.gov/22499706/}{Diaz et al., 2012}
 and also implemented by the
 \href{https://deeptools.readthedocs.io/en/develop/}{deepTools} function,
-\link{plotFingerprint}(https://deeptools.readthedocs.io/en/develop/
-content/tools/plotFingerprint.html).
+\href{https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html}{plotFingerprint}.
 
 Briefly, if user-supplied \link{RLRanges} contain a bigWig coverage file,
 then the coverage is quantified within random genomic regions
