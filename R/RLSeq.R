@@ -117,7 +117,7 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
     }
 
     if (!quiet) message("[5/8] Transcript Feature Overlap Analysis")
-    if (!"featureEnrich" %in% skip) {
+    if (!"txFeatureOverlap" %in% skip) {
         if (GenomeInfoDb::genome(object)[1] %in% c("hg38", "mm10")) {
             object <- txFeatureOverlap(object, quiet = TRUE)
         } else {
