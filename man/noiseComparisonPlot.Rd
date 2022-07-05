@@ -4,13 +4,16 @@
 \alias{noiseComparisonPlot}
 \title{Creates a metaplot for comparing noise analysis results with RLBase}
 \usage{
-noiseComparisonPlot(object, mode = "auto", returnData = FALSE)
+noiseComparisonPlot(object, mode = "auto", simple = TRUE, returnData = FALSE)
 }
 \arguments{
 \item{object}{An RLRanges object with \link{noiseAnalyze} already run.}
 
 \item{mode}{A \code{character} containing the R-loop data mode to compare
 against. See details for more information.}
+
+\item{simple}{A \code{logical} which specifies whether the plot should only show
+samples where the prediction and label are the same. Default: TRUE.}
 
 \item{returnData}{If TRUE, plot data is returned instead of plotting.
 Default: FALSE}
