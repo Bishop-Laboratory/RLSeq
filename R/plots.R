@@ -171,6 +171,8 @@ plotFingerprint <- function(object) {
 #' @param object An RLRanges object with [noiseAnalyze] already run.
 #' @param mode A `character` containing the R-loop data mode to compare
 #' against. See details for more information.
+#' @param simple A `logical` which specifies whether the plot should only show
+#' samples where the prediction and label are the same. Default: TRUE.
 #' @param returnData If TRUE, plot data is returned instead of plotting.
 #'  Default: FALSE
 #' @return A [ggplot2::ggplot] object or a `tbl` if `returnData` is `TRUE`.
@@ -200,7 +202,8 @@ plotFingerprint <- function(object) {
 #' # Return data only
 #' noiseComparisonPlot(rlr, returnData = TRUE)
 #' @export
-noiseComparisonPlot <- function(object, mode = "auto", returnData = FALSE) {
+noiseComparisonPlot <- function(
+        object, mode = "auto", simple=TRUE, returnData = FALSE) {
     
     # Retrieve results
     noiseres <- rlresult(object, "noiseAnalysis")
@@ -246,24 +249,45 @@ noiseComparisonPlot <- function(object, mode = "auto", returnData = FALSE) {
     }
     
     # Plot
-    plt <- toplt %>% 
+    if (! simple) {
+        cond <- "cond"
+        colvec <- auxdata$prediction_label_cols
+        xlab <- "Sample QC prediction/label (prediction_label)"
+        title <- "Noise index across prediction-label combinations"
+        topltfinal <- toplt
+    } else {
+        cond <- "prediction"
+        colvec <- setNames(
+            auxdata$prediction_cols$col,
+            nm = auxdata$prediction_cols$prediction
+        )
+        xlab <- "Sample QC prediction"
+        topltfinal <- toplt %>% 
+            dplyr::filter(
+                .data$prediction == .data$label
+            )
+        title <- "Noise comparison plot"
+    }
+    plt <- topltfinal %>% 
         dplyr::mutate(
-            cond = paste0(.data$label, "_", .data$prediction),
-            cond = factor(.data$cond, levels = c("NEG_NEG", "POS_NEG", "NEG_POS", "POS_POS"))
+            cond = paste0(.data$prediction, "_", .data$label),
+            cond = factor(.data$cond, levels = c("NEG_NEG", "NEG_POS", "POS_NEG", "POS_POS"))
         ) %>% 
-        ggplot2::ggplot(ggplot2::aes_string(x = "cond", fill = "cond", y = "noise_index")) +
+        ggplot2::ggplot(ggplot2::aes_string(x = cond, fill = cond, y = "noise_index")) +
         ggplot2::geom_boxplot(
+            width = ifelse(simple, .8, 1),
             position = ggplot2::position_dodge(width = .9),
             outlier.shape = NA
         ) +
         ggplot2::geom_point(
             position = ggplot2::position_jitterdodge(
-                dodge.width = .9, jitter.width = 1,
+                dodge.width = .9,
+                jitter.width = ifelse(simple, 0.25, 1),
                 seed = 42
             )
         ) +
         ggplot2::geom_point(
-            alpha = ifelse(toplt$group == "User-supplied", 1, 0),
+            alpha = ifelse(topltfinal$group == "User-supplied", 1, 0),
             size = 4,
             color = "black",
             position = ggplot2::position_jitterdodge(
@@ -277,12 +301,12 @@ noiseComparisonPlot <- function(object, mode = "auto", returnData = FALSE) {
         ggplot2::scale_y_log10(expand = ggplot2::expansion(mult = c(0, .2))) +
         ggplot2::theme_bw(base_size = 14) +
         ggplot2::scale_fill_manual(
-            values = auxdata$prediction_label_cols
+            values = colvec
         ) +
         ggplot2::ylab("Noise index (log scale)") +
-        ggplot2::xlab("Sample QC prediction/label (prediction_label)") +
+        ggplot2::xlab(xlab) +
         ggplot2::labs(
-            title = "Noise index across prediction-label combinations",
+            title = title,
             subtitle = paste0("Data modality: ", mode, "-seq"),
             caption = paste0(
                 "\u25C7 - User-supplied sample"
