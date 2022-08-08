@@ -18,7 +18,7 @@ data-raw/genome_masks.R script for the processing steps."><!-- mathjax --><scrip
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ data-raw/genome_masks.R script for the processing steps."><!-- mathjax --><scrip
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">genomeMasks</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">genomeMasks</span></span></code></pre></div>
     </div>
 
     <div id="format">
@@ -84,8 +84,152 @@ provided correspond to the masked genomes available in
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">genomeMasks</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">genomeMasks</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $apiMel2.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 16164 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           seqnames              ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [1]   Group1           8604-9586      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [2]   Group1         45114-45303      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [3]   Group1         74031-74436      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [4]   Group1       127756-127879      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [5]   Group1       129251-129560      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ...      ...                 ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [16160]  GroupUn 320949657-320984656      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [16161]  GroupUn 320985744-321020743      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [16162]  GroupUn 321029717-321064716      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [16163]  GroupUn 321065873-321100872      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [16164]  GroupUn 321103175-321138174      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 17 sequences from apiMel2 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $canFam3.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 19553 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           seqnames              ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;           &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [1]     chr1               1-100      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [2]     chr1         24126-27778      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [3]     chr1         45598-45882      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [4]     chr1         89487-89496      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [5]     chr1        91795-162650      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ...      ...                 ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [19549]     chrX 123311357-123312638      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [19550]     chrX 123445883-123445892      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [19551]     chrX 123776002-123776553      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [19552]     chrX 123821636-123822296      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [19553]     chrX 123845565-123845574      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 40 sequences (1 circular) from canFam3 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $danRer7.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 24170 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           seqnames            ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [1]     chr1     508054-508153      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [2]     chr1     509073-509172      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [3]     chr1     509982-510081      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [4]     chr1     512882-512981      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [5]     chr1     513539-513638      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ...      ...               ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [24166]    chr25 38489453-38489552      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [24167]    chr25 38492045-38492144      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [24168]    chr25 38493834-38493933      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [24169]    chr25 38495078-38495177      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [24170]    chr25 38498098-38498197      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 26 sequences (1 circular) from danRer7 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $galGal4.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 9258 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       seqnames        ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          &lt;Rle&gt;     &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]                  chr1     1034-1133      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]                  chr1     1635-1734      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]                  chr1     2505-2604      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]                  chr1     3124-3223      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]                  chr1     4729-4828      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ...                   ...           ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9254] chrLGE22C19W28_E50C23 923755-937231      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9255] chrLGE22C19W28_E50C23 939390-939489      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9256] chrLGE22C19W28_E50C23 940663-940900      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9257] chrLGE22C19W28_E50C23 942958-943949      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9258] chrLGE22C19W28_E50C23 961456-962294      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 34 sequences (1 circular) from galGal4 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $hg19.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 460 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   seqnames          ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;Rle&gt;       &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [1]               chr1         1-10000      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [2]               chr1   177418-227417      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [3]               chr1   267720-317719      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [4]               chr1   471369-521368      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [5]               chr1 2634221-2684220      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ...                ...             ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [456] chr19_gl949751_alt   789619-815618      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [457] chr19_gl949752_alt   253363-258362      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [458] chr19_gl949753_alt   195632-213631      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [459] chr19_gl949753_alt   361078-363077      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [460] chr19_gl949753_alt   509415-609414      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 298 sequences (2 circular) from hg19 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $hg38.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 1024 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      seqnames          ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         &lt;Rle&gt;       &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]                 chr1         1-10000      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]                 chr1   207667-257666      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]                 chr1   297969-347968      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]                 chr1   535989-585988      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]                 chr1 2702782-2746290      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ...                  ...             ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1020] chr19_KV575258v1_alt   106475-106477      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1021] chr19_KV575258v1_alt   106479-106481      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1022] chr19_KV575258v1_alt   106484-106485      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1023] chr19_KV575260v1_alt     62709-62710      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1024] chr19_KV575260v1_alt     70481-70482      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 595 sequences (1 circular) from hg38 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mm10.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 587 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               seqnames            ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [1]           chr1         1-3000000      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [2]           chr1   3002130-3003118      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [3]           chr1 22424868-22424967      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [4]           chr1 22433269-22466510      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     [5]           chr1 75055557-75121556      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ...            ...               ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [583] chrUn_GL456393       53788-53887      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [584] chrUn_GL456394         1035-2612      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [585] chrUn_GL456394       20897-21977      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [586] chrUn_GL456396         7730-8220      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [587] chrUn_GL456396       11697-11940      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 66 sequences (1 circular) from mm10 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mm9.masked</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 1025 ranges and 0 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              seqnames            ranges strand</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [1]         chr1         1-3000000      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [2]         chr1 22414949-22415048      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [3]         chr1 22423350-22473349      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [4]         chr1 24686639-24736638      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [5]         chr1 75102131-75118130      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      ...          ...               ...    ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1021] chrUn_random   5884087-5884186      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1022] chrUn_random   5892169-5892268      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1023] chrUn_random   5894720-5896266      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1024] chrUn_random   5897640-5897925      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1025] chrUn_random   5898884-5899265      *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 35 sequences (1 circular) from mm9 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -100,7 +244,7 @@ provided correspond to the masked genomes available in
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -56,17 +56,20 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">rlRegionTest</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rlRegionTest</span><span class="op">(</span><span class="va">object</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An RLRanges object with genome "hg38".</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An RLRanges object with test results accessible via
+    
+
+<p>An RLRanges object with test results accessible via
 <code>rlresult(object, "rlRegionRes")</code>.</p><div class="section">
 <h3 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a></h3>
 
@@ -87,6 +90,8 @@ the overlap.</p></li>
 See <a href="https://rnabioco.github.io/valr/reference/bed_fisher.html" class="external-link">valr::bed_fisher</a>.</p></li>
 </ul></li>
 </ul></div>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -98,12 +103,45 @@ calculates Fisher's exact test via <a href="https://rnabioco.github.io/valr/refe
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example RLRanges data</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># RL Region Test</span>
-<span class="fu">rlRegionTest</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example RLRanges data</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># RL Region Test</span></span></span>
+<span class="r-in"><span><span class="fu">rlRegionTest</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GRanges object with 7 ranges and 6 metadata columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   seqnames            ranges strand |                     V4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;Rle&gt;         &lt;IRanges&gt;  &lt;Rle&gt; |            &lt;character&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1                  chr14 20343155-20343313      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2                  chr21   8214588-8214866      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3                  chr21   8396653-8396835      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4 chr22_KI270733v1_ran..     129919-130080      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5 chr22_KI270733v1_ran..     174979-175184      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6                   chr6 52995648-52995831      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7                   chr9 35657778-35657976      * | /home/UTHSCSA/miller..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            V5          V6        V7        V8      qval</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;integer&gt; &lt;character&gt; &lt;numeric&gt; &lt;numeric&gt; &lt;numeric&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1        56           .   7.40428   12.1836   5.63076</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2        56           .   7.27639   12.2524   5.66372</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3        15           .   5.19728    7.7825   1.52856</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4       256           .  16.31970   32.6965  25.65290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5      1085           .  30.29480  116.1250 108.58400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   6        95           .   9.63809   16.3088   9.58453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   7       100           .   9.84017   16.7326  10.04910</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   -------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   seqinfo: 640 sequences (1 circular) from hg38 genome</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RDIP-Seq +RNH1: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Mode: RDIP </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Genome: hg38 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Label: NEG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RLSeq Results Available: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   featureEnrichment, txFeatureOverlap, correlationMat, rlfsRes, noiseAnalysis, geneAnnoRes, predictRes, rlRegionRes </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> prediction: NEG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </div>
@@ -118,7 +156,7 @@ calculates Fisher's exact test via <a href="https://rnabioco.github.io/valr/refe
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

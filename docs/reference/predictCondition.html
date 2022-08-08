@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">predictCondition</span><span class="op">(</span><span class="va">object</span>, rlfsRes <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">predictCondition</span><span class="op">(</span><span class="va">object</span>, rlfsRes <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -66,15 +66,22 @@
     <dl><dt>object</dt>
 <dd><p>An RLRanges object with <a href="analyzeRLFS.html">analyzeRLFS</a> already run.
 Ignored if <code>rlfsRes</code> is provided.</p></dd>
+
+
 <dt>rlfsRes</dt>
 <dd><p>If object not supplied, provide the rlfsRes list which is
 obtained from <code>rlresult(object, "rlfsRes")</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Internal use only.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An RLRanges object with predictions accessible via
+    
+
+<p>An RLRanges object with predictions accessible via
 <code>rlresult(object, "predictRes")</code>.</p><div class="section">
 <h3 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a></h3>
 
@@ -93,6 +100,8 @@ prediction of "POS" (see <em>details</em>).</p></li>
 indicates poor R-loop mapping.</p></li>
 </ul></li>
 </ul></div>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -143,15 +152,19 @@ the results object.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example data with analyzeRLFS already run</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># predict condition</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">predictCondition</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
-
-<span class="co"># With rlfsRes</span>
-<span class="va">predRes</span> <span class="op">&lt;-</span> <span class="fu">predictCondition</span><span class="op">(</span>rlfsRes <span class="op">=</span> <span class="fu"><a href="RLResults.html">rlresult</a></span><span class="op">(</span><span class="va">rlr</span>, <span class="st">"rlfsRes"</span><span class="op">)</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example data with analyzeRLFS already run</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># predict condition</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">predictCondition</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With rlfsRes</span></span></span>
+<span class="r-in"><span><span class="va">predRes</span> <span class="op">&lt;-</span> <span class="fu">predictCondition</span><span class="op">(</span>rlfsRes <span class="op">=</span> <span class="fu"><a href="RLResults.html">rlresult</a></span><span class="op">(</span><span class="va">rlr</span>, <span class="st">"rlfsRes"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
 </code></pre></div>
     </div>
   </div>
@@ -166,7 +179,7 @@ the results object.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

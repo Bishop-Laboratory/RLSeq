@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -56,24 +56,33 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">RLSeq</span><span class="op">(</span><span class="va">object</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span>, skip <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">RLSeq</span><span class="op">(</span><span class="va">object</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span>, skip <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An <a href="RLRanges.html">RLRanges</a> object.</p></dd>
+
+
 <dt>quiet</dt>
 <dd><p>If <code>TRUE</code>, messages are suppressed. Default: <code>FALSE</code>.</p></dd>
+
+
 <dt>skip</dt>
 <dd><p>Analysis steps to skip.
 Default: <code>NULL</code>. See <em>details</em> for options.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments passed to <a href="analyzeRLFS.html">analyzeRLFS</a>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <a href="RLRanges.html">RLRanges</a> object with results available (see <a href="RLResults.html">rlresult</a>).</p>
+    
+
+<p>An <a href="RLRanges.html">RLRanges</a> object with results available (see <a href="RLResults.html">rlresult</a>).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -83,14 +92,19 @@ enrichment of user-supplied ranges within R-loop-forming sequences.
 <li><p><strong>Predict Condition</strong>. Runs the <a href="predictCondition.html">predictCondition</a> function to
 predict whether the user-supplied sample robustly maps R-loops or not.
 <em>Cannot be skipped.</em></p></li>
+<li><p><strong>Noise analysis</strong>. Runs the <a href="noiseAnalyze.html">noiseAnalyze</a> function to analyze the
+signal-noise distribution within the supplied dataset. Skip with
+<code>skip="noiseAnalyze"</code>.</p></li>
 <li><p><strong>Feature enrichment test</strong>. Runs the <a href="featureEnrich.html">featureEnrich</a> function to
 test the enrichment of user-supplied ranges within R-loop-relevant
 genomic features. Skip with <code>skip="featureEnrich"</code>.</p></li>
+<li><p><strong>Transcript Feature Overlap</strong>. Runs the <a href="txFeatureOverlap.html">txFeatureOverlap</a> function to
+get the overlap of transcript features and user-supplied peaks.</p></li>
 <li><p><strong>Correlation Analysis</strong>. Runs the <a href="corrAnalyze.html">corrAnalyze</a> function to test
 the correlation of user-supplied R-loop signal with other samples in
 RLBase around "gold-standard" R-loop regions.
 Skip with <code>skip="corrAnalyze"</code>.</p></li>
-<li><p><strong>Gene annotation</strong>. Runs the <a href="geneAnnotation.html">geneAnnotation</a> function to find the overlap
+<li><p><strong>Gene annotation</strong>. Runs the <a href="geneAnnotation.html">geneAnnotation</a> function to find overlap
 of genes with the user-supplied ranges. Skip with <code>skip="geneAnnotation"</code>.</p></li>
 <li><p><strong>R-loop Region Analysis</strong>. Runs the <a href="rlRegionTest.html">rlRegionTest</a> function to find
 the overlap of user-supplied ranges with consensus R-loop sites
@@ -99,17 +113,159 @@ the overlap of user-supplied ranges with consensus R-loop sites
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example RLRanges</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Run RLSeq</span>
-<span class="co"># `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">RLSeq</span><span class="op">(</span>
-    <span class="va">rlr</span>, useMask <span class="op">=</span> <span class="cn">FALSE</span>, ntimes <span class="op">=</span> <span class="fl">10</span>,
-    skip<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'featureEnrich'</span>, <span class="st">'corrAnalyze'</span>, <span class="st">'geneAnnotation'</span>, <span class="st">'rlRegionTest'</span><span class="op">)</span>
-<span class="op">)</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example RLRanges</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Run RLSeq</span></span></span>
+<span class="r-in"><span><span class="co"># `useMask=FALSE`, `ntime=10`, and `skip=` for demonstration purposes here.</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">RLSeq</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">rlr</span>,</span></span>
+<span class="r-in"><span>    useMask <span class="op">=</span> <span class="cn">FALSE</span>, ntimes <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>    skip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="st">"featureEnrich"</span>, <span class="st">"corrAnalyze"</span>, <span class="st">"geneAnnotation"</span>, <span class="st">"rlRegionTest"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [1/8] RLFS Perm Test</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Note: The minimum p-value with only 10 permutations is 0.0909090909090909. You should consider increasing the number of permutations."</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>GRanges object contains 1 out-of-bound range located on sequence</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   chr22_KI270733v1_random. Note that ranges located on a sequence whose</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   length is unknown (NA) or on a circular sequence are not considered</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   out-of-bound (use seqlengths() and isCircular() to get the lengths and</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   circularity flags of the underlying sequences). You can use trim() to</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   trim these ranges. See ?`trim,GenomicRanges-method` for more</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   information.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [2/8] Predict Condition</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [3/8] Noise Analysis</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [4/8] Feature Enrichment Test</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [5/8] Transcript Feature Overlap Analysis</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [6/8] Correlation Analysis</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> No coverage provided... skipping.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [7/8] Gene Annotation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [8/8] R-loop Region Analysis</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -124,7 +280,7 @@ the overlap of user-supplied ranges with consensus R-loop sites
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

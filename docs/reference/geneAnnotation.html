@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -56,21 +56,26 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">object</span>, txdb <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">object</span>, txdb <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An RLRanges object.</p></dd>
+
+
 <dt>txdb</dt>
 <dd><p>The TxDb or EnsDb object containing gene annotations. If not
 supplied, annotations will be automatically downloaded from AnnotationHub.
 See also <a href="https://rdrr.io/pkg/GenomicFeatures/man/TxDb-class.html" class="external-link">GenomicFeatures::TxDb</a>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An RLRanges object with gene overlaps included. The results
+    
+
+<p>An RLRanges object with gene overlaps included. The results
 are available via <code>rlresult(object, "geneAnnoRes")</code>. The result object
 is a <code>tbl</code> with a mapping of <code>peak_name</code> (peak names from <code>names(object)</code>)
 to <code>gene_id</code> (entrez gene IDs).</p>
@@ -84,10 +89,11 @@ RLRanges with gene IDs by overlap.</p><div class="section">
 
 <p>First. gene annotations are
 automatically downloaded using <a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">AnnotationHub::query</a> with the following
-pattern:</p><div class="sourceCode r"><pre><code><span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">ah</span>,
-    pattern <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TxDb"</span>, <span class="st">"UCSC"</span>, <span class="st">"knownGene"</span>, <span class="va">genome</span><span class="op">)</span>
-<span class="op">)</span></code></pre><p></p></div>
+pattern:</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html" class="external-link">query</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="va">ah</span>,</span>
+<span>    pattern <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TxDb"</span>, <span class="st">"UCSC"</span>, <span class="st">"knownGene"</span>, <span class="va">genome</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre><p></p></div>
 <p>Where <code>genome</code> is the UCSC genome id for the RLRanges object. If these
 annotations are unavailable, they should be provded using the <code>txdb</code>
 parameter. See also <a href="https://rdrr.io/pkg/GenomicFeatures/man/TxDb-class.html" class="external-link">GenomicFeatures::TxDb</a>.</p>
@@ -107,18 +113,33 @@ supplied RLRanges object using <a href="https://rnabioco.github.io/valr/referenc
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example RLRanges data</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Perform gene annotation</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
-
-<span class="co"># Supply custom TxDb if needed</span>
-<span class="kw">if</span> <span class="op">(</span><span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">genome</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"hg19"</span><span class="op">)</span> <span class="op">{</span>
-    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span>
-    <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">rlr</span>, txdb <span class="op">=</span> <span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span>
-<span class="op">}</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example RLRanges data</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Perform gene annotation</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> snapshotDate(): 2022-08-04</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicFeatures</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicRanges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: AnnotationDbi</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   1662 genes were dropped because they have exons located on both strands</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   of the same reference sequence or on more than one reference sequence,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   so cannot be represented by a single genomic range.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Use 'single.strand.genes.only=FALSE' to get all the genes in a</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   GRangesList object, or use suppressMessages() to suppress this message.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Supply custom TxDb if needed</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu">GenomeInfoDb</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html" class="external-link">genome</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="st">"hg19"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu">geneAnnotation</span><span class="op">(</span><span class="va">rlr</span>, txdb <span class="op">=</span> <span class="va">TxDb.Hsapiens.UCSC.hg19.knownGene</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -133,7 +154,7 @@ supplied RLRanges object using <a href="https://rnabioco.github.io/valr/referenc
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
