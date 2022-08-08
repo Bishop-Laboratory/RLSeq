@@ -93,22 +93,22 @@ plotRLFSRes <- function(object,
 
 #' Plot noise analysis results as a fingerprint plot
 #'
-#' Plots the results of the noise analysis in [noiseAnalyze]. Creates a 
-#' fingerprint plot like those developed by 
-#' [Diaz et al, 2012](https://pubmed.ncbi.nlm.nih.gov/22499706/) and those 
-#' provided by 
-#' [deepTools](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html). 
-#' 
+#' Plots the results of the noise analysis in [noiseAnalyze]. Creates a
+#' fingerprint plot like those developed by
+#' [Diaz et al, 2012](https://pubmed.ncbi.nlm.nih.gov/22499706/) and those
+#' provided by
+#' [deepTools](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html).
+#'
 #' The term "Fingerprint plot" comes from deepTools.
 #'
 #' @param object An RLRanges object with [noiseAnalyze] already run.
 #' @return A ggplot object. See also [ggplot2::ggplot].
-#' 
-#' 2. `noiseComparisonPlot` 
+#'
+#' 2. `noiseComparisonPlot`
 #'   - A plot showing the noise analysis
 #'   results from the user-supplied sample compared to similar samples from
 #'   RLBase.
-#' 
+#'
 #' @examples
 #'
 #' # Example RLRanges dataset with analyzeRLFS() already run.
@@ -119,18 +119,18 @@ plotRLFSRes <- function(object,
 #'
 #' @export
 plotFingerprint <- function(object) {
-    
+
     # Get the noise analysis results
     rlnoise <- rlresult(object, "noiseAnalysis")
-    
+
     # Get sample name
     sname <- object@metadata$sampleName
-    
+
     # Create a fingerprint plot
-    fingerprint <- rlnoise %>% 
+    fingerprint <- rlnoise %>%
         dplyr::mutate(
-            rank = .data$rank/max(.data$rank)
-        ) %>% 
+            rank = .data$rank / max(.data$rank)
+        ) %>%
         ggplot2::ggplot(
             ggplot2::aes_string(
                 x = "rank",
@@ -155,17 +155,16 @@ plotFingerprint <- function(object) {
         ggplot2::theme(
             plot.caption = ggplot2::element_text(size = 8)
         )
-    
+
     return(fingerprint)
-    
 }
 
 
 #' Creates a metaplot for comparing noise analysis results with RLBase
 #'
-#' Plots the average standardized signal from [noiseAnalyze] alongside the 
+#' Plots the average standardized signal from [noiseAnalyze] alongside the
 #' samples in RLBase. For this plot, lower average signal indicates better
-#' signal to noise ratio. **Note**: This plot may be misleading if you supplied 
+#' signal to noise ratio. **Note**: This plot may be misleading if you supplied
 #' custom windows when running [noiseAnalyze].
 #'
 #' @param object An RLRanges object with [noiseAnalyze] already run.
@@ -202,33 +201,32 @@ plotFingerprint <- function(object) {
 #' # Return data only
 #' noiseComparisonPlot(rlr, returnData = TRUE)
 #' @export
-noiseComparisonPlot <- function(
-        object, mode = "auto", simple=TRUE, returnData = FALSE) {
-    
+noiseComparisonPlot <- function(object, mode = "auto", simple = TRUE, returnData = FALSE) {
+
     # Retrieve results
     noiseres <- rlresult(object, "noiseAnalysis")
-    
+
     # Get the noise index
     noiseindex <- mean(noiseres$value)
-    
+
     # Wrangle along with sample info
     userdata <- dplyr::tibble(
-        sample=object@metadata$sampleName,
-        noise_index=noiseindex,
-        label=object@metadata$label,
-        prediction=object@metadata$results@predictRes$prediction,
-        group="User-supplied"
+        sample = object@metadata$sampleName,
+        noise_index = noiseindex,
+        label = object@metadata$label,
+        prediction = object@metadata$results@predictRes$prediction,
+        group = "User-supplied"
     )
-    
+
     # Get genome
     genome <- GenomeInfoDb::genome(object)[1]
-    
+
     # Get rlbase samps
     rlsamples <- RLHub::rlbase_samples()
-    
+
     # Get the mode
     if (mode == "auto") mode <- object@metadata$mode
-    
+
     # Get the RLBase noise analysis results and wrangle them
     toplt <- rlbaseNoiseAnalyze %>%
         dplyr::inner_join(rlsamples, by = "rlsample") %>%
@@ -236,20 +234,20 @@ noiseComparisonPlot <- function(
             .data$mode == {{ mode }},
             .data$genome == {{ genome }}
         ) %>%
-        dplyr::mutate(group = {{ mode }}) %>% 
+        dplyr::mutate(group = {{ mode }}) %>%
         dplyr::select(
-            sample=.data$rlsample, 
-            noise_index=.data$value,
+            sample = .data$rlsample,
+            noise_index = .data$value,
             .data$label, .data$prediction, .data$group
-        ) %>% 
+        ) %>%
         dplyr::bind_rows(userdata)
-    
+
     if (returnData) {
         return(toplt)
     }
-    
+
     # Plot
-    if (! simple) {
+    if (!simple) {
         cond <- "cond"
         colvec <- auxdata$prediction_label_cols
         xlab <- "Sample QC prediction/label (prediction_label)"
@@ -257,22 +255,22 @@ noiseComparisonPlot <- function(
         topltfinal <- toplt
     } else {
         cond <- "prediction"
-        colvec <- setNames(
+        colvec <- stats::setNames(
             auxdata$prediction_cols$col,
             nm = auxdata$prediction_cols$prediction
         )
         xlab <- "Sample QC prediction"
-        topltfinal <- toplt %>% 
+        topltfinal <- toplt %>%
             dplyr::filter(
                 .data$prediction == .data$label
             )
         title <- "Noise comparison plot"
     }
-    plt <- topltfinal %>% 
+    plt <- topltfinal %>%
         dplyr::mutate(
             cond = paste0(.data$prediction, "_", .data$label),
             cond = factor(.data$cond, levels = c("NEG_NEG", "NEG_POS", "POS_NEG", "POS_POS"))
-        ) %>% 
+        ) %>%
         ggplot2::ggplot(ggplot2::aes_string(x = cond, fill = cond, y = "noise_index")) +
         ggplot2::geom_boxplot(
             width = ifelse(simple, .8, 1),
@@ -313,7 +311,7 @@ noiseComparisonPlot <- function(
             )
         ) +
         ggplot2::theme(legend.position = "none")
-    
+
     # Return plt
     return(plt)
 }

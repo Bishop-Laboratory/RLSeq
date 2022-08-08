@@ -12,25 +12,25 @@ bllst_lst <- list(
 genomes <- c("mm10", "hg38", "hg19")
 randomWindows <- lapply(
     genomes, function(gen) {
-        
+
         # Get chrom.sizes
         chrompath <- paste0(
             "https://hgdownload.cse.ucsc.edu/goldenpath/",
             gen, "/bigZips/", gen, ".chrom.sizes"
         )
         chromsiz <- valr::read_genome(chrompath) %>% filter(size > 1E7)
-        
+
         # windows 1000 random genomic windows from the bed file
         windows <- valr::bed_random(
             genome = chromsiz, seed = 42, n = 1000
         )
-        
+
         # Get the black list
         blst <- valr::read_bed(bllst_lst[[gen]])
-        
+
         # Remove black list sites
         windows <- valr::bed_subtract(x = windows, blst)
-        
+
         # Return result
         return(windows)
     }

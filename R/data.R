@@ -32,7 +32,7 @@
 #'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
 #' * `prediction_label_cols`
-#'   - A `tbl` containing the colors associated with the prediction-label 
+#'   - A `tbl` containing the colors associated with the prediction-label
 #'   combinations in
 #'   [RLBase](https://gccri.bishop-lab.uthscsa.edu/rlbase/).
 #'   See also [RLHub::rlbase_samples].
@@ -141,12 +141,12 @@
 #'
 #' ## Structure
 #'
-#' `randomWindows` is a named list of `tbl` objects containing ~1000 random 
+#' `randomWindows` is a named list of `tbl` objects containing ~1000 random
 #' genomic regions. The names are the genomes to which the regions correspond.
-#' 
-#' Columns (mirrors 
+#'
+#' Columns (mirrors
 #' [bed3 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1)).
-#' 
+#'
 #' 1. `chrom` - the chromosome in UCSC format
 #' 2. `start` - the starting position
 #' 3. `end` - the end position
@@ -189,7 +189,7 @@
 #' RLBase Sample Noise Analysis Results
 #'
 #' Average signal from noise analysis of RLBase samples. See [noiseAnalyze] for
-#' more detail regarding how signal was initially calculated. 
+#' more detail regarding how signal was initially calculated.
 #'
 #' ## Structure
 #'

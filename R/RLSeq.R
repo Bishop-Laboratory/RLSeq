@@ -18,7 +18,7 @@
 #' 2. **Predict Condition**. Runs the [predictCondition] function to
 #'   predict whether the user-supplied sample robustly maps R-loops or not.
 #'   *Cannot be skipped.*
-#' 3. **Noise analysis**. Runs the [noiseAnalyze] function to analyze the 
+#' 3. **Noise analysis**. Runs the [noiseAnalyze] function to analyze the
 #'   signal-noise distribution within the supplied dataset. Skip with
 #'   `skip="noiseAnalyze"`.
 #' 4. **Feature enrichment test**. Runs the [featureEnrich] function to
@@ -66,7 +66,7 @@
 #' @importFrom regioneR toGRanges randomizeRegions
 #' @importFrom aws.s3 s3readRDS
 #' @importFrom callr r
-#' @importFrom valr bed_intersect bed_fisher bed_merge bed_reldist 
+#' @importFrom valr bed_intersect bed_fisher bed_merge bed_reldist
 #' @importFrom valr gr_to_bed bed_map
 #' @importFrom AnnotationHub AnnotationHub query
 #' @importFrom GenomicFeatures genes
@@ -77,7 +77,7 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
 
     if (!quiet) message("[2/8] Predict Condition")
     object <- predictCondition(object)
-    
+
     if (!quiet) message("[3/8] Noise Analysis")
     if (object@metadata$coverage != "" & !"noiseAnalyze" %in% skip) {
         if (GenomeInfoDb::genome(object)[1] %in% c("hg38", "hg19", "mm10")) {
@@ -95,7 +95,7 @@ RLSeq <- function(object, quiet = FALSE, skip = NULL, ...) {
         } else {
             warning(
                 "Only 'hg38', 'hg19', and 'mm10' genome ranges are available",
-                " for noise analysis. Specify custom ranges using the 
+                " for noise analysis. Specify custom ranges using the
                 'windows' option in noiseAnalyze(). Skipping."
             )
         }
