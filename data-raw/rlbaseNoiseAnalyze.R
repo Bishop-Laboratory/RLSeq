@@ -15,20 +15,20 @@ reslst <- parallel::mclapply(
             return(NULL)
         }
         rlr <- readRDS(rlr)
-        
+
         rlres <- rlr@metadata$results
         if (is.null(attr(rlres, "noiseAnalysis"))) {
             attr(rlres, "noiseAnalysis") <- dplyr::tibble()
             rlr@metadata$results <- rlres
             rlr <- noiseAnalyze(rlr)
         }
-        
+
         rlr <- try(noiseAnalyze(rlr))
-        
+
         if ("try-error" %in% class(rlr)) {
             return(NULL)
         }
-        
+
         mean(rlr@metadata$results@noiseAnalysis$value)
     },
     mc.cores = 44
@@ -40,7 +40,7 @@ reslstf <- reslst[sapply(reslst, function(x) !is.null(x))]
 
 # Create tbl representation
 rlbaseNoiseAnalyze <- reslstf %>%
-    lapply(dplyr::as_tibble) %>% 
+    lapply(dplyr::as_tibble) %>%
     dplyr::bind_rows(.id = "rlsample")
 
 # Save
