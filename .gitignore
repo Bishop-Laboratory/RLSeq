@@ -25,16 +25,3 @@ tests/testthat/rlreport_files
 *.bed
 misc/
 doc/
-docs/
-Meta/
-RLSeq.Rproj
-_pkgdown.yml
-pkgdown/
-.github/
-.github/
-doc/
-docs/
-Meta/
-pkgdown/
-RLSeq.Rproj
-_pkgdown.yml

@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -94,10 +94,10 @@
 <h3 id="from-bioconductor">From Bioconductor<a class="anchor" aria-label="anchor" href="#from-bioconductor"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"RLSeq"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"RLSeq"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-github">From Github<a class="anchor" aria-label="anchor" href="#from-github"></a>
@@ -106,13 +106,13 @@
 <li>Update to the <code>devel</code> version of bioconductor.</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span>version <span class="op">=</span> <span class="st">"devel"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span>version <span class="op">=</span> <span class="st">"devel"</span><span class="op">)</span></span></code></pre></div>
 <ol start="2" style="list-style-type: decimal">
 <li>Install <strong>RLHub</strong> and <strong>RLSeq</strong> with remotes.</li>
 </ol>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Bishop-Laboratory/RLHub"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Bishop-Laboratory/RLSeq"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Bishop-Laboratory/RLHub"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"Bishop-Laboratory/RLSeq"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -120,27 +120,27 @@
 </h2>
 <p>This is an example workflow using a publicly-available R-loop mapping data set that was reprocessed and standardized in <a href="https://gccri.bishop-lab.uthscsa.edu/rlbase/" class="external-link"><em>RLBase</em></a>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Peaks and coverage can be found in RLBase</span>
-<span class="va">rlbase</span> <span class="op">&lt;-</span> <span class="st">"https://rlbase-data.s3.amazonaws.com"</span>
-<span class="va">pks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"peaks"</span>, <span class="st">"SRX1025890_hg38.broadPeak"</span><span class="op">)</span>
-<span class="va">cvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"coverage"</span>, <span class="st">"SRX1025890_hg38.bw"</span><span class="op">)</span>
-
-<span class="co"># Initialize data in the RLRanges object. </span>
-<span class="co"># Metadata is optional, but improves the interpretability of results</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RLRanges.html">RLRanges</a></span><span class="op">(</span>
-  peaks <span class="op">=</span> <span class="va">pks</span>,
-  coverage <span class="op">=</span> <span class="va">cvg</span>,
-  genome <span class="op">=</span> <span class="st">"hg38"</span>,
-  mode <span class="op">=</span> <span class="st">"DRIP"</span>,
-  label <span class="op">=</span> <span class="st">"POS"</span>,
-  sampleName <span class="op">=</span> <span class="st">"TC32 DRIP-Seq"</span>
-<span class="op">)</span>
-
-<span class="co"># The RLSeq command performs all analyses</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RLSeq.html">RLSeq</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
-
-<span class="co"># Generate an html report</span>
-<span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Peaks and coverage can be found in RLBase</span></span>
+<span><span class="va">rlbase</span> <span class="op">&lt;-</span> <span class="st">"https://rlbase-data.s3.amazonaws.com"</span></span>
+<span><span class="va">pks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"peaks"</span>, <span class="st">"SRX1025890_hg38.broadPeak"</span><span class="op">)</span></span>
+<span><span class="va">cvg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">rlbase</span>, <span class="st">"coverage"</span>, <span class="st">"SRX1025890_hg38.bw"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Initialize data in the RLRanges object. </span></span>
+<span><span class="co"># Metadata is optional, but improves the interpretability of results</span></span>
+<span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RLRanges.html">RLRanges</a></span><span class="op">(</span></span>
+<span>  peaks <span class="op">=</span> <span class="va">pks</span>,</span>
+<span>  coverage <span class="op">=</span> <span class="va">cvg</span>,</span>
+<span>  genome <span class="op">=</span> <span class="st">"hg38"</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"DRIP"</span>,</span>
+<span>  label <span class="op">=</span> <span class="st">"POS"</span>,</span>
+<span>  sampleName <span class="op">=</span> <span class="st">"TC32 DRIP-Seq"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The RLSeq command performs all analyses</span></span>
+<span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/RLSeq.html">RLSeq</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate an html report</span></span>
+<span><span class="fu"><a href="reference/report.html">report</a></span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span></code></pre></div>
 <p>The code above performs a typical analysis. It builds the <code>RLRanges</code> object, an extension of <code>GRanges</code> for use with RLSeq. Then, it runs all core analyses using <code><a href="reference/RLSeq.html">RLSeq()</a></code>. Finally, it generates an HTML report with <code><a href="reference/report.html">report()</a></code> (see the report <a href="https://rlbase-data.s3.amazonaws.com/misc/rlseq_report_example.html" class="external-link">here</a>).</p>
 </div>
 <div class="section level2">
@@ -206,7 +206,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

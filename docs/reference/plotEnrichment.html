@@ -22,7 +22,7 @@ will only work if you did not use custom annotations with featureEnrich."><!-- m
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -66,56 +66,113 @@ will only work if you did not use custom annotations with <a href="featureEnrich
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotEnrichment</span><span class="op">(</span>
-  <span class="va">object</span>,
-  pred_POS_only <span class="op">=</span> <span class="cn">TRUE</span>,
-  label_POS_only <span class="op">=</span> <span class="cn">FALSE</span>,
-  splitby <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"prediction"</span>, <span class="st">"label"</span><span class="op">)</span>,
-  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>,
-  returnData <span class="op">=</span> <span class="cn">FALSE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotEnrichment</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  pred_POS_only <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  label_POS_only <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  splitby <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"prediction"</span>, <span class="st">"label"</span><span class="op">)</span>,</span>
+<span>  limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>,</span>
+<span>  returnData <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>An RLRanges object with <a href="featureEnrich.html">featureEnrich</a> already run.</p></dd>
+
+
 <dt>pred_POS_only</dt>
 <dd><p>If TRUE, only "POS" predicted samples included (see
 also <a href="predictCondition.html">predictCondition</a>). Default: TRUE.</p></dd>
+
+
 <dt>label_POS_only</dt>
 <dd><p>If TRUE, only "POS" labeled samples included (samples
 which are expected to robustly map R-loops,
 e.g., "D210N" condition R-ChIP data). Default: FALSE.</p></dd>
+
+
 <dt>splitby</dt>
 <dd><p>Metadata by which to split plots. Can be "none", "prediction",
 or "label".</p></dd>
+
+
 <dt>limits</dt>
 <dd><p>Specify limits on data range. This is used for controlling
 the infinite estimation of odds ratio resulting from fisher's exact test.
 To remove limits, set c(-Inf, Inf). Default: c(-10, 15).</p></dd>
+
+
 <dt>returnData</dt>
 <dd><p>If TRUE, plot data is returned instead of plot objects.
 Default: FALSE</p></dd>
+
+
 <dt>...</dt>
 <dd><p>For internal use.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A named list of <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot</a> objects. Names correspond to
+    
+
+<p>A named list of <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot</a> objects. Names correspond to
 the annotations provided. See also <a href="featureEnrich.html">featureEnrich</a>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example dataset with featureEnrich() already run.</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Make plots, split by prediction</span>
-<span class="fu">plotEnrichment</span><span class="op">(</span><span class="va">rlr</span>, pred_POS_only <span class="op">=</span> <span class="cn">FALSE</span>, splitby <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example dataset with featureEnrich() already run.</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Make plots, split by prediction</span></span></span>
+<span class="r-in"><span><span class="fu">plotEnrichment</span><span class="op">(</span><span class="va">rlr</span>, pred_POS_only <span class="op">=</span> <span class="cn">FALSE</span>, splitby <span class="op">=</span> <span class="st">"prediction"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?RLHub and browseVignettes('RLHub') for documentation</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for CpG_Islands. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for Encode_CREs. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for G4Qpred. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for PolyA. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for Repeat_Masker. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for Transcript_Features. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for knownGene_RNAs. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for skewr. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for snoRNA_miRNA_scaRNA. Cannot plot.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>User-supplied sample test value is NA for tRNAs. Cannot plot.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $CpG_Islands</span>
+<span class="r-plt img"><img src="plotEnrichment-1.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Encode_CREs</span>
+<span class="r-plt img"><img src="plotEnrichment-2.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $G4Qpred</span>
+<span class="r-plt img"><img src="plotEnrichment-3.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $PolyA</span>
+<span class="r-plt img"><img src="plotEnrichment-4.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Repeat_Masker</span>
+<span class="r-plt img"><img src="plotEnrichment-5.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $Transcript_Features</span>
+<span class="r-plt img"><img src="plotEnrichment-6.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $knownGene_RNAs</span>
+<span class="r-plt img"><img src="plotEnrichment-7.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $skewr</span>
+<span class="r-plt img"><img src="plotEnrichment-8.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $snoRNA_miRNA_scaRNA</span>
+<span class="r-plt img"><img src="plotEnrichment-9.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $tRNAs</span>
+<span class="r-plt img"><img src="plotEnrichment-10.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -130,7 +187,7 @@ the annotations provided. See also <a href="featureEnrich.html">featureEnrich</a
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

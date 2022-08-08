@@ -88,10 +88,22 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/noiseAnalyze.html</loc>
+  </url>
+  <url>
+    <loc>/reference/noiseComparisonPlot.html</loc>
+  </url>
+  <url>
     <loc>/reference/peak_stats.html</loc>
   </url>
   <url>
+    <loc>/reference/pipe.html</loc>
+  </url>
+  <url>
     <loc>/reference/plotEnrichment.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plotFingerprint.html</loc>
   </url>
   <url>
     <loc>/reference/plotRLFSRes.html</loc>
@@ -100,7 +112,13 @@
     <loc>/reference/plotRLRegionOverlap.html</loc>
   </url>
   <url>
+    <loc>/reference/plotTxFeatureOverlap.html</loc>
+  </url>
+  <url>
     <loc>/reference/predictCondition.html</loc>
+  </url>
+  <url>
+    <loc>/reference/randomWindows.html</loc>
   </url>
   <url>
     <loc>/reference/report.html</loc>
@@ -109,10 +127,19 @@
     <loc>/reference/rlRegionTest.html</loc>
   </url>
   <url>
+    <loc>/reference/rlbaseNoiseAnalyze.html</loc>
+  </url>
+  <url>
     <loc>/reference/rlresult.html</loc>
   </url>
   <url>
+    <loc>/reference/rlsampleTxOl.html</loc>
+  </url>
+  <url>
     <loc>/reference/tableToRegions.html</loc>
+  </url>
+  <url>
+    <loc>/reference/txFeatureOverlap.html</loc>
   </url>
   <url>
     <loc>/reference/urlExists.html</loc>

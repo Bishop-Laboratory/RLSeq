@@ -19,7 +19,7 @@ data-raw/auxdata.R script that was used to create it."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -60,12 +60,12 @@ for checking the available modes and genomes in RLSeq. See also the
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">auxdata</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">auxdata</span></span></code></pre></div>
     </div>
 
     <div id="format">
     <h2>Format</h2>
-    <p>An object of class <code>list</code> of length 10.</p>
+    <p>An object of class <code>list</code> of length 12.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -97,6 +97,11 @@ See also <a href="https://bishop-laboratory.github.io/RLHub/reference/rlbase_sam
 <a href="https://gccri.bishop-lab.uthscsa.edu/rlbase/" class="external-link">RLBase</a>.
 See also <a href="https://bishop-laboratory.github.io/RLHub/reference/rlbase_samples.html" class="external-link">RLHub::rlbase_samples</a>.</p></li>
 </ul></li>
+<li><p><code>prediction_label_cols</code></p><ul><li><p>A <code>tbl</code> containing the colors associated with the prediction-label
+combinations in
+<a href="https://gccri.bishop-lab.uthscsa.edu/rlbase/" class="external-link">RLBase</a>.
+See also <a href="https://bishop-laboratory.github.io/RLHub/reference/rlbase_samples.html" class="external-link">RLHub::rlbase_samples</a>.</p></li>
+</ul></li>
 <li><p><code>available_modes</code></p><ul><li><p>A <code>tbl</code> containing the modes available in RLBase and associated metadata.
 See also <a href="https://bishop-laboratory.github.io/RLHub/reference/rlbase_samples.html" class="external-link">RLHub::rlbase_samples</a>.</p></li>
 </ul></li>
@@ -112,8 +117,154 @@ the 'misc' category for simplification of plotting.</p></li>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="va">auxdata</span>
-
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">auxdata</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $db_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    db                  col    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Centromeres         #876800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CNA                 #9546C0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> Cohesin             #BA3D5D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> CpG_Islands         #00878E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> Encode_CREs         #AD34B0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> Encode_Histone      #BD317E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> encodeTFBS          #B44741</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> G4Qexp              #9A5E00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> G4Qpred             #007AB8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> knownGene_RNAs      #006CC4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> Microsatellite      #6F7100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> PolyA               #0082A6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> RBP_ChIP            #A95300</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> RBP_eCLiP           #6A5AC7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> Repeat_Masker       #007E00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> skewr               #4D7800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> snoRNA_miRNA_scaRNA #008650</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> Splice_Events       #BA2C9A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> Transcript_Features #00831F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> tRNAs               #008872</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $annotypes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 638 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    db          type       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> Centromeres Centromeres</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> CNA         0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> CNA         1          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> CNA         2          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> CNA         3          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> CNA         4          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> Cohesin     STAG1      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> Cohesin     STAG2      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> CpG_Islands CpG_Islands</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> Encode_CREs CTCF       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 628 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $rlbps</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 788 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    geneName NADEL.2015 WANG.2018 CRISTINI.2018 combinedScore</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DDX21          0.9     0              0.968          1.87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DHX9           0.85    0.063<span style="text-decoration: underline;">5</span>         0.831          1.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> HNRNPR         1       0              0.731          1.73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ILF3           0.85    0.070<span style="text-decoration: underline;">8</span>         0.749          1.67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> NKRF           0       1              0.636          1.64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> PDCD11         0       1              0.633          1.63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> PWP1           0       1              0.620          1.62</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> SRPK1          0       1              0.457          1.46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> PWP2           0       0.960          0.472          1.43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> NPM3           0       1              0.397          1.40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 778 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ Use `print(n = ...)` to see more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ip_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 3 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ip_type POS     NEG    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> S9.6    #2E294E #2E2C3B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> dRNH    #C1292E #955253</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Other   #F3B700 #D8BC94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mode_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 11 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mode      col    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> MapR      #FE7267</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> qDRIP     #DC8E00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> ssDRIP    #A3A600</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> RDIP      #24B700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> sDRIP     #00C27A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> DRIPc     #00C2C8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> DRIP      #00B2FF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> RLCnT-S96 #938DFF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> RLCnT-HBD #EF62FB</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> R-ChIP    #FF58BF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> misc      #8f8f8f</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $heat_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   selected      col    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> RLBase        #e0dede</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> user_selected #2c408a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $label_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   label col    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> POS   #e0dede</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> NEG   #8a2c2c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $prediction_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   prediction col    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> POS        #e0dede</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> NEG        #8a2c2c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $prediction_label_cols</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   NEG_NEG   NEG_POS   POS_NEG   POS_POS </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "#8a2c2c" "#A76767" "#7aa4c4" "#2270ab" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $available_modes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 20 × 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mode         family ip_type strand_specific moeity bisulfite_seq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> DRIPc        DRIP   S9.6    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> DRIP         DRIP   S9.6    FALSE           DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> sDRIP        DRIP   S9.6    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> ssDRIP       DRIP   S9.6    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> DRNA         Other  None    FALSE           RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> MapR         MapR   dRNH    FALSE           DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> m6A-DIP      RDIP   RNA-m6A FALSE           DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> DRIVE        Other  dRNH    FALSE           RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> RLCnT-HBD    RLCnT  dRNH    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> RLCnT-S96    RLCnT  S9.6    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">11</span> DRIPc-HBD    DRIP   dRNH    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">12</span> qDRIP        DRIP   S9.6    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">13</span> RDIP         RDIP   S9.6    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">14</span> DRIP-RNA-Seq DRIP   S9.6    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">15</span> DREAM        Other  None    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">16</span> R-ChIP       R-ChIP dRNH    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">17</span> RR-ChIP      R-ChIP dRNH    TRUE            RNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">18</span> RNH-CnR      MapR   dRNH    FALSE           DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">19</span> S1-DRIP      DRIP   S9.6    FALSE           DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">20</span> BisMapR      MapR   dRNH    TRUE            DNA    FALSE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $available_genomes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "canFam3"  "ce10"     "ce11"     "ce6"      "ci3"      "danRer10"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "danRer11" "danRer7"  "dm6"      "fr3"      "galGal4"  "galGal5" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "galGal6"  "gorGor3"  "gorGor4"  "gorGor5"  "hg19"     "hg38"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "mm10"     "mm9"      "panPan1"  "panTro3"  "panTro4"  "panTro5" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "panTro6"  "papAnu2"  "rheMac3"  "rheMac8"  "rn5"      "rn6"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "sacCer2"  "sacCer3"  "susScr11" "susScr3"  "taeGut2"  "tetNig2" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "xenTro3"  "xenTro7"  "xenTro9" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $misc_modes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "BisMapR"      "DREAM"        "DRIP-RNA-Seq" "DRIPc-HBD"    "DRIVE"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "DRNA"         "m6A-DIP"      "RNH-CnR"      "RR-ChIP"      "S1-DRIP"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -128,7 +279,7 @@ the 'misc' category for simplification of plotting.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

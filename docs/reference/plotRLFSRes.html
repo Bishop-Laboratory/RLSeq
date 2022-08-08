@@ -19,7 +19,7 @@ permutation testing annotated. See also analyzeRLFS."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">RLSeq</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@ permutation testing annotated. See also <a href="analyzeRLFS.html">analyzeRLFS</
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">object</span>, plotName <span class="op">=</span> <span class="cn">NULL</span>, fft <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">object</span>, plotName <span class="op">=</span> <span class="cn">NULL</span>, fft <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -69,31 +69,42 @@ permutation testing annotated. See also <a href="analyzeRLFS.html">analyzeRLFS</
 <dd><p>An RLRanges object with <a href="analyzeRLFS.html">analyzeRLFS</a> already run.
 Alternatively, can be the RLFS results object from an RLRanges (from
 <code>rlresult(object, "rlfsRes")</code>).</p></dd>
+
+
 <dt>plotName</dt>
 <dd><p>A Sample name used for plotting.
 If blank, the RLRanges <code>sampleName</code> metadata entry is used (see <a href="RLRanges.html">RLRanges</a>).</p></dd>
+
+
 <dt>fft</dt>
 <dd><p>If TRUE, the Fourier transform of the Z-score is plotted instead.
 Default: FALSE.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional parameters passed to <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot</a>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A ggplot object. See also <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot</a>.</p>
+    
+
+<p>A ggplot object. See also <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot2::ggplot</a>.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code>
-<span class="co"># Example RLRanges dataset with analyzeRLFS() already run.</span>
-<span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Plot RLFS res</span>
-<span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span>
-
-<span class="co"># Plot the Fourier transform instead</span>
-<span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">rlr</span>, fft <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example RLRanges dataset with analyzeRLFS() already run.</span></span></span>
+<span class="r-in"><span><span class="va">rlr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"rlrsmall.rds"</span>, package <span class="op">=</span> <span class="st">"RLSeq"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot RLFS res</span></span></span>
+<span class="r-in"><span><span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">rlr</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plotRLFSRes-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the Fourier transform instead</span></span></span>
+<span class="r-in"><span><span class="fu">plotRLFSRes</span><span class="op">(</span><span class="va">rlr</span>, fft <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plotRLFSRes-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </div>
@@ -108,7 +119,7 @@ Default: FALSE.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

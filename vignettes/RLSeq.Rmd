@@ -124,7 +124,7 @@ Here, we describe each step of the analysis pipeline which is run as part of the
 ```{r library, message=FALSE, warning=FALSE}
 library(RLSeq)
 library(dplyr)
-set.seed(42)
+set.seed(1)
 ```
 
 ## Data sets

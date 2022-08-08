@@ -262,7 +262,7 @@ noiseComparisonPlot <- function(object, mode = "auto", simple = TRUE, returnData
         xlab <- "Sample QC prediction"
         topltfinal <- toplt %>%
             dplyr::filter(
-                .data$prediction == .data$label
+                .data$prediction == .data$label | .data$group == "User-supplied"
             )
         title <- "Noise comparison plot"
     }
