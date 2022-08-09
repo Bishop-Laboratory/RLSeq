@@ -45,7 +45,7 @@ and the supplied RLRanges object.
 }
 \item \code{noiseAnalysis}
 \itemize{
-\item The \code{tbl} generated from running \link{noiseAnalysis}.
+\item The \code{tbl} generated from running \link{noiseAnalyze}.
 }
 \item \code{txFeatureOverlap}
 \itemize{

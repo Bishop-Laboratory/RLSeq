@@ -180,7 +180,7 @@ The resulting objects now contain the permutation test results. These results ca
 
 ```{r plot-perm, fig.cap="Plot of permutation test results (S9.6 -RNaseH1)."}
 plotRLFSRes(rlr) +
-    ggplot2::theme(text=ggplot2::element_text(family="times", size=14))
+    ggplot2::theme(text=ggplot2::element_text(family="arial", size=14))
 ```
 
 ### Quality classification
