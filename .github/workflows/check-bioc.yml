@@ -196,6 +196,17 @@ jobs:
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
         shell: Rscript {0}
+        
+        
+      - name: Install macOS font dependencies
+        if: matrix.config.os == 'macOS-latest'
+        run: |
+          remotes::install_version("Rttf2pt1", version = "1.3.8")
+          install.packages("extrafont")
+          extrafont::font_import(prompt=FALSE)
+          extrafont::loadfonts()
+          print(extrafont::fonts())
+        shell: Rscript {0}
 
       - name: Install BiocGenerics
         if:  env.has_RUnit == 'true'
