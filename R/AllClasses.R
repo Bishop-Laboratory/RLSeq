@@ -265,7 +265,7 @@ RLRanges <- function(peaks = GenomicRanges::GRanges(),
 #'   - The `list` generated from running [analyzeRLFS].
 #'   - See [analyzeRLFS] for description of structure.
 #' * `noiseAnalysis`
-#'   - The `tbl` generated from running [noiseAnalysis].
+#'   - The `tbl` generated from running [noiseAnalyze].
 #' * `txFeatureOverlap`
 #'   - The `tbl` generated from running [txFeatureOverlap].
 #' * `geneAnnoRes`

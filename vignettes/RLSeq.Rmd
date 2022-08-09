@@ -179,7 +179,8 @@ rlr <- analyzeRLFS(rlr, quiet = TRUE)
 The resulting objects now contain the permutation test results. These results can be easily visualized with the `plotRLFSRes` function.
 
 ```{r plot-perm, fig.cap="Plot of permutation test results (S9.6 -RNaseH1)."}
-plotRLFSRes(rlr)
+plotRLFSRes(rlr) +
+    ggplot2::theme(text=ggplot2::element_text(family="times", size=14))
 ```
 
 ### Quality classification
@@ -201,10 +202,14 @@ cat("Prediction: ", s96_pred$prediction)
 
 ## Noise analysis
 
+**Note**: The code in this section does not work on Windows OS machines.
+
 The next step of the RLSeq quality workflow is to analyze the noisiness of the coverage signal for the user-supplied sample (requires that `coverage` is provided when creating the `RLRanges` object). The approach used in this analysis step was derived from the work of *Diaz et al., 2012* [@Diaz2012]. The method is run using the following function:
 
 ```{r noiseAnalyze}
-rlr <- noiseAnalyze(rlr)
+if (.Platform$OS.type != "windows") {
+  rlr <- noiseAnalyze(rlr)
+}
 ```
 
 The results can then be visualized in two ways. A **Fingerprint plot** and a **noiseComparisonPlot**.
@@ -214,7 +219,9 @@ The results can then be visualized in two ways. A **Fingerprint plot** and a **n
 To visualize the results of `noiseAnalyze` we can use a "fingerprint plot" (named after the [deepTools implementation](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html) by the same name [@Ramírez2016]). 
 
 ```{r fingerprint}
-plotFingerprint(rlr)
+if (.Platform$OS.type != "windows") {
+    plotFingerprint(rlr)
+}
 ```
 
 This plot shows the proportion of signal contained in the corresponding proportion of coverage bins. In the plot above, we can observe that relatively few bins contain nearly all the signal. This is exactly what we would expect to see when our sample has good signal-to-noise ratio, a sign of good quality in R-loop mapping datasets.
@@ -224,7 +231,9 @@ This plot shows the proportion of signal contained in the corresponding proporti
 While a fingerprint plot is useful for getting a quick view of the dataset, it is also useful to compare the analyzed sample to publicly-available the datasets provided by RLBase. The `noiseComparisonPlot` enables this comparison.
 
 ```{r noiseComparisonPlot}
-noiseComparisonPlot(rlr)
+if (.Platform$OS.type != "windows") {
+    noiseComparisonPlot(rlr)
+}
 ```
 
 This plot displays the average standardized signal across bins (noise index) from all publicly-available datasets from the same modality ("DRIP-Seq") and genome ("hg38") as the user-supplied sample. The data are also divided by prediction/label combination. Finally, the user-supplied sample is indicated as a diamond (\u25C7). 
