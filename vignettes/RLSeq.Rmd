@@ -372,7 +372,6 @@ rlr <- rlRegionTest(rlr)
 The test results can be easily visualized in the following manner.
 
 ```{r plotRLRegionOverlap}
-# Plot overlap
 plotRLRegionOverlap(
   object = rlr, 
   
