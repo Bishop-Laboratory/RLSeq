@@ -1,3 +1,15 @@
+# RLSeq 1.3.0
+
+Bioc 3.16 release with the addition of a noise analysis function.
+
+# RLSeq 1.2.0
+
+Same as 1.1.0 but released on Bioc 3.15
+
+# RLSeq 1.1.0
+
+Bioc 3.14 release
+
 # RLSeq 1.0.1
 
 Updated with RLHub update. Added 118 new samples to the database. 
