@@ -179,10 +179,12 @@ rlr <- analyzeRLFS(rlr, quiet = TRUE)
 The resulting objects now contain the permutation test results. These results can be easily visualized with the `plotRLFSRes` function.
 
 ```{r plot-perm, fig.cap="Plot of permutation test results (S9.6 -RNaseH1)."}
-plt <- plotRLFSRes(rlr)
 # try() is used to prevent errors on latest MacOS during CI/CD testing.  
 # You don't need try() when running this normally.
-try(plt, silent = TRUE)
+try({
+  plt <- plotRLFSRes(rlr)
+  plt
+}, silent = TRUE)
 ```
 
 ### Quality classification
