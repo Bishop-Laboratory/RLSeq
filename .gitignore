@@ -23,5 +23,8 @@ tests/testthat/rlreport_files
 *report.html
 *annotated_peaks.csv
 *.bed
+*.REMOVED.*
 misc/
-doc/
+scratch.R
+*.bed
+
