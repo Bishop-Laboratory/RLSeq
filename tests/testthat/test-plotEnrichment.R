@@ -12,7 +12,6 @@ test_that(desc = "Test plotEnrichment", {
             splitby = "label"
         )
     })
-    expect_match(warns[1], regexp = "User-supplied sample test value is NA for .*")
     expect_error(
         RLSeq::plotEnrichment(
             object = rlr,
