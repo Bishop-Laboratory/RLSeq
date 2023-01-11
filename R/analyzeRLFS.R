@@ -108,6 +108,7 @@ analyzeRLFS <- function(object,
     )
 
     if (!is.null(mask) & useMask) {
+        # Ensure genome only contain levels found in mask  
         GenomeInfoDb::seqlevels(
             genomeNow,
             pruning.mode = "coarse"
@@ -117,9 +118,16 @@ analyzeRLFS <- function(object,
 
     if (!quiet) message(" - Running permTest...")
 
-    # Run RegioneR
+    # Ensure ranges only contain levels found in genome  
     gr <- GenomicRanges::GRanges(object)
+    GenomeInfoDb::seqlevels(
+        gr,
+        pruning.mode = "coarse"
+    ) <- GenomeInfoDb::seqlevels(genomeNow)
+    GenomeInfoDb::seqinfo(gr) <- GenomeInfoDb::seqinfo(genomeNow)
     gr <- GenomicRanges::trim(gr)
+    
+    # Run permutation test
     if (useMask) {
         pt <- regioneR::permTest(
             A = gr, B = RLFS,
